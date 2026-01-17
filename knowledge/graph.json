@@ -21,6 +21,19 @@
       ]
     },
     {
+      "id": "ADR-0001",
+      "type": "adr",
+      "label": "Git como Sistema Operacional para Decisões Arquiteturais",
+      "status": "accepted",
+      "projects": [
+        "GLOBAL",
+        "SPECTRE",
+        "PHANTOM",
+        "CEREBRO",
+        "NEUTRON"
+      ]
+    },
+    {
       "id": "ADR-0005",
       "type": "adr",
       "label": "NEUTRON como Camada de Infraestrutura Core",
@@ -41,24 +54,6 @@
       ]
     },
     {
-      "id": "ADR-0001",
-      "type": "adr",
-      "label": "Git como Sistema Operacional para Decisões Arquiteturais",
-      "status": "accepted",
-      "projects": [
-        "GLOBAL",
-        "SPECTRE",
-        "PHANTOM",
-        "CEREBRO",
-        "NEUTRON"
-      ]
-    },
-    {
-      "id": "PROJECT:NEUTRON",
-      "type": "project",
-      "label": "NEUTRON"
-    },
-    {
       "id": "PROJECT:CEREBRO",
       "type": "project",
       "label": "CEREBRO"
@@ -72,6 +67,11 @@
       "id": "PROJECT:PHANTOM",
       "type": "project",
       "label": "PHANTOM"
+    },
+    {
+      "id": "PROJECT:NEUTRON",
+      "type": "project",
+      "label": "NEUTRON"
     },
     {
       "id": "PROJECT:SPECTRE",
@@ -141,56 +141,6 @@
       "type": "belongs_to"
     },
     {
-      "source": "ADR-0005",
-      "target": "ADR-0001",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0005",
-      "target": "ADR-0002",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0005",
-      "target": "ADR-0003",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0005",
-      "target": "ADR-0004",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0005",
-      "target": "PROJECT:NEUTRON",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0005",
-      "target": "PROJECT:GLOBAL",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0003",
-      "target": "ADR-0001",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0003",
-      "target": "ADR-0002",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0003",
-      "target": "PROJECT:SPECTRE",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0003",
-      "target": "PROJECT:GLOBAL",
-      "type": "belongs_to"
-    },
-    {
       "source": "ADR-0001",
       "target": "ADR-0002",
       "type": "enables"
@@ -233,6 +183,56 @@
     {
       "source": "ADR-0001",
       "target": "PROJECT:NEUTRON",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0005",
+      "target": "ADR-0001",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0005",
+      "target": "ADR-0002",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0005",
+      "target": "ADR-0003",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0005",
+      "target": "ADR-0004",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0005",
+      "target": "PROJECT:NEUTRON",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0005",
+      "target": "PROJECT:GLOBAL",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0003",
+      "target": "ADR-0001",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0003",
+      "target": "ADR-0002",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0003",
+      "target": "PROJECT:SPECTRE",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0003",
+      "target": "PROJECT:GLOBAL",
       "type": "belongs_to"
     }
   ]

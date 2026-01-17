@@ -29,6 +29,20 @@
   },
   {
     "features": {
+      "context_length": 644,
+      "decision_length": 527,
+      "num_alternatives": 2,
+      "num_risks": 2,
+      "num_positive_consequences": 6,
+      "num_negative_consequences": 3,
+      "has_compliance_tags": true,
+      "num_projects": 5
+    },
+    "label": "critical",
+    "id": "ADR-0001"
+  },
+  {
+    "features": {
       "context_length": 357,
       "decision_length": 5395,
       "num_alternatives": 3,
@@ -54,19 +68,5 @@
     },
     "label": "major",
     "id": "ADR-0003"
-  },
-  {
-    "features": {
-      "context_length": 644,
-      "decision_length": 527,
-      "num_alternatives": 2,
-      "num_risks": 2,
-      "num_positive_consequences": 6,
-      "num_negative_consequences": 3,
-      "has_compliance_tags": true,
-      "num_projects": 5
-    },
-    "label": "critical",
-    "id": "ADR-0001"
   }
 ]

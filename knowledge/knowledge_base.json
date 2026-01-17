@@ -2,7 +2,7 @@
   "meta": {
     "type": "adr_knowledge_base",
     "version": "1.0",
-    "generated_at": "2026-01-10T20:54:33.421092",
+    "generated_at": "2026-01-10T19:35:37.164846",
     "total_decisions": 5,
     "by_status": {
       "accepted": 5
@@ -11,8 +11,8 @@
       "CEREBRO": 2,
       "GLOBAL": 5,
       "PHANTOM": 2,
-      "NEUTRON": 2,
-      "SPECTRE": 2
+      "SPECTRE": 2,
+      "NEUTRON": 2
     }
   },
   "decisions": [
@@ -185,6 +185,93 @@
       }
     },
     {
+      "id": "ADR-0001",
+      "type": "architecture_decision",
+      "title": "Git como Sistema Operacional para Decisões Arquiteturais",
+      "status": "accepted",
+      "summary": "[ADR-0001] Git como Sistema Operacional para Decisões Arquiteturais: Adotamos **Git como sistema operacional** para decisões arquiteturais:\n\n- **Formato**: YAML frontmat...",
+      "scope": {
+        "projects": [
+          "GLOBAL",
+          "SPECTRE",
+          "PHANTOM",
+          "CEREBRO",
+          "NEUTRON"
+        ],
+        "layers": [
+          "governance",
+          "infrastructure"
+        ]
+      },
+      "knowledge": {
+        "what": "Adotamos **Git como sistema operacional** para decisões arquiteturais:\n\n- **Formato**: YAML frontmatter + Markdown body (parseável + legível)\n- **Storage**: Git repository com estrutura `adr/{status}/ADR-XXXX.md`\n- **Schema**: JSON Schema para validação e tipagem\n- **Tooling**: CLI bash + Parser Python para operações\n- **Output**: JSON knowledge base para consumo por agentes\n\nA transformação de ADRs em \"knowledge law\" acontece via AST parsing:\n```\nADR.md → Parser → ADRNode → KnowledgeFragment → CEREBRO/SPECTRE/PHANTOM\n```",
+        "why": "A stack inteligente (SPECTRE, PHANTOM, CEREBRO, NEUTRON) precisa de uma base de conhecimento estruturada que seja:\n\n1. **Parseável** - Agentes precisam consumir decisões programaticamente\n2. **Imutável** - Audit trail para compliance e debugging\n3. **Soberana** - Sem dependência de ferramentas SaaS\n4. **Human-readable** - Devs e stakeholders precisam entender\n5. **Versionada** - Evolução de decisões ao longo do tempo\n\nO problema central: conhecimento arquitetural estava fragmentado em múltiplas ferramentas (Notion, Obsidian, cabeça do desenvolvedor), impossibilitando tanto auditoria quanto consumo automatizado por sistemas inteligentes.",
+        "implications": {
+          "positive": [
+            "Todas as decisões são versionadas e assinadas (GPG)",
+            "Sistemas inteligentes podem parsear e ingerir knowledge automaticamente",
+            "Audit trail completo para compliance (LGPD, SOC2)",
+            "Portabilidade zero-cost entre plataformas",
+            "Offline-first: funciona sem internet",
+            "Branching para decisões experimentais (RFCs)"
+          ],
+          "negative": [
+            "Requer disciplina de commit",
+            "Tooling CLI necessário para UX decente",
+            "Colaboradores não-técnicos podem ter fricção"
+          ]
+        },
+        "alternatives_rejected": [
+          "Notion/Confluence",
+          "Custom database"
+        ]
+      },
+      "questions": [
+        "Como documentamos decisões arquiteturais?",
+        "Onde fica a fonte de verdade para decisões?",
+        "Como os agentes acessam knowledge arquitetural?",
+        "Como garantimos auditabilidade de decisões?"
+      ],
+      "keywords": [
+        "git",
+        "ADR",
+        "architecture decisions",
+        "knowledge management",
+        "governance",
+        "audit trail",
+        "version control"
+      ],
+      "concepts": [
+        "Knowledge Sovereignty",
+        "Immutable Decision Log",
+        "Git as Database",
+        "Human-Readable Knowledge"
+      ],
+      "relations": {
+        "supersedes": [],
+        "related": [],
+        "enables": [
+          "ADR-0002",
+          "ADR-0003",
+          "ADR-0004",
+          "ADR-0005"
+        ]
+      },
+      "governance": {
+        "classification": "critical",
+        "compliance": [
+          "GOVERNANCE",
+          "FOUNDATION"
+        ]
+      },
+      "metadata": {
+        "date": "2025-01-10",
+        "version": 1,
+        "hash": "7dafd3d0d3c2",
+        "embedding_priority": "critical"
+      }
+    },
+    {
       "id": "ADR-0005",
       "type": "architecture_decision",
       "title": "NEUTRON como Camada de Infraestrutura Core",
@@ -346,93 +433,6 @@
         "hash": "91766e2872a3",
         "embedding_priority": "high"
       }
-    },
-    {
-      "id": "ADR-0001",
-      "type": "architecture_decision",
-      "title": "Git como Sistema Operacional para Decisões Arquiteturais",
-      "status": "accepted",
-      "summary": "[ADR-0001] Git como Sistema Operacional para Decisões Arquiteturais: Adotamos **Git como sistema operacional** para decisões arquiteturais:\n\n- **Formato**: YAML frontmat...",
-      "scope": {
-        "projects": [
-          "GLOBAL",
-          "SPECTRE",
-          "PHANTOM",
-          "CEREBRO",
-          "NEUTRON"
-        ],
-        "layers": [
-          "governance",
-          "infrastructure"
-        ]
-      },
-      "knowledge": {
-        "what": "Adotamos **Git como sistema operacional** para decisões arquiteturais:\n\n- **Formato**: YAML frontmatter + Markdown body (parseável + legível)\n- **Storage**: Git repository com estrutura `adr/{status}/ADR-XXXX.md`\n- **Schema**: JSON Schema para validação e tipagem\n- **Tooling**: CLI bash + Parser Python para operações\n- **Output**: JSON knowledge base para consumo por agentes\n\nA transformação de ADRs em \"knowledge law\" acontece via AST parsing:\n```\nADR.md → Parser → ADRNode → KnowledgeFragment → CEREBRO/SPECTRE/PHANTOM\n```",
-        "why": "A stack inteligente (SPECTRE, PHANTOM, CEREBRO, NEUTRON) precisa de uma base de conhecimento estruturada que seja:\n\n1. **Parseável** - Agentes precisam consumir decisões programaticamente\n2. **Imutável** - Audit trail para compliance e debugging\n3. **Soberana** - Sem dependência de ferramentas SaaS\n4. **Human-readable** - Devs e stakeholders precisam entender\n5. **Versionada** - Evolução de decisões ao longo do tempo\n\nO problema central: conhecimento arquitetural estava fragmentado em múltiplas ferramentas (Notion, Obsidian, cabeça do desenvolvedor), impossibilitando tanto auditoria quanto consumo automatizado por sistemas inteligentes.",
-        "implications": {
-          "positive": [
-            "Todas as decisões são versionadas e assinadas (GPG)",
-            "Sistemas inteligentes podem parsear e ingerir knowledge automaticamente",
-            "Audit trail completo para compliance (LGPD, SOC2)",
-            "Portabilidade zero-cost entre plataformas",
-            "Offline-first: funciona sem internet",
-            "Branching para decisões experimentais (RFCs)"
-          ],
-          "negative": [
-            "Requer disciplina de commit",
-            "Tooling CLI necessário para UX decente",
-            "Colaboradores não-técnicos podem ter fricção"
-          ]
-        },
-        "alternatives_rejected": [
-          "Notion/Confluence",
-          "Custom database"
-        ]
-      },
-      "questions": [
-        "Como documentamos decisões arquiteturais?",
-        "Onde fica a fonte de verdade para decisões?",
-        "Como os agentes acessam knowledge arquitetural?",
-        "Como garantimos auditabilidade de decisões?"
-      ],
-      "keywords": [
-        "git",
-        "ADR",
-        "architecture decisions",
-        "knowledge management",
-        "governance",
-        "audit trail",
-        "version control"
-      ],
-      "concepts": [
-        "Knowledge Sovereignty",
-        "Immutable Decision Log",
-        "Git as Database",
-        "Human-Readable Knowledge"
-      ],
-      "relations": {
-        "supersedes": [],
-        "related": [],
-        "enables": [
-          "ADR-0002",
-          "ADR-0003",
-          "ADR-0004",
-          "ADR-0005"
-        ]
-      },
-      "governance": {
-        "classification": "critical",
-        "compliance": [
-          "GOVERNANCE",
-          "FOUNDATION"
-        ]
-      },
-      "metadata": {
-        "date": "2025-01-10",
-        "version": 1,
-        "hash": "7dafd3d0d3c2",
-        "embedding_priority": "critical"
-      }
     }
   ],
   "graph": {
@@ -458,6 +458,19 @@
         ]
       },
       {
+        "id": "ADR-0001",
+        "type": "adr",
+        "label": "Git como Sistema Operacional para Decisões Arquiteturais",
+        "status": "accepted",
+        "projects": [
+          "GLOBAL",
+          "SPECTRE",
+          "PHANTOM",
+          "CEREBRO",
+          "NEUTRON"
+        ]
+      },
+      {
         "id": "ADR-0005",
         "type": "adr",
         "label": "NEUTRON como Camada de Infraestrutura Core",
@@ -478,17 +491,9 @@
         ]
       },
       {
-        "id": "ADR-0001",
-        "type": "adr",
-        "label": "Git como Sistema Operacional para Decisões Arquiteturais",
-        "status": "accepted",
-        "projects": [
-          "GLOBAL",
-          "SPECTRE",
-          "PHANTOM",
-          "CEREBRO",
-          "NEUTRON"
-        ]
+        "id": "PROJECT:GLOBAL",
+        "type": "project",
+        "label": "GLOBAL"
       },
       {
         "id": "PROJECT:CEREBRO",
@@ -501,19 +506,14 @@
         "label": "NEUTRON"
       },
       {
-        "id": "PROJECT:GLOBAL",
+        "id": "PROJECT:PHANTOM",
         "type": "project",
-        "label": "GLOBAL"
+        "label": "PHANTOM"
       },
       {
         "id": "PROJECT:SPECTRE",
         "type": "project",
         "label": "SPECTRE"
-      },
-      {
-        "id": "PROJECT:PHANTOM",
-        "type": "project",
-        "label": "PHANTOM"
       }
     ],
     "edges": [
@@ -578,56 +578,6 @@
         "type": "belongs_to"
       },
       {
-        "source": "ADR-0005",
-        "target": "ADR-0001",
-        "type": "related_to"
-      },
-      {
-        "source": "ADR-0005",
-        "target": "ADR-0002",
-        "type": "related_to"
-      },
-      {
-        "source": "ADR-0005",
-        "target": "ADR-0003",
-        "type": "related_to"
-      },
-      {
-        "source": "ADR-0005",
-        "target": "ADR-0004",
-        "type": "related_to"
-      },
-      {
-        "source": "ADR-0005",
-        "target": "PROJECT:NEUTRON",
-        "type": "belongs_to"
-      },
-      {
-        "source": "ADR-0005",
-        "target": "PROJECT:GLOBAL",
-        "type": "belongs_to"
-      },
-      {
-        "source": "ADR-0003",
-        "target": "ADR-0001",
-        "type": "related_to"
-      },
-      {
-        "source": "ADR-0003",
-        "target": "ADR-0002",
-        "type": "related_to"
-      },
-      {
-        "source": "ADR-0003",
-        "target": "PROJECT:SPECTRE",
-        "type": "belongs_to"
-      },
-      {
-        "source": "ADR-0003",
-        "target": "PROJECT:GLOBAL",
-        "type": "belongs_to"
-      },
-      {
         "source": "ADR-0001",
         "target": "ADR-0002",
         "type": "enables"
@@ -671,6 +621,56 @@
         "source": "ADR-0001",
         "target": "PROJECT:NEUTRON",
         "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0005",
+        "target": "ADR-0001",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0005",
+        "target": "ADR-0002",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0005",
+        "target": "ADR-0003",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0005",
+        "target": "ADR-0004",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0005",
+        "target": "PROJECT:NEUTRON",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0005",
+        "target": "PROJECT:GLOBAL",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0003",
+        "target": "ADR-0001",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0003",
+        "target": "ADR-0002",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0003",
+        "target": "PROJECT:SPECTRE",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0003",
+        "target": "PROJECT:GLOBAL",
+        "type": "belongs_to"
       }
     ]
   },
@@ -699,6 +699,18 @@
     "Workflow Orchestration": [
       "ADR-0004"
     ],
+    "Knowledge Sovereignty": [
+      "ADR-0001"
+    ],
+    "Immutable Decision Log": [
+      "ADR-0001"
+    ],
+    "Git as Database": [
+      "ADR-0001"
+    ],
+    "Human-Readable Knowledge": [
+      "ADR-0001"
+    ],
     "Infrastructure as Code": [
       "ADR-0005"
     ],
@@ -722,18 +734,6 @@
     ],
     "Textual Forensics": [
       "ADR-0003"
-    ],
-    "Knowledge Sovereignty": [
-      "ADR-0001"
-    ],
-    "Immutable Decision Log": [
-      "ADR-0001"
-    ],
-    "Git as Database": [
-      "ADR-0001"
-    ],
-    "Human-Readable Knowledge": [
-      "ADR-0001"
     ]
   },
   "questions_index": {
@@ -745,6 +745,10 @@
     "Como classificamos documentos automaticamente?": "ADR-0004",
     "Como orquestramos workflows de ML?": "ADR-0004",
     "Como sanitizamos dados antes do consumo?": "ADR-0004",
+    "Como documentamos decisões arquiteturais?": "ADR-0001",
+    "Onde fica a fonte de verdade para decisões?": "ADR-0001",
+    "Como os agentes acessam knowledge arquitetural?": "ADR-0001",
+    "Como garantimos auditabilidade de decisões?": "ADR-0001",
     "Como gerenciamos infraestrutura?": "ADR-0005",
     "Como garantimos reprodutibilidade?": "ADR-0005",
     "Como enforçamos compliance automaticamente?": "ADR-0005",
@@ -752,10 +756,6 @@
     "Como analisamos sentimento em textos?": "ADR-0003",
     "Como extraímos padrões de dados massivos?": "ADR-0003",
     "Como auditamos qualidade de agents?": "ADR-0003",
-    "Como SPECTRE se integra com a stack?": "ADR-0003",
-    "Como documentamos decisões arquiteturais?": "ADR-0001",
-    "Onde fica a fonte de verdade para decisões?": "ADR-0001",
-    "Como os agentes acessam knowledge arquitetural?": "ADR-0001",
-    "Como garantimos auditabilidade de decisões?": "ADR-0001"
+    "Como SPECTRE se integra com a stack?": "ADR-0003"
   }
 }

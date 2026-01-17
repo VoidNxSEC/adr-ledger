@@ -1,69 +1,26 @@
 {
   "version": "1.0",
-  "generated_at": "2025-01-10T00:00:00-03:00",
-  "description": "Índice de knowledge para integração com sistemas inteligentes",
+  "generated_at": "2026-01-10T19:35:37-02:00",
   "files": {
-    "knowledge_base": {
-      "path": "knowledge_base.json",
-      "format": "json",
-      "description": "Base completa de conhecimento para RAG",
-      "primary_consumer": "CEREBRO"
-    },
-    "graph": {
-      "path": "graph.json",
-      "format": "json",
-      "description": "Grafo de relacionamentos entre ADRs",
-      "primary_consumer": "CEREBRO"
-    },
-    "spectre_corpus": {
-      "path": "spectre_corpus.json",
-      "format": "json",
-      "description": "Corpus preparado para análise de sentimento",
-      "primary_consumer": "SPECTRE"
-    },
-    "phantom_training": {
-      "path": "phantom_training.json",
-      "format": "json",
-      "description": "Dataset para treinamento de classificadores",
-      "primary_consumer": "PHANTOM"
-    }
+    "knowledge_base": "knowledge_base.json",
+    "graph": "graph.json",
+    "spectre_corpus": "spectre_corpus.json",
+    "phantom_training": "phantom_training.json"
   },
   "agents": {
     "CEREBRO": {
-      "description": "RAG Knowledge System",
-      "consumes": ["knowledge_base.json", "graph.json"],
-      "capabilities": ["semantic_search", "question_answering", "knowledge_traversal"],
-      "auto_ingest": true
+      "primary": "knowledge_base.json",
+      "secondary": ["graph.json"]
     },
     "SPECTRE": {
-      "description": "Sentiment & Pattern Analysis",
-      "consumes": ["spectre_corpus.json"],
-      "capabilities": ["sentiment_analysis", "pattern_extraction", "agent_auditing"],
-      "auto_ingest": true
+      "primary": "spectre_corpus.json"
     },
     "PHANTOM": {
-      "description": "ML Classification & ETL",
-      "consumes": ["phantom_training.json"],
-      "capabilities": ["classification", "data_sanitization", "workflow_orchestration"],
-      "auto_ingest": false
+      "primary": "phantom_training.json"
     },
     "NEUTRON": {
-      "description": "Infrastructure & Compliance",
-      "consumes": ["knowledge_base.json"],
-      "capabilities": ["compliance_enforcement", "infrastructure_validation"],
-      "auto_ingest": true
+      "primary": "knowledge_base.json",
+      "enforce_compliance": true
     }
-  },
-  "sync_hooks": {
-    "on_adr_accepted": [
-      "regenerate_knowledge_base",
-      "notify_cerebro",
-      "update_compliance_rules"
-    ],
-    "on_adr_superseded": [
-      "update_graph_relations",
-      "archive_old_embeddings"
-    ]
-  },
-  "schema_version": "https://pina.dev/schemas/adr/v1"
+  }
 }
