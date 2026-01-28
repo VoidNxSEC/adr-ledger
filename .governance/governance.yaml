@@ -7,8 +7,8 @@
 
 meta:
   version: "1.0.0"
-  schema: "https://pina.dev/schemas/governance/v1"
-  last_updated: "2025-01-10"
+  schema: "https://pina.voidnx/schemas/governance/v1"
+  last_updated: "2026-01-10"
   maintainer: "pina"
 
 # =============================================================================
@@ -38,7 +38,7 @@ roles:
     permissions:
       - propose_adr
       - review_adr
-      - approve_critical  # only for security-tagged ADRs
+      - approve_critical # only for security-tagged ADRs
       - veto_security_risk
       - require_security_review
 
@@ -47,7 +47,7 @@ roles:
     permissions:
       - read_adr
       - query_knowledge
-      - suggest_adr  # can propose but requires human approval
+      - suggest_adr # can propose but requires human approval
       - report_inconsistency
 
 # =============================================================================
@@ -85,7 +85,7 @@ approval_matrix:
     required_roles:
       - engineer
     timeout_days: 1
-    auto_approve_on_timeout: true  # auto-aprova se não houver objeção
+    auto_approve_on_timeout: true # auto-aprova se não houver objeção
 
 # =============================================================================
 # LIFECYCLE RULES
@@ -105,11 +105,11 @@ lifecycle:
       allowed_transitions:
         - deprecated
         - superseded
-      requires_implementation_by: 30  # dias
+      requires_implementation_by: 30 # dias
 
     rejected:
       description: "Decisão rejeitada com justificativa"
-      allowed_transitions: []  # terminal state
+      allowed_transitions: [] # terminal state
       archive_after_days: 90
 
     deprecated:
@@ -121,7 +121,7 @@ lifecycle:
 
     superseded:
       description: "Substituída por outra decisão"
-      allowed_transitions: []  # terminal state
+      allowed_transitions: [] # terminal state
       requires_superseding_adr: true
 
 # =============================================================================
@@ -179,7 +179,7 @@ projects:
     default_classification: "major"
     required_tags: ["ML", "NLP"]
     auto_notify:
-      - cerebro  # CEREBRO needs to know about SPECTRE changes
+      - cerebro # CEREBRO needs to know about SPECTRE changes
 
   PHANTOM:
     description: "ML Classifier Framework & ETL Pipeline"
@@ -187,15 +187,15 @@ projects:
     default_classification: "major"
     required_tags: ["ML", "DATA"]
     dependencies:
-      - SPECTRE  # uses SPECTRE for feature extraction
+      - SPECTRE # uses SPECTRE for feature extraction
 
   CEREBRO:
     description: "RAG Knowledge System"
     owners: ["pina"]
-    default_classification: "critical"  # core knowledge layer
+    default_classification: "critical" # core knowledge layer
     required_tags: ["RAG", "KNOWLEDGE"]
     special_rules:
-      - "all_adrs_auto_ingest"  # CEREBRO ingests all accepted ADRs
+      - "all_adrs_auto_ingest" # CEREBRO ingests all accepted ADRs
       - "semantic_index_required"
 
   NEUTRON:
@@ -261,7 +261,7 @@ automation:
 # =============================================================================
 agent_permissions:
   CEREBRO:
-    can_read: ["*"]  # all ADRs
+    can_read: ["*"] # all ADRs
     can_query: ["knowledge_extraction", "relations", "scope"]
     can_suggest: true
     auto_ingest: true
@@ -270,17 +270,17 @@ agent_permissions:
   SPECTRE:
     can_read: ["scope.projects contains 'SPECTRE'"]
     can_query: ["consequences", "implementation"]
-    can_analyze_sentiment: true  # meta-analysis of decisions
+    can_analyze_sentiment: true # meta-analysis of decisions
 
   PHANTOM:
     can_read: ["scope.projects contains 'PHANTOM'"]
     can_query: ["implementation", "dependencies"]
-    can_classify: true  # auto-classification of new ADRs
+    can_classify: true # auto-classification of new ADRs
 
   NEUTRON:
     can_read: ["scope.layers contains 'infrastructure'"]
     can_query: ["implementation", "risks"]
-    can_enforce: true  # can block deployments that violate ADRs
+    can_enforce: true # can block deployments that violate ADRs
 
 # =============================================================================
 # KNOWLEDGE GRAPH RULES

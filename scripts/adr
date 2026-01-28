@@ -644,9 +644,9 @@ cmd_list() {
             fi
             
             local id=$(grep -oP '^id:\s*"\K[^"].*?"' "$file" 2>/dev/null || basename "$file" .md)
-            local title=$(grep -oP '^title:\s*"\K[^"].*?"' "$file" 2>/dev/null || "Unknown")
-            local date=$(grep -oP '^date:\s*"\K[^"].*?"' "$file" 2>/dev/null || "Unknown")
-            local status=$(grep -oP '^status:\s*\K\\w+' "$file" 2>/dev/null || "$status_dir")
+            local title=$(grep -oP '^title:\s*"\K[^"]+' "$file" 2>/dev/null || echo "Unknown")
+            local date=$(grep -oP '^date:\s*"\K[^"]+' "$file" 2>/dev/null || echo "Unknown")
+            local status=$(grep -oP '^status:\s*\K\w+' "$file" 2>/dev/null || echo "$status_dir")
             
             # Project filter
             if [[ -n "$project_filter" ]]; then
