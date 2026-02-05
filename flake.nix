@@ -15,7 +15,7 @@
         version = "1.0.0";
 
         # Python e dependências
-        python = pkgs.python3;
+        python = pkgs.python313;
         pythonPackages = python.pkgs;
 
       in {
@@ -47,7 +47,7 @@
 
               # Criar wrapper executável
               cat > $out/bin/adr-parser <<EOF
-              #!${python}/bin/python3
+              #!${python}/bin/python313
               import sys
               sys.path.insert(0, "$out/lib")
               from adr_parser import main
