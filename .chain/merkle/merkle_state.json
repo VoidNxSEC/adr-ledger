@@ -1,0 +1,114 @@
+{
+  "root_hash": "57a418fa8e0a9e6796b550e736cae44a3fd734c08735cdb3fb6795cf12a4e445",
+  "height": 6,
+  "leaf_count": 21,
+  "computed_at": "2026-02-14T12:45:58-0200",
+  "chain_height_at_computation": 22,
+  "leaves": [
+    {
+      "adr_id": "ADR-0001",
+      "content_hash": "2df01bbbdfe2bf762149f8c478559bd107a63eb9518541767651af08c872ffc2",
+      "leaf_hash": "0529aa0cf1816dff307c82aae362ae29a04095bc2a154b459c018289d2ebfd29"
+    },
+    {
+      "adr_id": "ADR-0002",
+      "content_hash": "47ee43376d55891f050d45e8e6155c86b0ccfa2cdd539b9bb6f511037758a5ad",
+      "leaf_hash": "3f9da5328fe1312eea976a8717b59c689bdbc93cce49ab86cd5e053cda569bfc"
+    },
+    {
+      "adr_id": "ADR-0003",
+      "content_hash": "81e8431de24da3e7c6dcab1f9cd3201d4f870c34aded617fbbc36caad42aa58d",
+      "leaf_hash": "e8e4d9f2c505befe214ab56aa4b2f2feb94133567089fe09fadbf9386acd38e9"
+    },
+    {
+      "adr_id": "ADR-0004",
+      "content_hash": "f011e1eee3926acd0731698e186acb4443739d2c53544c325e753a83d78cbdde",
+      "leaf_hash": "98aa3f36ed978f3b8a3d5afbde55367e74aa5f417975d01cb3c21ad6a2f52d2f"
+    },
+    {
+      "adr_id": "ADR-0005",
+      "content_hash": "5992a94a1926c642670c020662f8960cf9e0354467116e7825ec306c59a06419",
+      "leaf_hash": "bad42991b542d62a453ea957c39664731d1cf8e919e85d05ad65490f0c7b4b5a"
+    },
+    {
+      "adr_id": "ADR-0006",
+      "content_hash": "fba88fd48a482352c71899024a033fda7db70fc2d532f64944d308549b103be6",
+      "leaf_hash": "52040388bc193bfffe8d54c666b3d752a02b9ca779c057e72f2170374e281234"
+    },
+    {
+      "adr_id": "ADR-0007",
+      "content_hash": "3eb373fcd290a5a2eff414580a5b0f4682e1a97478be1604d3b80fa5c810f9a9",
+      "leaf_hash": "7ab2a4077a0841103aa3d7443b0ca03237e13437f4eacf0d29dc11a3fe8ea9f4"
+    },
+    {
+      "adr_id": "ADR-0008",
+      "content_hash": "112913d8ec5f35df28c18720015b65da105d939934bf4d3c6663be525a647e0d",
+      "leaf_hash": "dcac851fff9d1b27f3103785bd4128b76acb50272997542a108deff832597174"
+    },
+    {
+      "adr_id": "ADR-0009",
+      "content_hash": "eb0ef8603836879e2d2769029f0a83bdb2fe25b95c28b5b71d474da1de84fd15",
+      "leaf_hash": "4f9d7157fd3ba1cd4a6cf73d69c41a1374226aaddeaf58e072074817670a7dfa"
+    },
+    {
+      "adr_id": "ADR-0010",
+      "content_hash": "57a0ee3bf8d5a159ddb272b1add7045b2b0ae64e38b8f3a543fcd30e4be59c1a",
+      "leaf_hash": "be78fd41cffaa43ef536814fa2064f2fc6db9e8c4c06f1f05f5d0499f7a2291f"
+    },
+    {
+      "adr_id": "ADR-0013",
+      "content_hash": "9dbdc94796302cb3a8af660a98155260fec8f96794528ddae4931d9d9b454f34",
+      "leaf_hash": "73ddd0a9b340ad5373a6a912364d382ec0fa2efc80831b71433b45bc0d25bb2f"
+    },
+    {
+      "adr_id": "ADR-0016",
+      "content_hash": "540fa35b2f551dd952377dc7983efae1885cedf936916d69f484a8b9555e74ce",
+      "leaf_hash": "6b0967e0faa34b5d7e71f0277c5e69ea5db82ed267d366949973cbc5d466bf29"
+    },
+    {
+      "adr_id": "ADR-0019",
+      "content_hash": "b08b76a6492fb0a724121334896750978a1e939e64d91cfa702219e606f0ef91",
+      "leaf_hash": "b990c610538016c9b2bede8b24a4815aaf324edbb375bee2980ce5d9ae335838"
+    },
+    {
+      "adr_id": "ADR-0020",
+      "content_hash": "76152cb83c31164d162d4c83a77b859ea01d11ed7a67378afd06db5bc285ff12",
+      "leaf_hash": "9c1568fa574f7100835979c60dd425431192e0194e70c32a62d6d7cb034f320b"
+    },
+    {
+      "adr_id": "ADR-0021",
+      "content_hash": "95c283f5b82b6740810b315af3353fd9d0760eb5661e896c9d5e1f310f3dbca7",
+      "leaf_hash": "2014dc697151b767a050761ab717e52b9fbc6bc3eee1e7531cbc3d68bb54f8f9"
+    },
+    {
+      "adr_id": "ADR-0022",
+      "content_hash": "2d94bba6cb1a0314225d0740f46d6a437dc55f48c51895ab98c67eb86d8058f6",
+      "leaf_hash": "419feb66610f3c228eb8da1cb72a6c47e01edd5a4e61c9973479787339c6da0f"
+    },
+    {
+      "adr_id": "ADR-0023",
+      "content_hash": "be1dd0da7768c272cb0c03753b103c686a713ca7e9d80fa56077d358707a5f92",
+      "leaf_hash": "4296ad5a9c263fdff0f0fc1148b62966368587cde3983d5ac58e0e7c8af82c38"
+    },
+    {
+      "adr_id": "ADR-0025",
+      "content_hash": "bc96495e4fda4a9ba6777f2112e8a5aba4ba4745002c153712d860a842ae1491",
+      "leaf_hash": "7c1925de5a9e8c0ca09844af747b2b0970902d27fd298143b1ec2fb13a5eea79"
+    },
+    {
+      "adr_id": "ADR-0027",
+      "content_hash": "b31a7fc9d8b1acbe6805ba053d409cf345847fdd316d0b8edae03ed06f7d352b",
+      "leaf_hash": "be388539211f79fe170f9625168b313ab4a483bd7293274aeb733a2779ea2530"
+    },
+    {
+      "adr_id": "ADR-0030",
+      "content_hash": "0863e0a9cdc700e0ba59a6b3d583d4aa1cfb5f374b0c807d5afeb70460f1e7d4",
+      "leaf_hash": "4e301bed701b3f46baa2fdd7e24c28573443bacedb92025d58b08dcd152b3609"
+    },
+    {
+      "adr_id": "ADR-0031",
+      "content_hash": "75b9bd397508bd954b3e4750a5ba5b7260c0735819f384b6d71111d74fed7b86",
+      "leaf_hash": "3eae44e64dd4030431c4155666035757f43dd343e94dd93a6c666c3655d854ec"
+    }
+  ]
+}

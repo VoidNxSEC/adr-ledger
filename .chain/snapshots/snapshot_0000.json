@@ -1,0 +1,39 @@
+{
+  "snapshot_id": 0,
+  "timestamp": "2026-02-14T12:46:27-0200",
+  "chain_height": 22,
+  "chain_tip": "811fc20aa4ba7faccebe3b42aab792f31c47073c4113a9c1f369972652acac97",
+  "merkle_root": "57a418fa8e0a9e6796b550e736cae44a3fd734c08735cdb3fb6795cf12a4e445",
+  "total_accepted": 21,
+  "total_proposed": 11,
+  "total_superseded": 0,
+  "total_rejected": 0,
+  "by_classification": {
+    "critical": 8,
+    "major": 11,
+    "minor": 1,
+    "patch": 0,
+    "unclassified": 0,
+    "milestone": 1
+  },
+  "by_project": {
+    "GLOBAL": 8,
+    "CEREBRO": 14,
+    "NEUTRON": 6,
+    "SPECTRE": 3,
+    "PHANTOM": 7,
+    "CEREBRO-INFRA": 1,
+    "SECURELLM-BRIDGE": 1,
+    "AI-ASSISTANT-HUB": 1
+  },
+  "previous_snapshot_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "timestamp_proof": null,
+  "snapshot_hash": "e900bef535adbc060c7bb485567697378e0ae9fd229d88d9b04f3a3d35e60f5a",
+  "signature": {
+    "signer_id": "pina",
+    "public_key": "jIDMf08NgVSYQgU0q5PqFoE6fOSJ6SzVBp2ASYr2PW0=",
+    "signature": "GOTrvfQuWpJJuBZf213ynAlQwK+naoudOxisxbZXJi87NTYI5l3FB1nq4BvoW51gHXptyejGh6GhKu3sWNX0DQ==",
+    "timestamp": "2026-02-14T12:46:27-0200",
+    "role": "architect"
+  }
+}
