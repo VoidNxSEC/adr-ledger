@@ -1,0 +1,64 @@
+{
+  "adr_id": "ADR-0001",
+  "entries": [
+    {
+      "stage": "research",
+      "adr_id": "ADR-0001",
+      "timestamp": "2026-02-14T12:47:00-0200",
+      "actor": "pina",
+      "description": "Researched git-based decision tracking systems",
+      "evidence_hash": "",
+      "evidence_ref": "https://adr.github.io/",
+      "previous_entry_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "entry_hash": "a58bbfa19b4de5ef32fa358f866e4630edd6ba429915796e7ed3293cf2c82aab",
+      "signature": {
+        "signer_id": "pina",
+        "public_key": "jIDMf08NgVSYQgU0q5PqFoE6fOSJ6SzVBp2ASYr2PW0=",
+        "signature": "Bc99vBNkMJlDIrPZoHXwI9fTIOyJ5l2vKANrGLSSleAbtBGu8O6gGIvYUT1PGLWjqlrUQGTeMLOWqhmKjuFXBw==",
+        "timestamp": "2026-02-14T12:47:00-0200",
+        "role": "architect"
+      },
+      "metadata": {}
+    },
+    {
+      "stage": "proposal",
+      "adr_id": "ADR-0001",
+      "timestamp": "2026-02-14T12:47:00-0200",
+      "actor": "pina",
+      "description": "Proposed Git as operational system for decisions",
+      "evidence_hash": "",
+      "evidence_ref": "git:abc123",
+      "previous_entry_hash": "a58bbfa19b4de5ef32fa358f866e4630edd6ba429915796e7ed3293cf2c82aab",
+      "entry_hash": "3da80a69a4100f85abab083cdb5a6a580de78743121ce063d8e00620291c55c8",
+      "signature": {
+        "signer_id": "pina",
+        "public_key": "jIDMf08NgVSYQgU0q5PqFoE6fOSJ6SzVBp2ASYr2PW0=",
+        "signature": "ghRVCqJueFKV9jH7tRFoccvduTIyqDjLol43pVTlZUwwPLNKjyfabVZZjvKFNNOcqrrxcZ3S6MCdITLMV9ZoCA==",
+        "timestamp": "2026-02-14T12:47:00-0200",
+        "role": "architect"
+      },
+      "metadata": {}
+    },
+    {
+      "stage": "acceptance",
+      "adr_id": "ADR-0001",
+      "timestamp": "2026-02-14T12:47:00-0200",
+      "actor": "pina",
+      "description": "ADR accepted as founding decision",
+      "evidence_hash": "",
+      "evidence_ref": "",
+      "previous_entry_hash": "3da80a69a4100f85abab083cdb5a6a580de78743121ce063d8e00620291c55c8",
+      "entry_hash": "a84b8048b01eba487279d8aa3c257221b55c3128c54c34ace1783b595206574b",
+      "signature": {
+        "signer_id": "pina",
+        "public_key": "jIDMf08NgVSYQgU0q5PqFoE6fOSJ6SzVBp2ASYr2PW0=",
+        "signature": "tZRiScw7RyqKI0Yp2EiImI5N0x2jCszAlM3VawptGiiEPhvi93ilqLTvCO/ngFKUyZYPiPtdP6o+K4rboBIODA==",
+        "timestamp": "2026-02-14T12:47:00-0200",
+        "role": "architect"
+      },
+      "metadata": {}
+    }
+  ],
+  "created_at": "2026-02-14T12:47:00-0200",
+  "last_updated": "2026-02-14T12:47:00-0200"
+}
