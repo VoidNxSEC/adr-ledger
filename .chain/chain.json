@@ -206,8 +206,32 @@
       "timestamp": "2026-02-14T00:00:00+0000",
       "signatures": [],
       "block_hash": "811fc20aa4ba7faccebe3b42aab792f31c47073c4113a9c1f369972652acac97"
+    },
+    {
+      "block_number": 22,
+      "adr_id": "ADR-0032",
+      "content_hash": "69f8cd5f063ca01029fa149bd1667c5fa6b966535f15489812621c22c139ea83",
+      "previous_hash": "811fc20aa4ba7faccebe3b42aab792f31c47073c4113a9c1f369972652acac97",
+      "timestamp": "2026-02-17T15:28:36-0200",
+      "signatures": [
+        {
+          "signer_id": "pina",
+          "public_key": "jIDMf08NgVSYQgU0q5PqFoE6fOSJ6SzVBp2ASYr2PW0=",
+          "signature": "N4iPNiqyIcY1wDiVlfPOAu6xXFogqD/ZwG09F7lmdti5OKp3kRmzdHcJsjn1iMZHA/pvy0Zu8VZuyNHG7YXQAA==",
+          "timestamp": "2026-02-17T15:28:36-0200",
+          "role": "architect"
+        },
+        {
+          "signer_id": "security_lead",
+          "public_key": "FLZr8PvhZmeVrPN9FpgZcny8xD6JjKtr58L9lReDHvU=",
+          "signature": "bgeUbFu6LXlcp9jaIw8s/10jvtodGsFsPH6lMmtVXiFcFBzjfQFyblxqrh5ULIX8ifXKWX4qUKsGvqKfZezgAA==",
+          "timestamp": "2026-02-17T15:28:36-0200",
+          "role": "security_lead"
+        }
+      ],
+      "block_hash": "e875af7a73cf820940e759923a416bdbfc198c775d4e52306af564751b889eca"
     }
   ],
-  "tip": "811fc20aa4ba7faccebe3b42aab792f31c47073c4113a9c1f369972652acac97",
-  "height": 22
+  "tip": "e875af7a73cf820940e759923a416bdbfc198c775d4e52306af564751b889eca",
+  "height": 23
 }
