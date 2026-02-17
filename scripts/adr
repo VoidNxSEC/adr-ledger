@@ -732,7 +732,7 @@ cmd_accept() {
 
     # Update last_modified
     local timestamp=$(date -Iseconds)
-    sed -i "s/last_modified:.*/last_modified: \"${timestamp}\"/
+    sed -i "s/last_modified:.*/last_modified: \"${timestamp}\"/" "$source"
 
     # Move file
     mv "$source" "$target"
@@ -807,8 +807,8 @@ cmd_supersede() {
     
     # Update old ADR
     sed -i 's/^status:.*/status: superseded/' "$old_path"
-    sed -i "s/superseded_by:.*/superseded_by: \"${new_id}\"/
-    
+    sed -i "s/superseded_by:.*/superseded_by: \"${new_id}\"/" "$old_path"
+
     # Move old ADR to superseded folder
     local old_filename=$(basename "$old_path")
     mv "$old_path" "${ADR_DIR}/superseded/${old_filename}"

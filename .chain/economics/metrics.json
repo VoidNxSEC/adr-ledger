@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-02-14T12:45:58-0200",
-  "total_decisions": 21,
-  "average_quality_score": 0.436,
+  "generated_at": "2026-02-17T16:32:30-0200",
+  "total_decisions": 25,
+  "average_quality_score": 0.452,
   "by_classification": {
     "critical": {
-      "count": 8,
-      "avg_quality": 0.39
+      "count": 10,
+      "avg_quality": 0.462
     },
     "major": {
-      "count": 11,
-      "avg_quality": 0.46
+      "count": 13,
+      "avg_quality": 0.439
     },
     "milestone": {
       "count": 1,
@@ -22,24 +22,24 @@
   },
   "by_project": {
     "GLOBAL": {
-      "count": 8,
-      "avg_quality": 0.387
+      "count": 9,
+      "avg_quality": 0.474
     },
     "SPECTRE": {
-      "count": 3,
-      "avg_quality": 0.389
+      "count": 7,
+      "avg_quality": 0.474
     },
     "PHANTOM": {
-      "count": 7,
-      "avg_quality": 0.419
+      "count": 8,
+      "avg_quality": 0.514
     },
     "CEREBRO": {
-      "count": 14,
-      "avg_quality": 0.457
+      "count": 15,
+      "avg_quality": 0.505
     },
     "NEUTRON": {
-      "count": 6,
-      "avg_quality": 0.46
+      "count": 7,
+      "avg_quality": 0.562
     },
     "SECURELLM-BRIDGE": {
       "count": 1,
@@ -55,7 +55,7 @@
     }
   },
   "health": {
-    "low_quality_count": 8,
+    "low_quality_count": 11,
     "low_quality_ids": [
       "ADR-0002",
       "ADR-0003",
@@ -64,11 +64,13 @@
       "ADR-0010",
       "ADR-0025",
       "ADR-0030",
-      "ADR-0031"
+      "ADR-0031",
+      "ADR-0037",
+      "ADR-0038",
+      "ADR-0040"
     ],
-    "unsigned_count": 21,
+    "unsigned_count": 23,
     "unsigned_ids": [
-      "ADR-0001",
       "ADR-0002",
       "ADR-0003",
       "ADR-0004",
@@ -88,11 +90,13 @@
       "ADR-0025",
       "ADR-0027",
       "ADR-0030",
-      "ADR-0031"
+      "ADR-0031",
+      "ADR-0037",
+      "ADR-0038",
+      "ADR-0040"
     ],
-    "no_provenance_count": 21,
+    "no_provenance_count": 23,
     "no_provenance_ids": [
-      "ADR-0001",
       "ADR-0002",
       "ADR-0003",
       "ADR-0004",
@@ -112,7 +116,10 @@
       "ADR-0025",
       "ADR-0027",
       "ADR-0030",
-      "ADR-0031"
+      "ADR-0031",
+      "ADR-0037",
+      "ADR-0038",
+      "ADR-0040"
     ]
   },
   "metrics": [
@@ -127,17 +134,17 @@
       "time_to_acceptance_days": 0,
       "time_to_supersede_days": null,
       "is_active": true,
-      "active_duration_days": 400,
+      "active_duration_days": 403,
       "implementation_tasks_total": 5,
       "implementation_tasks_done": 3,
       "implementation_compliance": 0.6,
       "downstream_issues": 0,
       "review_depth": 1,
-      "has_provenance": false,
-      "has_chain_signatures": false,
+      "has_provenance": true,
+      "has_chain_signatures": true,
       "risk_count": 0,
       "alternative_count": 2,
-      "quality_score": 0.475,
+      "quality_score": 0.725,
       "projects": [
         "GLOBAL",
         "SPECTRE",
@@ -157,7 +164,7 @@
       "time_to_acceptance_days": 0,
       "time_to_supersede_days": null,
       "is_active": true,
-      "active_duration_days": 400,
+      "active_duration_days": 403,
       "implementation_tasks_total": 4,
       "implementation_tasks_done": 0,
       "implementation_compliance": 0.0,
@@ -184,7 +191,7 @@
       "time_to_acceptance_days": 0,
       "time_to_supersede_days": null,
       "is_active": true,
-      "active_duration_days": 400,
+      "active_duration_days": 403,
       "implementation_tasks_total": 5,
       "implementation_tasks_done": 0,
       "implementation_compliance": 0.0,
@@ -211,7 +218,7 @@
       "time_to_acceptance_days": 0,
       "time_to_supersede_days": null,
       "is_active": true,
-      "active_duration_days": 400,
+      "active_duration_days": 403,
       "implementation_tasks_total": 5,
       "implementation_tasks_done": 0,
       "implementation_compliance": 0.0,
@@ -238,7 +245,7 @@
       "time_to_acceptance_days": 0,
       "time_to_supersede_days": null,
       "is_active": true,
-      "active_duration_days": 400,
+      "active_duration_days": 403,
       "implementation_tasks_total": 6,
       "implementation_tasks_done": 3,
       "implementation_compliance": 0.5,
@@ -265,7 +272,7 @@
       "time_to_acceptance_days": 0,
       "time_to_supersede_days": null,
       "is_active": true,
-      "active_duration_days": 34,
+      "active_duration_days": 37,
       "implementation_tasks_total": 6,
       "implementation_tasks_done": 1,
       "implementation_compliance": 0.167,
@@ -295,7 +302,7 @@
       "time_to_acceptance_days": 0,
       "time_to_supersede_days": null,
       "is_active": true,
-      "active_duration_days": 34,
+      "active_duration_days": 37,
       "implementation_tasks_total": 6,
       "implementation_tasks_done": 4,
       "implementation_compliance": 0.667,
@@ -322,7 +329,7 @@
       "time_to_acceptance_days": 0,
       "time_to_supersede_days": null,
       "is_active": true,
-      "active_duration_days": 34,
+      "active_duration_days": 37,
       "implementation_tasks_total": 4,
       "implementation_tasks_done": 3,
       "implementation_compliance": 0.75,
@@ -349,7 +356,7 @@
       "time_to_acceptance_days": 0,
       "time_to_supersede_days": null,
       "is_active": true,
-      "active_duration_days": 34,
+      "active_duration_days": 37,
       "implementation_tasks_total": 7,
       "implementation_tasks_done": 5,
       "implementation_compliance": 0.714,
@@ -376,7 +383,7 @@
       "time_to_acceptance_days": 0,
       "time_to_supersede_days": null,
       "is_active": true,
-      "active_duration_days": 31,
+      "active_duration_days": 34,
       "implementation_tasks_total": 4,
       "implementation_tasks_done": 0,
       "implementation_compliance": 0.0,
@@ -402,7 +409,7 @@
       "time_to_acceptance_days": 0,
       "time_to_supersede_days": null,
       "is_active": true,
-      "active_duration_days": 19,
+      "active_duration_days": 22,
       "implementation_tasks_total": 0,
       "implementation_tasks_done": 0,
       "implementation_compliance": 1.0,
@@ -432,7 +439,7 @@
       "time_to_acceptance_days": 0,
       "time_to_supersede_days": null,
       "is_active": true,
-      "active_duration_days": 17,
+      "active_duration_days": 20,
       "implementation_tasks_total": 0,
       "implementation_tasks_done": 0,
       "implementation_compliance": 1.0,
@@ -458,7 +465,7 @@
       "time_to_acceptance_days": 0,
       "time_to_supersede_days": null,
       "is_active": true,
-      "active_duration_days": 11,
+      "active_duration_days": 14,
       "implementation_tasks_total": 0,
       "implementation_tasks_done": 0,
       "implementation_compliance": 1.0,
@@ -484,7 +491,7 @@
       "time_to_acceptance_days": 0,
       "time_to_supersede_days": null,
       "is_active": true,
-      "active_duration_days": 11,
+      "active_duration_days": 14,
       "implementation_tasks_total": 0,
       "implementation_tasks_done": 0,
       "implementation_compliance": 1.0,
@@ -510,7 +517,7 @@
       "time_to_acceptance_days": 0,
       "time_to_supersede_days": null,
       "is_active": true,
-      "active_duration_days": 11,
+      "active_duration_days": 14,
       "implementation_tasks_total": 0,
       "implementation_tasks_done": 0,
       "implementation_compliance": 1.0,
@@ -536,7 +543,7 @@
       "time_to_acceptance_days": 0,
       "time_to_supersede_days": null,
       "is_active": true,
-      "active_duration_days": 11,
+      "active_duration_days": 14,
       "implementation_tasks_total": 0,
       "implementation_tasks_done": 0,
       "implementation_compliance": 1.0,
@@ -562,7 +569,7 @@
       "time_to_acceptance_days": 0,
       "time_to_supersede_days": null,
       "is_active": true,
-      "active_duration_days": 11,
+      "active_duration_days": 14,
       "implementation_tasks_total": 0,
       "implementation_tasks_done": 0,
       "implementation_compliance": 1.0,
@@ -588,7 +595,7 @@
       "time_to_acceptance_days": 0,
       "time_to_supersede_days": null,
       "is_active": true,
-      "active_duration_days": 10,
+      "active_duration_days": 13,
       "implementation_tasks_total": 8,
       "implementation_tasks_done": 0,
       "implementation_compliance": 0.0,
@@ -614,7 +621,7 @@
       "time_to_acceptance_days": 0,
       "time_to_supersede_days": null,
       "is_active": true,
-      "active_duration_days": 9,
+      "active_duration_days": 12,
       "implementation_tasks_total": 0,
       "implementation_tasks_done": 0,
       "implementation_compliance": 1.0,
@@ -640,7 +647,7 @@
       "time_to_acceptance_days": 0,
       "time_to_supersede_days": null,
       "is_active": true,
-      "active_duration_days": 0,
+      "active_duration_days": 3,
       "implementation_tasks_total": 6,
       "implementation_tasks_done": 0,
       "implementation_compliance": 0.0,
@@ -666,7 +673,7 @@
       "time_to_acceptance_days": 0,
       "time_to_supersede_days": null,
       "is_active": true,
-      "active_duration_days": 0,
+      "active_duration_days": 3,
       "implementation_tasks_total": 5,
       "implementation_tasks_done": 0,
       "implementation_compliance": 0.0,
@@ -680,6 +687,114 @@
       "projects": [
         "CEREBRO",
         "CEREBRO-INFRA"
+      ]
+    },
+    {
+      "adr_id": "ADR-0032",
+      "title": "Private Blockchain Layer for Cryptographic Decision Integrity",
+      "classification": "critical",
+      "status": "accepted",
+      "date_proposed": "2026-02-14T12:00:00-03:00",
+      "date_accepted": "2026-02-14",
+      "date_superseded": null,
+      "time_to_acceptance_days": 0,
+      "time_to_supersede_days": null,
+      "is_active": true,
+      "active_duration_days": 3,
+      "implementation_tasks_total": 11,
+      "implementation_tasks_done": 11,
+      "implementation_compliance": 1.0,
+      "downstream_issues": 0,
+      "review_depth": 1,
+      "has_provenance": true,
+      "has_chain_signatures": true,
+      "risk_count": 4,
+      "alternative_count": 3,
+      "quality_score": 0.925,
+      "projects": [
+        "GLOBAL",
+        "CEREBRO",
+        "SPECTRE",
+        "PHANTOM",
+        "NEUTRON"
+      ]
+    },
+    {
+      "adr_id": "ADR-0037",
+      "title": "Nix-First Kubernetes Orchestration over Helm",
+      "classification": "critical",
+      "status": "accepted",
+      "date_proposed": "2026-02-15T17:04:02.945Z",
+      "date_accepted": "2026-02-15",
+      "date_superseded": null,
+      "time_to_acceptance_days": 0,
+      "time_to_supersede_days": null,
+      "is_active": true,
+      "active_duration_days": 2,
+      "implementation_tasks_total": 5,
+      "implementation_tasks_done": 0,
+      "implementation_compliance": 0.0,
+      "downstream_issues": 0,
+      "review_depth": 1,
+      "has_provenance": false,
+      "has_chain_signatures": false,
+      "risk_count": 0,
+      "alternative_count": 3,
+      "quality_score": 0.325,
+      "projects": [
+        "SPECTRE"
+      ]
+    },
+    {
+      "adr_id": "ADR-0038",
+      "title": "OTLP HTTP/protobuf over gRPC/tonic for trace export",
+      "classification": "major",
+      "status": "accepted",
+      "date_proposed": "2026-02-15T19:27:14.129Z",
+      "date_accepted": "2026-02-15",
+      "date_superseded": null,
+      "time_to_acceptance_days": 0,
+      "time_to_supersede_days": null,
+      "is_active": true,
+      "active_duration_days": 2,
+      "implementation_tasks_total": 4,
+      "implementation_tasks_done": 0,
+      "implementation_compliance": 0.0,
+      "downstream_issues": 0,
+      "review_depth": 1,
+      "has_provenance": false,
+      "has_chain_signatures": false,
+      "risk_count": 0,
+      "alternative_count": 2,
+      "quality_score": 0.325,
+      "projects": [
+        "SPECTRE"
+      ]
+    },
+    {
+      "adr_id": "ADR-0040",
+      "title": "Service Mesh Adoption \u2014 Linkerd for Inter-Service mTLS and Observability",
+      "classification": "major",
+      "status": "accepted",
+      "date_proposed": "2026-02-16T09:06:41.215Z",
+      "date_accepted": "2026-02-16",
+      "date_superseded": null,
+      "time_to_acceptance_days": 0,
+      "time_to_supersede_days": null,
+      "is_active": true,
+      "active_duration_days": 1,
+      "implementation_tasks_total": 5,
+      "implementation_tasks_done": 0,
+      "implementation_compliance": 0.0,
+      "downstream_issues": 0,
+      "review_depth": 1,
+      "has_provenance": false,
+      "has_chain_signatures": false,
+      "risk_count": 0,
+      "alternative_count": 3,
+      "quality_score": 0.325,
+      "projects": [
+        "SPECTRE"
       ]
     }
   ]

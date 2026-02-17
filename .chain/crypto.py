@@ -227,13 +227,10 @@ def verify_signature(message: str, signature: Signature, keys_dir: Optional[Path
     keys_dir = keys_dir or KEYS_DIR
 
     try:
-        # Try loading from keys directory first
         verify_key = load_verify_key(signature.signer_id, keys_dir)
     except SystemExit:
-        # Fallback: use the embedded public key in the signature
-        if not signature.public_key:
-            return False
-        verify_key = VerifyKey(signature.public_key.encode("ascii"), encoder=Base64Encoder)
+        # No registered public key = untrusted signer
+        return False
 
     try:
         sig_bytes = b64decode(signature.signature)
