@@ -242,52 +242,80 @@
 
             echo "Installing ADR git hooks..."
 
-            # Pre-commit: validação de schema
-            cat > "$HOOKS_DIR/pre-commit" <<'EOF'
+            # Pre-commit: schema validation + chain integrity + SBOM drift
+            cat > "$HOOKS_DIR/pre-commit" <<'HOOK'
             #!/usr/bin/env bash
             set -euo pipefail
 
-            echo "🔍 Validating ADRs..."
+            REPO_ROOT=$(git rev-parse --show-toplevel)
+            CHAIN_DIR="$REPO_ROOT/.chain"
+            PYTHON="${python.withPackages (ps: [ ps.pyyaml ps.pynacl ])}/bin/python3"
+            ERRORS=0
 
-            # Pegar ADRs modificados
+            # --- 1. ADR Schema Validation ---
             MODIFIED_ADRS=$(git diff --cached --name-only --diff-filter=ACM | grep -E 'adr/.*\.md$' || true)
 
-            if [ -z "$MODIFIED_ADRS" ]; then
-              echo "✅ No ADRs to validate"
-              exit 0
-            fi
-
-            # Validar cada ADR
-            for adr in $MODIFIED_ADRS; do
-              echo "  Validating $adr..."
-
-              # Extrair YAML frontmatter
-              ${python.withPackages (ps: [ ps.pyyaml ])}/bin/python3 -c "
-            import re, sys, yaml, json
-
+            if [ -n "$MODIFIED_ADRS" ]; then
+              echo "🔍 Validating ADR schemas..."
+              for adr in $MODIFIED_ADRS; do
+                $PYTHON -c "
+            import re, sys, yaml
             with open('$adr') as f:
                 content = f.read()
-
             match = re.match(r'^---\n(.*?)\n---', content, re.DOTALL)
             if not match:
-                print('❌ No YAML frontmatter found', file=sys.stderr)
+                print('❌ No YAML frontmatter: $adr', file=sys.stderr)
                 sys.exit(1)
-
             try:
                 data = yaml.safe_load(match.group(1))
-                required = ['id', 'title', 'status', 'date']
-                for field in required:
+                for field in ['id', 'title', 'status', 'date']:
                     if field not in data:
-                        print(f'❌ Missing field: {field}', file=sys.stderr)
+                        print(f'❌ Missing field: {field} in $adr', file=sys.stderr)
                         sys.exit(1)
             except Exception as e:
-                print(f'❌ Invalid YAML: {e}', file=sys.stderr)
+                print(f'❌ Invalid YAML in $adr: {e}', file=sys.stderr)
                 sys.exit(1)
-              " || exit 1
-            done
+                " || ERRORS=$((ERRORS + 1))
+              done
+              [ $ERRORS -eq 0 ] && echo "  ✅ ADR schemas valid"
+            fi
 
-            echo "✅ All ADRs valid"
-            EOF
+            # --- 2. Chain Integrity ---
+            CHAIN_MODIFIED=$(git diff --cached --name-only | grep -E '\.chain/' || true)
+
+            if [ -n "$CHAIN_MODIFIED" ] && [ -f "$CHAIN_DIR/chain.json" ]; then
+              echo "🔗 Verifying chain integrity..."
+              cd "$REPO_ROOT"
+              if ! $PYTHON .chain/chain_manager.py verify > /dev/null 2>&1; then
+                echo "  ❌ Chain integrity check FAILED" >&2
+                ERRORS=$((ERRORS + 1))
+              else
+                echo "  ✅ Chain integrity OK"
+              fi
+            fi
+
+            # --- 3. SBOM Drift Detection ---
+            DEPS_MODIFIED=$(git diff --cached --name-only | grep -E '(flake\.nix|flake\.lock)' || true)
+
+            if [ -n "$DEPS_MODIFIED" ] && [ -f "$CHAIN_DIR/sbom/sbom_current.json" ]; then
+              echo "📦 Checking SBOM drift..."
+              cd "$REPO_ROOT"
+              DRIFT=$($PYTHON .chain/sbom_manager.py verify 2>&1) || true
+              if echo "$DRIFT" | grep -q "DRIFT DETECTED"; then
+                echo "  ⚠️  SBOM drift detected — run 'adr sbom generate' to update" >&2
+                echo "  $DRIFT" >&2
+                # Warning only, don't block commit
+              else
+                echo "  ✅ SBOM in sync"
+              fi
+            fi
+
+            if [ $ERRORS -gt 0 ]; then
+              echo ""
+              echo "❌ Pre-commit failed with $ERRORS error(s)" >&2
+              exit 1
+            fi
+            HOOK
 
             chmod +x "$HOOKS_DIR/pre-commit"
 
@@ -322,7 +350,7 @@
             echo "✅ Git hooks installed successfully"
             echo ""
             echo "Hooks installed:"
-            echo "  - pre-commit: Validate ADR schema"
+            echo "  - pre-commit: ADR schema + chain integrity + SBOM drift"
             echo "  - post-merge: Auto-generate knowledge JSONs"
             echo "  - post-commit: Auto-generate knowledge JSONs"
           '';
