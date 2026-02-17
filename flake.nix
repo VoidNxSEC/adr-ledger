@@ -386,6 +386,9 @@
             # Git
             pkgs.git
 
+            # OpenTimestamps CLI for temporal anchoring
+            pkgs.opentimestamps-client
+
             # Packages deste flake
             self.packages.${system}.adr-parser
             self.packages.${system}.adr-cli

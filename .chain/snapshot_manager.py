@@ -209,6 +209,19 @@ class SnapshotManager:
         out_file = self.snapshots_dir / f"snapshot_{next_id:04d}.json"
         out_file.write_text(json.dumps(snapshot.to_dict(), indent=2) + "\n")
 
+        # Anchor snapshot if temporal anchoring is enabled
+        try:
+            from temporal import TemporalManager
+            tm = TemporalManager()
+            if tm.is_enabled() and tm._check_ots_available():
+                proof = tm.stamp_snapshot(snapshot.snapshot_id)
+                if proof.ots_file:
+                    snapshot.timestamp_proof = proof.ots_file
+                    # Re-save snapshot with proof reference
+                    out_file.write_text(json.dumps(snapshot.to_dict(), indent=2) + "\n")
+        except ImportError:
+            pass  # temporal module not available
+
         return snapshot
 
     def verify_snapshot(self, snapshot_id: int) -> dict:
@@ -258,6 +271,17 @@ class SnapshotManager:
             else:
                 report["chain_link_valid"] = False
                 report["errors"].append(f"Previous snapshot {snap.snapshot_id - 1} not found")
+
+        # Verify timestamp proof if present
+        if snap.timestamp_proof:
+            try:
+                from temporal import TemporalManager
+                tm = TemporalManager()
+                proof_report = tm.verify_by_file(snap.timestamp_proof)
+                report["timestamp_proof_valid"] = proof_report.get("valid")
+                report["timestamp_proof_status"] = proof_report.get("detail", "unknown")
+            except ImportError:
+                report["timestamp_proof_valid"] = "unknown (temporal module not available)"
 
         report["valid"] = (
             report["hash_valid"]

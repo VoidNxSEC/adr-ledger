@@ -340,9 +340,9 @@ chain:
 
   # Temporal anchoring (external proof of existence)
   timestamp_anchoring:
-    enabled: false                 # Enable when ready for external anchoring
-    method: "opentimestamps"       # opentimestamps | rfc3161
-    anchor_on_accept: false
+    enabled: true
+    method: "opentimestamps"
+    anchor_on_accept: true
     anchor_frequency: "weekly"
 
   # Cryptographic state snapshots

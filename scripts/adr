@@ -1037,6 +1037,7 @@ COMMANDS:
     validate  Validar ADRs
     export    Export ADRs as JSON/JSONL with filtering
     sbom       Supply chain SBOM & dependency inventory
+    anchor     Temporal anchoring (OpenTimestamps proofs)
 
 EXAMPLES:
     adr new -t "Use Rust for Parser" -p SPECTRE -c major
@@ -1139,6 +1140,12 @@ cmd_sbom() {
     python3.13 "${CHAIN_DIR}/sbom_manager.py" "$subcmd" "$@"
 }
 
+cmd_anchor() {
+    local subcmd="${1:-status}"
+    shift || true
+    python3.13 "${CHAIN_DIR}/temporal.py" "$subcmd" "$@"
+}
+
 # =============================================================================
 # MAIN
 # =============================================================================
@@ -1168,6 +1175,7 @@ main() {
         economics) cmd_economics "$@" ;;
         federation) cmd_federation "$@" ;;
         sbom)      cmd_sbom "$@" ;;
+        anchor)    cmd_anchor "$@" ;;
         verify-chain) cmd_chain verify ;;
         help|--help|-h) cmd_help ;;
         *)
