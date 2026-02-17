@@ -1093,6 +1093,7 @@ COMMANDS:
     search    Buscar ADRs por texto
     sync      Sincronizar Knowledge Base
     graph     Gerar grafo de dependências (Mermaid)
+    viz       Gerar knowledge graph visual (dot|svg|html|all)
     validate  Validar ADRs
     export    Export ADRs as JSON/JSONL with filtering
     sbom       Supply chain SBOM & dependency inventory
@@ -1225,6 +1226,21 @@ cmd_pending_sigs() {
     python3.13 "${CHAIN_DIR}/pre_sign.py" "$subcmd" "$@"
 }
 
+cmd_viz() {
+    local format="${1:-all}"
+    local output_dir="${2:-reports}"
+
+    # Garantir que knowledge/graph.json existe
+    if [[ ! -f "knowledge/graph.json" ]]; then
+        log_info "Gerando knowledge artifacts primeiro..."
+        cmd_sync
+    fi
+
+    python3.13 "$(dirname "$0")/graph_render.py" \
+        --format "$format" \
+        --output-dir "$output_dir"
+}
+
 # =============================================================================
 # MAIN
 # =============================================================================
@@ -1242,6 +1258,8 @@ main() {
         search)    cmd_search "$@" ;;
         sync)      cmd_sync "$@" ;;
         graph)     cmd_graph "$@" ;;
+        viz|graph-viz|knowledge-graph)
+                   cmd_viz "$@" ;;
         validate)  cmd_validate "$@" ;;
         export)    cmd_export "$@" ;;
         # --- Blockchain commands ---

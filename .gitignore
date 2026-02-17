@@ -45,3 +45,8 @@ ssh_sessions.db
 
 # Chain - Private keys (NEVER commit)
 .chain/keys/*.key
+
+# Generated graph artifacts
+reports/*.dot
+reports/*.svg
+reports/*.html
