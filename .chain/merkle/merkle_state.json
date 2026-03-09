@@ -1,9 +1,9 @@
 {
-  "root_hash": "23a85372ea1682a4f289d4c9a93db6b9441f15678902e26596fc1575fcba68e8",
+  "root_hash": "3e30933f374de20760622498a44d188d3d54c4342dcde0b5ef957f6b5ad9899e",
   "height": 6,
-  "leaf_count": 23,
-  "computed_at": "2026-02-17T18:41:56-0200",
-  "chain_height_at_computation": 24,
+  "leaf_count": 26,
+  "computed_at": "2026-03-08T21:17:14-0300",
+  "chain_height_at_computation": 27,
   "leaves": [
     {
       "adr_id": "ADR-0001",
@@ -119,6 +119,21 @@
       "adr_id": "ADR-0033",
       "content_hash": "1640c87002131c400eac6cee1bad45d3b9ba25a060b264a709c8f47c6a773984",
       "leaf_hash": "3ae18b0098e05f02d3d752fbb18d8172593353b67ea96cfeb17fcfc620a36c6a"
+    },
+    {
+      "adr_id": "ADR-0044",
+      "content_hash": "c9a85242a9b37ce84aa9483345ba7dd44b2bcfc083b6e835ec68e60dff70f989",
+      "leaf_hash": "4462f2e4d21b55c85b23941c664b053e308c4f1e42d77d1a7d4e03e9fc6334ab"
+    },
+    {
+      "adr_id": "ADR-0045",
+      "content_hash": "055e455b5e7a063948f954495c9ed886172510af881a05a0576a5e597cf8afa9",
+      "leaf_hash": "f0a485b01e7814338400a20c5410b6361bbac187c8474cc03fb833f95bbd072b"
+    },
+    {
+      "adr_id": "ADR-0046",
+      "content_hash": "88e5505bbe01ea526158a54af3cadda2fe81e89d680944c4e5e21873e625a0e3",
+      "leaf_hash": "ba00ef205eafab89ca41a8dd73f6c8cf43ee49b81c9ad1d7523053cf8b521ec2"
     }
   ]
 }
