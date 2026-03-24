@@ -1,4 +1,4 @@
-# 🚀 Melhorias Significativas: ADR-Ledger & SecureLLM-MCP
+# Melhorias: ADR-Ledger & SecureLLM-MCP
 
 **Data:** 2026-02-05
 **Autor:** Claude Sonnet 4.5
@@ -6,18 +6,18 @@
 
 ---
 
-## 📋 Overview
+## Overview
 
-Este documento identifica melhorias significativas para cada projeto **independentemente** da integração entre eles. São otimizações, novos recursos e refinamentos que aumentam o valor de cada sistema isoladamente.
+Este documento identifica melhorias para cada projeto independentemente da integração entre eles. São otimizações, novos recursos e refinamentos que aumentam o valor de cada sistema isoladamente.
 
 ---
 
-## 📜 ADR-Ledger: Melhorias
+## ADR-Ledger: Melhorias
 
-### 1. **MCP Server Nativo** 🔥 [CRITICAL]
+### 1. MCP Server Nativo -- Priority: Critical
 
 **Problema:**
-ADR-Ledger atualmente é apenas CLI + Git repository. Não há interface programática para AI agents consultarem ADRs em tempo real.
+ADR-Ledger atualmente e apenas CLI + Git repository. Não  há interface programática para AI agents consultarem ADRs em tempo real.
 
 **Solução:**
 Criar um MCP server nativo dentro do adr-ledger.
@@ -154,18 +154,18 @@ await server.connect(transport);
 }
 ```
 
-**Benefícios:**
-- ✅ AI agents podem consultar ADRs diretamente
-- ✅ Real-time access sem export manual
-- ✅ Integra nativamente com Claude Desktop/Cline
-- ✅ Base para futuras features (notifications, webhooks)
+**Beneficios:**
+- AI agents podem consultar ADRs diretamente
+- Real-time access sem export manual
+- Integra nativamente com Claude Desktop/Cline
+- Base para futuras features (notifications, webhooks)
 
 ---
 
-### 2. **ADR Templates & Wizards** 🎨 [HIGH PRIORITY]
+### 2. ADR Templates & Wizards -- Priority: High
 
 **Problema:**
-Criar ADRs manualmente é tedioso. Muitos campos repetitivos e estrutura complexa.
+Criar ADRs manualmente e tedioso. Muitos campos repetitivos e estrutura complexa.
 
 **Solução:**
 Templates inteligentes por tipo de decisão + wizard interativo.
@@ -184,11 +184,9 @@ Templates inteligentes por tipo de decisão + wizard interativo.
 # Uso
 $ adr new --template infrastructure
 
-🎯 ADR Wizard: Infrastructure Decision
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ADR Wizard: Infrastructure Decision
 
-📋 Basic Information
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Basic Information
   Title: Migrate to NixOS-based Infrastructure
   Classification: [1] Critical  [2] Major  [3] Minor  [4] Patch
   Choice: 1
@@ -197,8 +195,7 @@ $ adr new --template infrastructure
   Environments: [1] All  [2] Production only  [3] Staging + Prod  [4] Custom
   Choice: 1
 
-🧠 Decision Context
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Decision Context
   What problem are you solving?
   > Current infrastructure is not reproducible. Deploy inconsistencies cause bugs.
 
@@ -208,8 +205,7 @@ $ adr new --template infrastructure
   Why is this decision needed now?
   > Recent production incident due to config drift. Need reproducibility.
 
-📊 Options Analysis
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Options Analysis
   Option 1: NixOS (your choice)
   Pros:
     - Declarative configuration
@@ -226,8 +222,7 @@ $ adr new --template infrastructure
 
   Add another alternative? [y/N] n
 
-⚠️  Risks & Mitigations
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Risks & Mitigations
   Risk 1: Team learning curve for NixOS
   Probability: [1] Low  [2] Medium  [3] High
   Choice: 2
@@ -237,19 +232,17 @@ $ adr new --template infrastructure
 
   Add another risk? [y/N] n
 
-🔍 Research & Validation
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Research & Validation
   Run research_agent to validate decision? [Y/n] y
 
-  🔎 Searching: "NixOS vs Docker for infrastructure management"
-  📚 Found 8 sources (avg credibility: 0.82)
-  ✅ Official NixOS documentation found
-  ⚠️  No major cons identified in research
+  Searching: "NixOS vs Docker for infrastructure management"
+  Found 8 sources (avg credibility: 0.82)
+  Official NixOS documentation found
+  No major cons identified in research
 
   Include research in ADR? [Y/n] y
 
-🎯 Governance
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Governance
   Classification: Critical
   Required Approvers: architect, security_lead
   Compliance Tags: INFRASTRUCTURE
@@ -257,12 +250,11 @@ $ adr new --template infrastructure
   Review Deadline: 7 days from creation
   Fast-track? [y/N] n
 
-✅ ADR Created: ADR-0051
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ADR Created: ADR-0051
 
-  📄 File: adr/proposed/ADR-0051.md
-  🔍 Status: proposed
-  👥 Required approvals: 2 (architect, security_lead)
+  File: adr/proposed/ADR-0051.md
+  Status: proposed
+  Required approvals: 2 (architect, security_lead)
 
   Next steps:
   1. Review generated ADR: adr show ADR-0051
@@ -327,10 +319,10 @@ validation:
 
 ---
 
-### 3. **ADR Changelog Automático** 📝 [MEDIUM PRIORITY]
+### 3. ADR Changelog Automatico -- Priority: Medium
 
 **Problema:**
-Quando ADRs são atualizados, não há histórico estruturado de mudanças.
+Quando ADRs são atualizados, não  há histórico estruturado de mudanças.
 
 **Solução:**
 Git hooks que geram changelog automático na frontmatter.
@@ -357,7 +349,7 @@ changelog:
   - date: "2026-01-20"
     author: "pina"
     commit: "i9j0k1l2"
-    change: "Status: proposed → accepted"
+    change: "Status: proposed -> accepted"
     approvals:
       - role: "architect"
         name: "pina"
@@ -420,13 +412,13 @@ done
 
 ---
 
-### 4. **Visual Knowledge Graph** 🕸️ [MEDIUM PRIORITY]
+### 4. Visual Knowledge Graph -- Priority: Medium
 
 **Problema:**
-Relações entre ADRs (supersedes, enables, related) são difíceis de visualizar.
+Relacoes entre ADRs (supersedes, enables, related) são dificeis de visualizar.
 
 **Solução:**
-Gerar grafo interativo (D3.js) das relações.
+Gerar grafo interativo (D3.js) das relacoes.
 
 ```bash
 $ adr graph --output graph.html
@@ -484,7 +476,7 @@ async function generateGraph() {
   const html = generateD3Visualization(nodes, edges);
 
   writeFileSync("graph.html", html);
-  console.log("✅ Graph generated: graph.html");
+  console.log("Graph generated: graph.html");
 }
 
 function generateD3Visualization(nodes: GraphNode[], edges: GraphEdge[]): string {
@@ -633,13 +625,13 @@ function generateD3Visualization(nodes: GraphNode[], edges: GraphEdge[]): string
 
 ---
 
-### 5. **ADR Diffing & Comparison** 🔀 [LOW PRIORITY]
+### 5. ADR Diffing & Comparison -- Priority: Low
 
 **Problema:**
-Comparar duas versões de ADR ou duas ADRs relacionadas é manual.
+Comparar duas versoes de ADR ou duas ADRs relacionadas e manual.
 
 **Solução:**
-Tool de diff semântico.
+Tool de diff semantico.
 
 ```bash
 # Compare two ADR versions
@@ -649,9 +641,7 @@ $ adr diff ADR-0042 --from HEAD~3 --to HEAD
 $ adr compare ADR-0012 ADR-0042
 
 # Output
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ADR Comparison: ADR-0012 vs ADR-0042
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Status:
   ADR-0012: superseded (by ADR-0042)
@@ -661,7 +651,7 @@ Decision Evolution:
   ADR-0012: "Use in-memory caching"
   ADR-0042: "Use Redis for distributed caching"
 
-  ➜ Decision shifted from local to distributed caching
+  -> Decision shifted from local to distributed caching
 
 Key Changes:
   + Redis enables horizontal scaling
@@ -681,15 +671,15 @@ Relations:
 
 ---
 
-## 🔧 SecureLLM-MCP: Melhorias
+## SecureLLM-MCP: Melhorias
 
-### 6. **Smart Caching Layer v2** ⚡ [HIGH PRIORITY]
+### 6. Smart Caching Layer v2 -- Priority: High
 
 **Problema:**
-Semantic cache atual é baseado em embeddings 1:1. Pode ser melhorado com clustering e hierarchical caching.
+Semantic cache atual e baseado em embeddings 1:1. Pode ser melhorado com clustering e hierarchical caching.
 
 **Solução:**
-Cache hierárquico com clustering automático.
+Cache hierarquico com clustering automático.
 
 ```typescript
 interface CacheHierarchy {
@@ -848,17 +838,17 @@ Rewritten query:
 }
 ```
 
-**Benefícios:**
-- 📈 **Cache hit rate**: 40% → 70%
-- ⚡ **Avg latency**: 50ms → 15ms (L1/L2 hits)
-- 💰 **Cost reduction**: 60% → 85%
+**Estimated benefits:**
+- Cache hit rate: 40% -> estimated 70%
+- Avg latency: estimated 50ms -> 15ms (L1/L2 hits)
+- Cost reduction: estimated 60% -> 85%
 
 ---
 
-### 7. **Proactive Insight Extraction** 🧠 [HIGH PRIORITY]
+### 7. Proactive Insight Extraction -- Priority: High
 
 **Problema:**
-Knowledge DB apenas armazena o que usuário explicitamente salva. Muita informação valiosa é perdida.
+Knowledge DB apenas armazena o que usuario explicitamente salva. Muita informação valiosa e perdida.
 
 **Solução:**
 Sistema que extrai insights automaticamente de conversas e código.
@@ -983,10 +973,10 @@ setInterval(async () => {
 
 ---
 
-### 8. **Tool Execution Metrics Dashboard** 📊 [MEDIUM PRIORITY]
+### 8. Tool Execution Metrics Dashboard -- Priority: Medium
 
 **Problema:**
-Difícil saber quais tools são mais usados, quais falham mais, performance bottlenecks.
+Dificil saber quais tools são mais usados, quais falham mais, performance bottlenecks.
 
 **Solução:**
 Dashboard web com métricas detalhadas.
@@ -1144,10 +1134,10 @@ app.get("/dashboard", (req, res) => {
 
 ---
 
-### 9. **Intelligent Rate Limit Auto-Tuning** 🎛️ [MEDIUM PRIORITY]
+### 9. Intelligent Rate Limit Auto-Tuning -- Priority: Medium
 
 **Problema:**
-Rate limits são estáticos. Não se adaptam a padrões de uso reais.
+Rate limits são estaticos. Não se adaptam a padroes de uso reais.
 
 **Solução:**
 Sistema que ajusta rate limits automaticamente baseado em histórico.
@@ -1209,7 +1199,7 @@ class AdaptiveRateLimiter {
       const recommended = pattern.recommended_limit;
 
       if (recommended.requests_per_hour !== current.requests_per_hour) {
-        console.log(`🎛️  Auto-tuning rate limit for ${provider}`);
+        console.log(`Auto-tuning rate limit for ${provider}`);
         console.log(`  Current: ${current.requests_per_hour} req/h`);
         console.log(`  Recommended: ${recommended.requests_per_hour} req/h`);
 
@@ -1239,10 +1229,10 @@ setInterval(async () => {
 
 ---
 
-### 10. **Context-Aware Tool Suggestions** 💡 [LOW PRIORITY]
+### 10. Context-Aware Tool Suggestions -- Priority: Low
 
 **Problema:**
-Usuário não sabe quais tools existem ou quando usá-los.
+Usuario não sabe quais tools existem ou quando usa-los.
 
 **Solução:**
 Sistema que sugere tools baseado em contexto atual.
@@ -1258,7 +1248,7 @@ class ToolSuggestionEngine {
         "thermal_warroom",
         "force_cooldown"
       ],
-      message: "🔥 High CPU temperature detected. Consider thermal monitoring."
+      message: "High CPU temperature detected. Consider thermal monitoring."
     },
 
     {
@@ -1269,7 +1259,7 @@ class ToolSuggestionEngine {
         "rebuild_safety_check",
         "research_agent"
       ],
-      message: "❌ Nix build failed. Try package_diagnose or research the error."
+      message: "Nix build failed. Try package_diagnose or research the error."
     },
 
     {
@@ -1280,7 +1270,7 @@ class ToolSuggestionEngine {
         "research_agent",
         "adr_query"
       ],
-      message: "💡 Architectural discussion detected. Consider creating an ADR."
+      message: "Architectural discussion detected. Consider creating an ADR."
     },
 
     {
@@ -1291,7 +1281,7 @@ class ToolSuggestionEngine {
         "adr_create",
         "git_commit"
       ],
-      message: "📝 Large refactoring detected. Document decision and analyze impact."
+      message: "Large refactoring detected. Document decision and analyze impact."
     },
 
     {
@@ -1301,7 +1291,7 @@ class ToolSuggestionEngine {
         "save_knowledge",
         "create_session"
       ],
-      message: "💾 Repeated query detected. Save this as knowledge for future reference."
+      message: "Repeated query detected. Save this as knowledge for future reference."
     }
   ];
 
@@ -1357,24 +1347,24 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 ---
 
-## 📊 Comparativo: Impacto das Melhorias
+## Comparativo: Impacto das Melhorias
 
-| Melhoria | Projeto | Prioridade | Esforço | Impacto | ROI |
-|----------|---------|------------|---------|---------|-----|
-| MCP Server Nativo | ADR-Ledger | 🔥 Critical | 2 weeks | Alto | ⭐⭐⭐⭐⭐ |
-| ADR Templates | ADR-Ledger | High | 1 week | Alto | ⭐⭐⭐⭐⭐ |
-| ADR Changelog | ADR-Ledger | Medium | 3 days | Médio | ⭐⭐⭐ |
-| Visual Graph | ADR-Ledger | Medium | 1 week | Médio | ⭐⭐⭐ |
-| ADR Diffing | ADR-Ledger | Low | 1 week | Baixo | ⭐⭐ |
-| Smart Cache v2 | SecureLLM | High | 2 weeks | Alto | ⭐⭐⭐⭐⭐ |
-| Insight Extraction | SecureLLM | High | 2 weeks | Alto | ⭐⭐⭐⭐ |
-| Metrics Dashboard | SecureLLM | Medium | 1 week | Médio | ⭐⭐⭐ |
-| Adaptive Rate Limiting | SecureLLM | Medium | 1 week | Médio | ⭐⭐⭐ |
-| Tool Suggestions | SecureLLM | Low | 1 week | Baixo | ⭐⭐ |
+| Melhoria | Projeto | Prioridade | Esforço | Impacto |
+|----------|---------|------------|---------|---------|
+| MCP Server Nativo | ADR-Ledger | Critical | 2 weeks | Alto |
+| ADR Templates | ADR-Ledger | High | 1 week | Alto |
+| ADR Changelog | ADR-Ledger | Medium | 3 days | Medio |
+| Visual Graph | ADR-Ledger | Medium | 1 week | Medio |
+| ADR Diffing | ADR-Ledger | Low | 1 week | Baixo |
+| Smart Cache v2 | SecureLLM | High | 2 weeks | Alto |
+| Insight Extraction | SecureLLM | High | 2 weeks | Alto |
+| Metrics Dashboard | SecureLLM | Medium | 1 week | Medio |
+| Adaptive Rate Limiting | SecureLLM | Medium | 1 week | Medio |
+| Tool Suggestions | SecureLLM | Low | 1 week | Baixo |
 
 ---
 
-## 🚀 Roadmap de Implementação (Independente)
+## Roadmap de Implementação (Independente)
 
 ### ADR-Ledger: Q1 2026
 
@@ -1401,7 +1391,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 **Semana 1-2: Smart Cache v2**
 - Implementar L3 cluster cache
 - Implementar L4 LLM rewriter
-- Benchmarks + otimização
+- Benchmarks + otimizacao
 
 **Semana 3-4: Proactive Insights**
 - Pattern extraction engine
@@ -1415,48 +1405,40 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 ---
 
-## 📈 KPIs de Sucesso
+## KPIs de Sucesso (estimativas)
 
 ### ADR-Ledger
 
-| Métrica | Baseline | Target | Melhoria |
-|---------|----------|--------|----------|
-| Time to create ADR | 60 min | 15 min | 75% ↓ |
-| ADRs created/month | 2 | 10 | 400% ↑ |
-| ADR query time | 15 min | <1 min | 93% ↓ |
-| Governance violations | 5/month | 1/month | 80% ↓ |
-| Developer satisfaction | 6/10 | 9/10 | 50% ↑ |
+| Métrica | Baseline (estimado) | Target (estimado) | Melhoria estimada |
+|---------|---------------------|--------------------|--------------------|
+| Time to create ADR | 60 min | 15 min | ~75% |
+| ADRs created/month | 2 | 10 | ~5x |
+| ADR query time | 15 min | <1 min | ~93% |
+| Governance violations | 5/month | 1/month | ~80% |
 
 ### SecureLLM-MCP
 
-| Métrica | Baseline | Target | Melhoria |
-|---------|----------|--------|----------|
-| Cache hit rate | 40% | 70% | 75% ↑ |
-| Avg tool latency | 200ms | 50ms | 75% ↓ |
-| Knowledge entries/week | 5 | 20 | 300% ↑ |
-| Tool discovery time | 5 min | 30s | 90% ↓ |
-| Error rate | 3% | 1% | 67% ↓ |
+| Métrica | Baseline (estimado) | Target (estimado) | Melhoria estimada |
+|---------|---------------------|--------------------|--------------------|
+| Cache hit rate | 40% | 70% | ~75% |
+| Avg tool latency | 200ms | 50ms | ~75% |
+| Knowledge entries/week | 5 | 20 | ~4x |
+| Error rate | 3% | 1% | ~67% |
+
+Nota: estes valores são projeções, não medições. Resultados reais dependerao da implementação e do ambiente de uso.
 
 ---
 
-## 🎯 Conclusão
+## Conclusão
 
-As melhorias propostas elevam ambos os projetos a um **novo patamar de maturidade**:
+As melhorias propostas visam elevar ambos os projetos em termos de maturidade:
 
-### ADR-Ledger
-- De sistema passivo (Git repo) → **Plataforma ativa** (MCP server)
-- De documentação manual → **Geração assistida** (templates + wizards)
-- De busca linear → **Navegação semântica** (graph + diff)
+**ADR-Ledger:** de sistema passivo (Git repo) para plataforma ativa (MCP server), de documentação manual para geração assistida (templates + wizards), de busca linear para navegacao semântica (graph + diff).
 
-### SecureLLM-MCP
-- De cache básico → **Cache inteligente** (hierarchical + clustering)
-- De storage passivo → **Extração proativa** (auto-insights)
-- De black box → **Observabilidade total** (dashboard + metrics)
-
-**Resultado:** Ferramentas de **classe enterprise** prontas para adoção em larga escala.
+**SecureLLM-MCP:** de cache basico para cache hierarquico (clustering), de storage passivo para extração proativa (auto-insights), de caixa-preta para observabilidade (dashboard + metrics).
 
 ---
 
 **Autor:** Claude Sonnet 4.5
 **Data:** 2026-02-05
-**Status:** 🟢 Ready for Implementation
+**Status:** Proposta em avaliação

@@ -11,7 +11,7 @@
 
 ---
 
-## 📑 Índice de Navegação Rápida
+## Índice de Navegação Rápida
 
 - [Mapa de Projetos](#mapa-de-projetos)
 - [Arquitetura em Camadas](#arquitetura-em-camadas)
@@ -24,7 +24,7 @@
 
 ---
 
-## 🗺️ Mapa de Projetos
+## Mapa de Projetos
 
 ### Visão Geral da Stack
 
@@ -58,27 +58,27 @@
 
 ---
 
-## 🏗️ Arquitetura em Camadas
+## Arquitetura em Camadas
 
 ### Diagrama Conceitual Completo
 
 ```mermaid
 graph TB
-    subgraph Governance["🏛️ GOVERNANCE LAYER"]
+    subgraph Governance["GOVERNANCE LAYER"]
         ADR[ADR-Ledger<br/>Knowledge as Law<br/>Git + YAML/MD]
         ADR_Schema[JSON Schema<br/>Validation]
         ADR_Parser[Python Parser<br/>AST Extraction]
         ADR_KB[knowledge_base.json<br/>spectre_corpus.json<br/>phantom_training.json]
     end
 
-    subgraph Infrastructure["🏗️ INFRASTRUCTURE LAYER"]
+    subgraph Infrastructure["INFRASTRUCTURE LAYER"]
         NEUTRON[NEUTRON<br/>NixOS Declarative]
         K3S[K3s Orchestration<br/>Cilium CNI<br/>Longhorn Storage]
         Temporal[Temporal Workflows<br/>Ray Compute<br/>MLflow Tracking]
         Security[Security Hardening<br/>AppArmor, Audit<br/>129 Modules]
     end
 
-    subgraph Communication["📡 COMMUNICATION LAYER"]
+    subgraph Communication["COMMUNICATION LAYER"]
         SPECTRE[SPECTRE Fleet<br/>Event-Driven Arch]
         NATS[NATS JetStream<br/>30+ Event Types<br/>Pub/Sub + Request-Reply]
         Proxy[Zero-Trust Proxy<br/>TLS + Auth + Rate Limit]
@@ -1265,7 +1265,7 @@ $ cerebro rag query "What are the main API endpoints?"
 
 **Vencedor**: CEREBRO para **cost control**, **credit optimization**, **hybrid approach**
 
-**Trade-off**: OpenAI Assistants é mais simples, mas menos controle sobre custos
+**Trade-off**: OpenAI Assistants e mais simples, mas menos controle sobre custos
 
 ---
 
@@ -1484,7 +1484,7 @@ $ cerebro rag query "What are the main API endpoints?"
   - [ ] Learning curve vs reprodutibilidade
 - [ ] 9.4 Lições Aprendidas
   - [ ] NixOS: reprodutibilidade vale o esforço
-  - [ ] Event-driven: observability é crítica
+  - [ ] Event-driven: observability e crítica
   - [ ] Local-first: reduz custos e aumenta privacidade
 
 #### Capítulo 10: Conclusão e Trabalhos Futuros (~10 páginas)

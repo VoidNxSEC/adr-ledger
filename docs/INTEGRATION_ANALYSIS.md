@@ -1,4 +1,4 @@
-# 🔗 Análise de Integração: ADR-Ledger ↔ SecureLLM-MCP
+# Análise de Integração: ADR-Ledger / SecureLLM-MCP
 
 **Data:** 2026-02-05
 **Autor:** Claude Sonnet 4.5
@@ -6,20 +6,20 @@
 
 ---
 
-## 📋 Executive Summary
+## Executive Summary
 
-Esta análise identifica **15 oportunidades de integração críticas** entre os projetos `adr-ledger` e `securellm-mcp`, que juntos podem criar um **ecossistema de inteligência arquitetural autônomo**.
+Esta análise identifica oportunidades de integração entre os projetos `adr-ledger` e `securellm-mcp` para construir um sistema de governança arquitetural unificado.
 
-**Impacto Esperado:**
-- 🎯 **60-70% de redução** no tempo de documentação de decisões
-- 🧠 **Validação automática** de decisões com fontes verificadas
-- 🔍 **Busca semântica** sobre histórico arquitetural completo
-- 🤖 **Geração automática de ADRs** a partir de commits e análise de código
-- 📊 **Governança programática** com enforcement em tempo real
+**Objetivos:**
+- Reduzir o tempo de documentação de decisões (estimativa: 60-70% de redução)
+- Validação automática de decisões com fontes verificadas
+- Busca semântica sobre histórico arquitetural
+- Geracao automática de ADRs a partir de commits e análise de código
+- Governança programática com enforcement em tempo real
 
 ---
 
-## 🏗️ Arquitetura Proposta
+## Arquitetura Proposta
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -72,9 +72,9 @@ Esta análise identifica **15 oportunidades de integração críticas** entre os
 
 ---
 
-## 🎯 Oportunidades de Integração
+## Oportunidades de Integração
 
-### 1. **ADR MCP Tools Category** 🔥 [CRITICAL]
+### 1. ADR MCP Tools Category -- Priority: Critical
 
 **Descrição:**
 Criar um novo conjunto de ferramentas MCP no `securellm-mcp` para gerenciamento completo de ADRs.
@@ -153,7 +153,7 @@ Criar um novo conjunto de ferramentas MCP no `securellm-mcp` para gerenciamento 
 }
 ```
 
-**Validações:**
+**Validacoes:**
 - YAML schema compliance (`.schema/adr.schema.json`)
 - Governance matrix (required approvers for classification)
 - Compliance tags (LGPD for data layer, SOC2 for production)
@@ -176,7 +176,7 @@ Criar um novo conjunto de ferramentas MCP no `securellm-mcp` para gerenciamento 
 
 **Sync Pipeline:**
 1. **To Knowledge DB:**
-   - Parse all ADRs → ADRNode objects
+   - Parse all ADRs into ADRNode objects
    - Generate embeddings for semantic search
    - Insert into `knowledge.db` with type="decision"
    - Update knowledge graph in CEREBRO
@@ -238,10 +238,10 @@ metadata:
 
 ---
 
-### 2. **Architectural Decision Detection Engine** 🔥 [CRITICAL]
+### 2. Architectural Decision Detection Engine -- Priority: Critical
 
 **Descrição:**
-Sistema que detecta automaticamente quando uma decisão arquitetural está sendo tomada e sugere criação de ADR.
+Sistema que detecta automaticamente quando uma decisão arquitetural esta sendo tomada e sugere criação de ADR.
 
 **Triggers de Detecção:**
 
@@ -249,16 +249,16 @@ Sistema que detecta automaticamente quando uma decisão arquitetural está sendo
 ```typescript
 // Monitora commits via git hooks
 const triggers = [
-  // Mudanças em arquivos críticos
+  // Mudancas em arquivos criticos
   { pattern: "flake.nix", reason: "Infrastructure change" },
   { pattern: "**/schema.prisma", reason: "Database schema change" },
   { pattern: "**/*.config.{ts,js}", reason: "Configuration change" },
 
-  // Imports de novas dependências
+  // Imports de novas dependencias
   { pattern: "package.json", diff: "dependencies.*", reason: "New dependency" },
   { pattern: "Cargo.toml", diff: "dependencies.*", reason: "New Rust dependency" },
 
-  // Mudanças em múltiplos arquivos (refactoring)
+  // Mudancas em multiplos arquivos (refactoring)
   { files_changed: ">= 10", reason: "Large refactoring" },
 
   // Palavras-chave em commits
@@ -269,11 +269,11 @@ const triggers = [
 **Implementação:**
 1. Hook `post-commit` no adr-ledger
 2. Analisa diff com `advanced_code_analysis` do securellm-mcp
-3. Se detectar padrão arquitetural:
+3. Se detectar padrao arquitetural:
    - Calcula impacto (files affected, complexity)
-   - Sugere classificação (critical/major/minor)
-   - Pré-preenche contexto com diff summary
-4. Notifica usuário: "🔔 Architectural change detected. Create ADR?"
+   - Sugere classificacao (critical/major/minor)
+   - Pre-preenche contexto com diff summary
+4. Notifica usuario: "Architectural change detected. Create ADR?"
 
 ---
 
@@ -314,7 +314,7 @@ async function analyzeConversation(messages: Message[]) {
 
 #### C. Governance Enforcement Trigger
 ```typescript
-// Bloqueia ações que violam ADRs aceitas
+// Bloqueia acoes que violam ADRs aceitas
 const enforcementRules = [
   {
     adr: "ADR-0001",
@@ -351,7 +351,7 @@ const enforcementRules = [
 
 ---
 
-### 3. **Semantic Search for ADRs** 🔥 [HIGH PRIORITY]
+### 3. Semantic Search for ADRs -- Priority: High
 
 **Descrição:**
 Integrar o `semantic-cache.ts` do securellm-mcp para busca semântica sobre ADRs.
@@ -437,7 +437,7 @@ async function semanticSearchADRs(query: string, filters?: Filters) {
 
 **Queries Suportadas:**
 ```typescript
-// Exemplos de queries semânticas
+// Exemplos de queries semanticas
 const queries = [
   "Why did we choose Redis?",
   "What's our authentication strategy?",
@@ -453,15 +453,15 @@ await semanticSearchADRs("What's our strategy for data persistence?");
 // Retorna: ADR-0042 (Redis), ADR-0050 (CockroachDB), ADR-0021 (Session Storage)
 ```
 
-**Benefícios:**
-- 🎯 Busca natural (não precisa keywords exatas)
-- 🔍 Encontra decisões relacionadas mesmo sem relações explícitas
-- ⚡ Cache de embeddings reduz custo de busca repetida
-- 📊 Relevance scores ajudam a ranquear resultados
+**Beneficios:**
+- Busca natural (não precisa keywords exatas)
+- Encontra decisões relacionadas mesmo sem relacoes explicitas
+- Cache de embeddings reduz custo de busca repetida
+- Relevance scores ajudam a ranquear resultados
 
 ---
 
-### 4. **Auto-ADR Generation from Code Analysis** 🧠 [HIGH PRIORITY]
+### 4. Auto-ADR Generation from Code Analysis -- Priority: High
 
 **Descrição:**
 Usar `advanced_code_analysis` do securellm-mcp para detectar mudanças arquiteturais e gerar ADRs automaticamente.
@@ -516,7 +516,7 @@ async function autoGenerateADR(commit: GitCommit) {
     // 7. Notify for review
     return {
       adr_id: adr.id,
-      message: "🤖 Auto-generated ADR from commit. Review required."
+      message: "Auto-generated ADR from commit. Review required."
     };
   }
 }
@@ -593,10 +593,9 @@ ${analysis.summary}
 }
 ```
 
-**Exemplo Real:**
+**Exemplo:**
 
 ```bash
-# Commit que adiciona Redis
 git commit -m "feat: add Redis caching for API endpoints"
 
 # Auto-generated ADR
@@ -678,7 +677,7 @@ Tasks:
 
 ## Review Required
 
-⚠️ This ADR was auto-generated and requires review before acceptance.
+This ADR was auto-generated and requires review before acceptance.
 
 Please validate:
 1. Classification is correct (major)
@@ -689,12 +688,12 @@ Please validate:
 
 ---
 
-### 5. **Knowledge DB ↔ ADR Bidirectional Sync** 🔄 [HIGH PRIORITY]
+### 5. Knowledge DB / ADR Bidirectional Sync -- Priority: High
 
 **Descrição:**
-Sincronização bidirecional entre Knowledge DB (securellm-mcp) e ADR-Ledger.
+Sincronizacao bidirecional entre Knowledge DB (securellm-mcp) e ADR-Ledger.
 
-**Fluxo A: ADRs → Knowledge DB**
+**Fluxo A: ADRs -> Knowledge DB**
 
 ```typescript
 async function syncADRsToKnowledge() {
@@ -759,7 +758,7 @@ async function syncADRsToKnowledge() {
 }
 ```
 
-**Fluxo B: Knowledge DB → ADRs**
+**Fluxo B: Knowledge DB -> ADRs**
 
 ```typescript
 async function suggestADRsFromKnowledge() {
@@ -784,7 +783,7 @@ async function suggestADRsFromKnowledge() {
 
       await notifyUser({
         type: "adr_suggestion",
-        message: `🔔 Multiple insights suggest an architectural decision about ${cluster.topic}. Create ADR?`,
+        message: `Multiple insights suggest an architectural decision about ${cluster.topic}. Create ADR?`,
         proposal,
         insights: cluster.insights
       });
@@ -850,7 +849,7 @@ const syncStrategy = {
 
 ---
 
-### 6. **Research-Backed ADR Creation** 📚 [MEDIUM PRIORITY]
+### 6. Research-Backed ADR Creation -- Priority: Medium
 
 **Descrição:**
 Integrar `research_agent` do securellm-mcp para criar ADRs com validação multi-fonte.
@@ -864,10 +863,7 @@ async function createResearchBackedADR(params: {
   classification: Classification;
   projects: string[];
 }) {
-  console.log("🔍 Starting research-backed ADR creation...");
-
   // PHASE 1: Deep Research
-  console.log("📚 Phase 1: Multi-source research");
   const research = await researchAgent({
     query: params.query,
     depth: "deep",
@@ -883,21 +879,17 @@ async function createResearchBackedADR(params: {
   }
 
   // PHASE 2: Fact Extraction
-  console.log("🧠 Phase 2: Extracting facts and patterns");
   const facts = extractFacts(research.sources);
   const patterns = identifyPatterns(facts);
   const consensus = findConsensus(patterns);
 
   // PHASE 3: Alternative Analysis
-  console.log("⚖️  Phase 3: Analyzing alternatives");
   const alternatives = await analyzeAlternatives(research, params.query);
 
   // PHASE 4: Risk Assessment
-  console.log("⚠️  Phase 4: Risk assessment");
   const risks = await assessRisks(research, alternatives);
 
   // PHASE 5: ADR Generation
-  console.log("📝 Phase 5: Generating ADR");
   const adr = {
     id: generateADRId(),
     title: params.title,
@@ -1006,7 +998,6 @@ ${consensus.reasons.map((r, i) => `${i + 1}. ${r}`).join('\n')}
   };
 
   // PHASE 6: Validation
-  console.log("✅ Phase 6: Validating ADR");
   const validation = await adrValidate({
     adr,
     check_governance: true,
@@ -1023,7 +1014,6 @@ ${consensus.reasons.map((r, i) => `${i + 1}. ${r}`).join('\n')}
   }
 
   // PHASE 7: Save
-  console.log("💾 Phase 7: Saving ADR");
   const saved = await adrCreate(adr);
 
   return {
@@ -1061,7 +1051,7 @@ await createResearchBackedADR({
   projects: ["CEREBRO", "SPECTRE"]
 });
 
-// Output (após 30-60s de pesquisa)
+// Output (after 30-60s of research)
 {
   success: true,
   adr_id: "ADR-0050",
@@ -1262,10 +1252,10 @@ Cost prohibitive and platform lock-in conflicts with our multi-cloud strategy (A
 
 ---
 
-### 7. **Compliance Automation via ADRs** 🛡️ [MEDIUM PRIORITY]
+### 7. Compliance Automation via ADRs -- Priority: Medium
 
 **Descrição:**
-Usar ADRs accepted como políticas enforceable. Bloquear ações que violam decisões arquiteturais.
+Usar ADRs accepted como políticas enforceable. Bloquear acoes que violam decisões arquiteturais.
 
 **Arquitetura:**
 
@@ -1292,7 +1282,7 @@ class ADRComplianceEngine {
     return {
       adr_id: adr.id,
       title: adr.title,
-      rules: enforcements.map(e => ({
+      rules: enforcements.map( e => ({
         type: e.type,              // "must_use" | "must_not_use" | "must_follow"
         pattern: e.pattern,        // Regex or semantic pattern
         reason: e.reason,
@@ -1344,10 +1334,10 @@ async function preCommitComplianceCheck(files: string[]) {
   const result = await engine.checkCompliance(action);
 
   if (!result.compliant && result.blocked) {
-    console.error("❌ Compliance Check Failed\n");
+    console.error("Compliance Check Failed\n");
 
     for (const v of result.violations.filter(v => v.severity === "blocking")) {
-      console.error(`🚫 [${v.adr}] ${v.reason}`);
+      console.error(`[${v.adr}] ${v.reason}`);
       console.error(`   Suggestion: ${v.suggestion}\n`);
     }
 
@@ -1355,15 +1345,15 @@ async function preCommitComplianceCheck(files: string[]) {
   }
 
   if (result.violations.length > 0) {
-    console.warn("⚠️  Compliance Warnings\n");
+    console.warn("Compliance Warnings\n");
 
     for (const v of result.violations.filter(v => v.severity === "warning")) {
-      console.warn(`⚠️  [${v.adr}] ${v.reason}`);
+      console.warn(`[${v.adr}] ${v.reason}`);
       console.warn(`   Suggestion: ${v.suggestion}\n`);
     }
   }
 
-  console.log("✅ Compliance check passed");
+  console.log("Compliance check passed");
 }
 ```
 
@@ -1423,10 +1413,10 @@ metadata:
 # Scenario 1: Blocked Commit
 $ git commit -m "add docker-compose for local dev"
 
-🔍 Running compliance check...
-❌ Compliance Check Failed
+Running compliance check...
+Compliance Check Failed
 
-🚫 [ADR-0001] ADR-0001 mandates NixOS. Use flake.nix instead.
+[ADR-0001] ADR-0001 mandates NixOS. Use flake.nix instead.
    Suggestion: Remove docker-compose.yml and create equivalent NixOS configuration in flake.nix.
    Reference: adr/accepted/ADR-0001.md
 
@@ -1435,14 +1425,14 @@ $ git commit -m "add docker-compose for local dev"
 # Scenario 2: Warning (allowed but flagged)
 $ git commit -m "add memcached client"
 
-🔍 Running compliance check...
-⚠️  Compliance Warnings
+Running compliance check...
+Compliance Warnings
 
-⚠️  [ADR-0042] ADR-0042 chose Redis over Memcached
+[ADR-0042] ADR-0042 chose Redis over Memcached
    Suggestion: Consider using Redis (ioredis). If Memcached is required, create superseding ADR.
    Reference: adr/accepted/ADR-0042.md
 
-✅ Compliance check passed (with warnings)
+Compliance check passed (with warnings)
 
 ---
 
@@ -1451,7 +1441,7 @@ $ adr compliance-check --action "add memcached"
 
 Checking compliance against 13 accepted ADRs...
 
-⚠️  Potential violation detected:
+Potential violation detected:
 
 ADR-0042: Add Redis for API Caching
 Status: accepted
@@ -1471,7 +1461,7 @@ Continue? [y/N]
 
 ---
 
-### 8. **ADR Metrics & Analytics** 📊 [LOW PRIORITY]
+### 8. ADR Metrics and Analytics -- Priority: Low
 
 **Descrição:**
 Dashboard de métricas sobre ADRs (velocidade de decisão, compliance, governança).
@@ -1559,29 +1549,29 @@ const metricsResource = {
 
 ---
 
-## 🚀 Implementação: Roadmap
+## Implementação: Roadmap
 
 ### Phase 1: Foundation (2 semanas)
 
-**Objetivo:** Integração básica ADR ↔ MCP
+**Objetivo:** Integração básica ADR / MCP
 
 **Tarefas:**
-1. ✅ Criar package `@adr-ledger/mcp-tools` (wrapper TypeScript)
+1. Criar package `@adr-ledger/mcp-tools` (wrapper TypeScript)
    - Expor `adr_parser.py` via subprocess
    - Criar types para ADRNode, filters, queries
 
-2. ✅ Implementar ferramentas core:
+2. Implementar ferramentas core:
    - `adr_query` (sem semantic search ainda)
    - `adr_create` (basic)
    - `adr_validate`
-   - `adr_sync` (unidirecional: ADR → Knowledge DB)
+   - `adr_sync` (unidirecional: ADR -> Knowledge DB)
 
-3. ✅ Adicionar ao `securellm-mcp`:
+3. Adicionar ao `securellm-mcp`:
    - Nova categoria "ADR Management"
    - Registrar tools no MCP server
    - Adicionar documentação
 
-**Entregável:** PR com tools funcionais + tests
+**Entregavel:** PR com tools funcionais + tests
 
 ---
 
@@ -1590,20 +1580,20 @@ const metricsResource = {
 **Objetivo:** Busca semântica sobre ADRs
 
 **Tarefas:**
-1. ✅ Reusar `semantic-cache.ts`:
-   - Criar `adr-embeddings.ts` (wrapper específico)
+1. Reusar `semantic-cache.ts`:
+   - Criar `adr-embeddings.ts` (wrapper especifico)
    - Gerar embeddings para ADRs durante sync
 
-2. ✅ Implementar vector store:
+2. Implementar vector store:
    - Usar FAISS ou ChromaDB
    - Schema: embeddings + metadata (adr_id, status, projects, classification)
 
-3. ✅ Atualizar `adr_query`:
+3. Atualizar `adr_query`:
    - Add parameter `semantic: boolean`
    - Similarity search com threshold 0.75
    - Return com relevance scores
 
-**Entregável:** Semantic search funcionando com cache de embeddings
+**Entregavel:** Semantic search funcionando com cache de embeddings
 
 ---
 
@@ -1612,22 +1602,22 @@ const metricsResource = {
 **Objetivo:** ADRs automáticos a partir de código
 
 **Tarefas:**
-1. ✅ Architectural Decision Detection:
+1. Architectural Decision Detection:
    - Integrar `advanced_code_analysis`
    - Classificar impacto (is_architectural: boolean)
    - Extrair contexto do código
 
-2. ✅ Auto-generation pipeline:
+2. Auto-generation pipeline:
    - `adr_auto_generate_from_commit`
    - Template generation
    - Governance pre-fill
 
-3. ✅ Git hooks:
+3. Git hooks:
    - Post-commit hook para detecção
-   - Notificação ao usuário
+   - Notificacao ao usuario
    - Flag `--auto-adr` para opt-in
 
-**Entregável:** Auto-generation com opt-in
+**Entregavel:** Auto-generation com opt-in
 
 ---
 
@@ -1636,22 +1626,22 @@ const metricsResource = {
 **Objetivo:** ADRs validados por research agent
 
 **Tarefas:**
-1. ✅ `adr_research_backed_proposal`:
+1. `adr_research_backed_proposal`:
    - Integração com `research_agent`
    - Multi-source validation
    - Credibility scoring
 
-2. ✅ Enhanced ADR schema:
+2. Enhanced ADR schema:
    - Add `metadata.research_validated`
    - Add `references` section
    - Add credibility scores per source
 
-3. ✅ Research quality checks:
+3. Research quality checks:
    - Minimum credibility threshold (0.7)
    - Required: at least 1 official source
    - Warning if low consensus
 
-**Entregável:** Research-backed ADR creation pipeline
+**Entregavel:** Research-backed ADR creation pipeline
 
 ---
 
@@ -1660,29 +1650,29 @@ const metricsResource = {
 **Objetivo:** Enforcement programático de ADRs
 
 **Tarefas:**
-1. ✅ Compliance engine:
+1. Compliance engine:
    - Parse enforceable ADRs
    - Generate enforcement rules
    - Compile checks (regex + semantic)
 
-2. ✅ Pre-commit integration:
+2. Pre-commit integration:
    - Hook que bloqueia violations
    - Warnings para soft violations
-   - Suggestions automáticas
+   - Suggestions automaticas
 
-3. ✅ Dashboard:
+3. Dashboard:
    - Compliance metrics
    - Violation history
    - ADR effectiveness tracking
 
-**Entregável:** Compliance automation completo
+**Entregavel:** Compliance automation completo
 
 ---
 
 ### Phase 6: Advanced Features (ongoing)
 
-**Tarefas adicionais:**
-- [ ] Bi-directional sync (Knowledge DB → ADRs)
+Tarefas adicionais:
+- [ ] Bi-directional sync (Knowledge DB -> ADRs)
 - [ ] Conversation analysis para detectar decisões
 - [ ] Graph visualization (D3.js)
 - [ ] Temporal queries (decision state at any point in time)
@@ -1691,48 +1681,50 @@ const metricsResource = {
 
 ---
 
-## 📈 Benefícios Esperados
+## Beneficios Esperados (estimativas)
 
 ### Quantitativos
 
-| Métrica | Antes | Depois | Melhoria |
-|---------|-------|--------|----------|
-| Tempo para criar ADR | 60-120 min | 10-20 min | **70-83% ↓** |
-| ADRs criados/mês | 2-3 | 8-12 | **300% ↑** |
-| Tempo para encontrar decisão | 15-30 min (busca manual) | <1 min (semantic search) | **95% ↓** |
-| Decisões não documentadas | ~70% | ~10% | **85% ↓** |
-| Governance violations | 3-5/mês | 0-1/mês | **80% ↓** |
+| Métrica | Antes (estimado) | Depois (estimado) | Melhoria estimada |
+|---------|-------------------|--------------------|--------------------|
+| Tempo para criar ADR | 60-120 min | 10-20 min | ~70-83% |
+| ADRs criados/mês | 2-3 | 8-12 | ~3-4x |
+| Tempo para encontrar decisão | 15-30 min (busca manual) | <1 min (semantic search) | ~95% |
+| Decisões não documentadas | ~70% | ~10% | ~85% |
+| Governance violations | 3-5/mês | 0-1/mês | ~80% |
+
+Nota: estas são projeções baseadas em experiência com sistemas similares, não medições do ambiente atual.
 
 ### Qualitativos
 
-✅ **Documentação Automática**
+**Documentação Automatica**
 - ADRs gerados de commits significativos
 - Contexto extraído automaticamente
 - Reduz friction para documentar decisões
 
-✅ **Validação Multi-Fonte**
+**Validação Multi-Fonte**
 - Research agent valida decisões com fontes reais
 - Credibility scoring reduz hallucinations
-- Referências verificáveis
+- Referencias verificáveis
 
-✅ **Busca Natural**
+**Busca Natural**
 - "Why Redis?" encontra ADR-0042 mesmo sem mencionar ID
 - Semantic similarity supera keyword matching
 - Cache de embeddings reduz custo
 
-✅ **Governança Enforced**
+**Governança Enforced**
 - Bloqueia commits que violam ADRs aceitas
 - Enforcement programático, não manual
 - Audit trail automático
 
-✅ **Knowledge Sovereignty**
+**Soberania de Dados**
 - ADRs como fonte de verdade
 - Git history = decision history
 - Zero dependência de SaaS
 
 ---
 
-## 🛠️ Próximos Passos
+## Próximos Passos
 
 ### Imediato (Esta Semana)
 
@@ -1742,7 +1734,7 @@ const metricsResource = {
    git checkout -b feature/adr-mcp-integration
    ```
 
-2. **Estrutura de diretórios:**
+2. **Estrutura de diretorios:**
    ```
    adr-ledger/
    ├── packages/
@@ -1761,7 +1753,7 @@ const metricsResource = {
 
 3. **Implementar `adr_query` (MVP):**
    - Parse ADRs com `adr_parser.py`
-   - Filtros básicos (status, projects, classification)
+   - Filtros basicos (status, projects, classification)
    - Return JSON com metadata
 
 4. **Testar integração:**
@@ -1780,11 +1772,11 @@ const metricsResource = {
 ### Curto Prazo (2-4 Semanas)
 
 1. Implementar semantic search
-2. Auto-generation básico
+2. Auto-generation basico
 3. Research integration MVP
 4. Testes end-to-end
 
-### Médio Prazo (1-3 Meses)
+### Medio Prazo (1-3 Meses)
 
 1. Compliance engine
 2. Dashboard de métricas
@@ -1793,27 +1785,19 @@ const metricsResource = {
 
 ---
 
-## 🎯 Conclusão
+## Conclusão
 
-A integração ADR-Ledger ↔ SecureLLM-MCP cria um **ecossistema de inteligência arquitetural autônomo** onde:
-
-1. **Decisões são automaticamente documentadas** (via code analysis)
-2. **Decisões são validadas com fontes verificadas** (via research agent)
-3. **Decisões são facilmente encontradas** (via semantic search)
-4. **Decisões são programaticamente enforced** (via compliance engine)
-5. **Conhecimento é soberano** (Git como fonte de verdade)
-
-Este é um **salto evolutivo** de documentação passiva para **governança ativa e inteligente**.
+A integração ADR-Ledger / SecureLLM-MCP permite avancar de documentação passiva para governança arquitetural ativa: documentação automática via code analysis, validação com fontes verificadas, busca semântica, e enforcement programático de decisões. O conhecimento permanece soberano no Git como fonte de verdade.
 
 ---
 
 **Autor:** Claude Sonnet 4.5
 **Reviewed By:** [Pending]
-**Status:** 🟡 Proposal - Awaiting Approval
+**Status:** Proposta - Aguardando Aprovacao
 
 ---
 
-## 📎 Apêndices
+## Apendices
 
 ### A. Exemplo de Fluxo Completo
 
@@ -1828,7 +1812,7 @@ sequenceDiagram
     Dev->>Git: git commit (architectural change)
     Git->>MCP: Trigger code analysis
     MCP->>MCP: Detect architectural impact
-    MCP->>Dev: 🔔 Architectural change detected. Create ADR?
+    MCP->>Dev: Architectural change detected. Create ADR?
     Dev->>MCP: Yes
     MCP->>RA: research_agent("redis vs memcached")
     RA->>MCP: Research results (credibility: 0.89)
@@ -1916,10 +1900,10 @@ export const adrMCPTools: ExtendedTool[] = [
       required: ["query"]
     }
   },
-  // ... outros tools
+  // ... other tools
 ];
 ```
 
 ---
 
-**Fim do documento**
+**End of document**
