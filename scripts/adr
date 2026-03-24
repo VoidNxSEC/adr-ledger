@@ -643,7 +643,7 @@ cmd_list() {
                 continue
             fi
             
-            local id=$(grep -oP '^id:\s*"\K[^"].*?"' "$file" 2>/dev/null || basename "$file" .md)
+            local id=$(grep -oP '^id:\s*"\K[^"]+' "$file" 2>/dev/null || basename "$file" .md)
             local title=$(grep -oP '^title:\s*"\K[^"]+' "$file" 2>/dev/null || echo "Unknown")
             local date=$(grep -oP '^date:\s*"\K[^"]+' "$file" 2>/dev/null || echo "Unknown")
             local status=$(grep -oP '^status:\s*\K\w+' "$file" 2>/dev/null || echo "$status_dir")
@@ -947,10 +947,10 @@ cmd_search() {
     echo ""
     
     grep -r -l -i "$query" "${ADR_DIR}" --include="*.md" 2>/dev/null | while read -r file; do
-        local id=$(grep -oP '^id:\s*"\K[^"].*?"' "$file" 2>/dev/null || basename "$file" .md)
-        local title=$(grep -oP '^title:\s*"\K[^"].*?"' "$file" 2>/dev/null || "Unknown")
-        local status=$(grep -oP '^status:\s*\K\\w+' "$file" 2>/dev/null || "unknown")
-        
+        local id=$(grep -oP '^id:\s*"\K[^"]+' "$file" 2>/dev/null || basename "$file" .md)
+        local title=$(grep -oP '^title:\s*"\K[^"]+' "$file" 2>/dev/null || echo "Unknown")
+        local status=$(grep -oP '^status:\s*\K\w+' "$file" 2>/dev/null || echo "unknown")
+
         echo -e "${GREEN}${id}${NC} [${status}] - ${title}"
         
         # Show matching lines
@@ -971,9 +971,9 @@ cmd_graph() {
             continue
         fi
         
-        local id=$(grep -oP '^id:\s*"\K[^"].*?"' "$file" 2>/dev/null || continue)
-        local title=$(grep -oP '^title:\s*"\K[^"].*?"' "$file" 2>/dev/null || "Unknown")
-        local status=$(grep -oP '^status:\s*\K\\w+' "$file" 2>/dev/null || "unknown")
+        local id=$(grep -oP '^id:\s*"\K[^"]+' "$file" 2>/dev/null || continue)
+        local title=$(grep -oP '^title:\s*"\K[^"]+' "$file" 2>/dev/null || echo "Unknown")
+        local status=$(grep -oP '^status:\s*\K\w+' "$file" 2>/dev/null || echo "unknown")
         
         # Truncate title
         title="${title:0:30}"
@@ -989,12 +989,12 @@ cmd_graph() {
         fi
         
         # Parse relations
-        local supersedes=$(grep -oP 'supersedes:\s*\n\s*-\s*"\K[^"].*?"' "$file" 2>/dev/null || true)
+        local supersedes=$(grep -oP 'supersedes:\s*\n\s*-\s*"\K[^"]+' "$file" 2>/dev/null || true)
         for s in $supersedes; do
             mermaid+="    ${id} -->|supersedes| ${s}\n"
         done
-        
-        local related=$(grep -oP 'related_to:\s*\n\s*-\s*"\K[^"].*?"' "$file" 2>/dev/null || true)
+
+        local related=$(grep -oP 'related_to:\s*\n\s*-\s*"\K[^"]+' "$file" 2>/dev/null || true)
         for r in $related; do
             mermaid+="    ${id} -.->|related| ${r}\n"
         done
@@ -1056,7 +1056,7 @@ cmd_validate() {
         fi
         
         # Check for empty sections
-        if grep -q '^\\[Descreva' "$file"; then
+        if grep -q '^\[Descreva' "$file"; then
             log_warn "$id: Contém placeholders não preenchidos"
         fi
         

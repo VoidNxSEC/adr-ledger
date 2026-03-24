@@ -1,16 +1,16 @@
 {
   "mcpServers": {
     "securellm-mcp": {
-      "command": "node",
-      "args": ["/home/kernelcore/master/securellm-mcp/build/src/index.js"],
+      "command": "securellm-mcp",
+      "args": [],
       "env": {
-        "PROJECT_ROOT": "/home/kernelcore/master/securellm-mcp",
-        "KNOWLEDGE_DB_PATH": "/home/kernelcore/.local/share/securellm/knowledge.db",
+        "PROJECT_ROOT": ".",
+        "KNOWLEDGE_DB_PATH": "/var/lib/mcp-knowledge/knowledge.db",
         "ENABLE_KNOWLEDGE": "true"
       },
       "metadata": {
-        "version": "2.1.0",
-        "description": "Comprehensive MCP server for NixOS system management, AI provider integration, emergency response, code analysis, knowledge management, and ADR governance",
+        "version": "2.0.0",
+        "description": "Comprehensive MCP server for NixOS system management, AI provider integration, emergency response, code analysis, and knowledge management",
         "author": "SecureLLM Team",
         "license": "MIT",
         "repository": "https://github.com/marcosfpina/securellm-mcp",
@@ -18,7 +18,7 @@
       },
       "capabilities": {
         "tools": {
-          "count": "116+",
+          "count": "80+",
           "categories": [
             {
               "name": "Provider & API Management",
@@ -199,34 +199,6 @@
                 "cache_stats"
               ],
               "description": "Performance monitoring, rate limit tracking, semantic cache metrics, and Nix package cache stats"
-            },
-            {
-              "name": "ADR Governance & Blockchain",
-              "count": 21,
-              "tools": [
-                "adr_new",
-                "adr_new_from_research",
-                "adr_list",
-                "adr_show",
-                "adr_search",
-                "adr_relations",
-                "adr_validate",
-                "governance_rules",
-                "chain_status",
-                "chain_verify",
-                "chain_prove",
-                "provenance_trace",
-                "snapshot_latest",
-                "economics_report",
-                "sbom_status",
-                "adr_accept",
-                "adr_supersede",
-                "adr_pre_sign",
-                "chain_sign",
-                "snapshot_create",
-                "sbom_generate"
-              ],
-              "description": "Architecture Decision Record lifecycle management backed by private blockchain — governance contracts, Merkle proofs, digital signatures, SBOM, and temporal anchoring"
             }
           ]
         },
