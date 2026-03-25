@@ -67,7 +67,7 @@
             # Metadata
             meta = {
               description = "ADR Parser - Transforms Architecture Decision Records into Knowledge Law";
-              license = pkgs.lib.licenses.mit;
+              license = pkgs.lib.licenses.asl20;
             };
           };
 
