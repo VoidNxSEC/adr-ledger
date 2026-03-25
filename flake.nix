@@ -417,6 +417,9 @@
             # OpenTimestamps CLI for temporal anchoring
             pkgs.opentimestamps-client
 
+            # Secret scanning
+            pkgs.gitleaks
+
             # Packages deste flake
             self.packages.${system}.adr-parser
             self.packages.${system}.adr-cli
@@ -439,6 +442,7 @@
             echo "  yamllint         - Validate YAML files"
             echo "  check-jsonschema - Validate JSON against schema"
             echo "  jq               - JSON processor"
+            echo "  gitleaks         - Secret scanning"
             echo ""
 
             # Auto-instalar hooks se ainda não existir
