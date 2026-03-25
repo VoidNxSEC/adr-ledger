@@ -494,4 +494,5 @@ Documentação adicional:
 - [Architecture](ARCHITECTURE.md) — Princípios de design e visão detalhada
 - [Export Guide](docs/EXPORT_GUIDE.md) — Documentação completa de export
 - [Stack Reference](docs/STACK_REFERENCE.md) — Referência técnica da stack
+- [Platforms](docs/PLATFORMS.md) — Setup em NixOS, Linux, macOS e Windows
 - [Contributing](CONTRIBUTING.md) — Setup e guia de contribuição
