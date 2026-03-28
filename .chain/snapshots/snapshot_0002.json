@@ -1,0 +1,48 @@
+{
+  "snapshot_id": 2,
+  "timestamp": "2026-03-26T10:13:00-0300",
+  "chain_height": 28,
+  "chain_tip": "b50a4e6688752dea3f75a72b11894e645d592ebef4199bb9207de5aa36d1501e",
+  "merkle_root": "7d6b2839fef2ea1d046dead203d352ffba70a55083a2d72db2873911eb38fb24",
+  "total_accepted": 33,
+  "total_proposed": 17,
+  "total_superseded": 2,
+  "total_rejected": 0,
+  "by_classification": {
+    "critical": 11,
+    "major": 19,
+    "minor": 1,
+    "patch": 0,
+    "unclassified": 0,
+    "milestone": 1,
+    "strategic": 1
+  },
+  "by_project": {
+    "GLOBAL": 16,
+    "CEREBRO": 16,
+    "NEUTRON": 8,
+    "SPECTRE": 10,
+    "PHANTOM": 10,
+    "CEREBRO-INFRA": 1,
+    "SECURELLM-BRIDGE": 1,
+    "AI-ASSISTANT-HUB": 1,
+    "OWASAKA": 1,
+    "SPIDER\u2011NIX": 1,
+    "MATRIX_AI_ASSISTANT": 1,
+    "ADR_LEDGER": 1,
+    "IP_GUARD": 1,
+    "ASTRIX": 1,
+    "CHAOS_NUANCE": 1
+  },
+  "previous_snapshot_hash": "75172bcdb8654d878826a774f81ece4c5039ee22b4a25dde56b3c5fb279dfb50",
+  "timestamp_proof": "timestamps/hash_ts_0003.txt.ots",
+  "snapshot_hash": "ff01ac0f9ad640eb98be05f242538ec39472b4eff42102c148a2966732c4b8d8",
+  "signature": {
+    "signer_id": "pina",
+    "public_key": "jIDMf08NgVSYQgU0q5PqFoE6fOSJ6SzVBp2ASYr2PW0=",
+    "signature": "ExEIg2WDt2SkqDlI18SQ6iPJPZSuwLQLoim1FV3HQBPgghRxOL5Xi+ai7p+GxeFtZticnIQeLvxgX56uqj+LDQ==",
+    "timestamp": "2026-03-26T10:13:00-0300",
+    "role": "architect"
+  },
+  "sbom_hash": "bfaaf19c604f2f43c1ab328b186b467f3cb424c62768504904c997b977ec28b3"
+}

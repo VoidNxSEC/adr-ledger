@@ -1,0 +1,16 @@
+{
+  "adr_id": "ADR-0050",
+  "content_hash": "b4c754d28e2fcd783f01fc43bb6664f8f21b154017d0243a95d173779ced1c35",
+  "signatures": [
+    {
+      "signer_id": "pina",
+      "role": "architect",
+      "public_key": "jIDMf08NgVSYQgU0q5PqFoE6fOSJ6SzVBp2ASYr2PW0=",
+      "signature": "Ga03g691EVGxS4vf7a6IhqHKr3wl4Qytjk4iITS/BUgPR2mbBa74tShBI3mAeLNDWfsR2JMbhQDJ/GUWBM1YCw==",
+      "timestamp": "2026-03-26T10:10:39-0300",
+      "content_hash": "b4c754d28e2fcd783f01fc43bb6664f8f21b154017d0243a95d173779ced1c35"
+    }
+  ],
+  "created_at": "2026-03-26T10:10:39-0300",
+  "updated_at": "2026-03-26T10:10:39-0300"
+}

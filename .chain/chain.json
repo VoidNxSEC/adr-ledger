@@ -305,8 +305,17 @@
         }
       ],
       "block_hash": "15fa93e5e9b4da170c534c1c459c9c340abe9827cb2854e3628cd87c9198554a"
+    },
+    {
+      "block_number": 27,
+      "adr_id": "ADR-0050",
+      "content_hash": "f341465046c3328a1cbf020ecc33abd5ebac80885c5faf8aae8616fa3d46201e",
+      "previous_hash": "15fa93e5e9b4da170c534c1c459c9c340abe9827cb2854e3628cd87c9198554a",
+      "timestamp": "2026-03-26T10:11:55-0300",
+      "signatures": [],
+      "block_hash": "b50a4e6688752dea3f75a72b11894e645d592ebef4199bb9207de5aa36d1501e"
     }
   ],
-  "tip": "15fa93e5e9b4da170c534c1c459c9c340abe9827cb2854e3628cd87c9198554a",
-  "height": 27
+  "tip": "b50a4e6688752dea3f75a72b11894e645d592ebef4199bb9207de5aa36d1501e",
+  "height": 28
 }
