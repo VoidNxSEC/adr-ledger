@@ -314,8 +314,25 @@
       "timestamp": "2026-03-26T10:11:55-0300",
       "signatures": [],
       "block_hash": "b50a4e6688752dea3f75a72b11894e645d592ebef4199bb9207de5aa36d1501e"
+    },
+    {
+      "block_number": 28,
+      "adr_id": "ADR-0054",
+      "content_hash": "44efd3d71286d3231aa78c04a7ca6e221f00ad4357ac8d45bf9b1d75cc821a49",
+      "previous_hash": "b50a4e6688752dea3f75a72b11894e645d592ebef4199bb9207de5aa36d1501e",
+      "timestamp": "2026-03-29T05:25:03-0300",
+      "signatures": [
+        {
+          "signer_id": "kernelcore",
+          "role": "architect",
+          "public_key": "EMVtRjDbi7S5i9KVyOLn2/kahvKPOiIT4FdinRpKo1o=",
+          "signature": "qHBLxF0XXhomXbqqktXds2n1TGecW1qyI1guSobn7YmXvVGs72nzsXMo4kVDMh83Kn5j1XzHkWalCS74X7vZDw==",
+          "timestamp": "2026-03-29T05:24:58-0300"
+        }
+      ],
+      "block_hash": "cdad9f25834c8c6dfa80978ac7d7fd5e95216e7dea68e6a315626140d3e094b1"
     }
   ],
-  "tip": "b50a4e6688752dea3f75a72b11894e645d592ebef4199bb9207de5aa36d1501e",
-  "height": 28
+  "tip": "cdad9f25834c8c6dfa80978ac7d7fd5e95216e7dea68e6a315626140d3e094b1",
+  "height": 29
 }

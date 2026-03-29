@@ -1,0 +1,20 @@
+{
+  "adr_id": "ADR-0054",
+  "entries": [
+    {
+      "stage": "acceptance",
+      "adr_id": "ADR-0054",
+      "timestamp": "2026-03-29T05:25:04-0300",
+      "actor": "marcosfpina",
+      "description": "ADR accepted and moved to accepted/",
+      "evidence_hash": "",
+      "evidence_ref": "",
+      "previous_entry_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "entry_hash": "37ca33826711065b902f68303ee9d9882f495fb9799d0df573b216be6d779d67",
+      "signature": null,
+      "metadata": {}
+    }
+  ],
+  "created_at": "2026-03-29T05:25:04-0300",
+  "last_updated": "2026-03-29T05:25:04-0300"
+}
