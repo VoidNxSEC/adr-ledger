@@ -1,367 +1,149 @@
-# ADR Ledger — Livro Razão de Decisões Arquiteturais
+# ADR Ledger — Architectural Decision Record Ledger
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/status-alpha-orange.svg)]()
-[![Release](https://img.shields.io/badge/release-v0.0.1-brightgreen.svg)](https://github.com/marcosfpina/adr-ledger/releases/tag/v0.0.1)
+[![Status](https://img.shields.io/badge/status-beta-brightgreen.svg)]()
+[![Release](https://img.shields.io/badge/release-v0.1.0-brightgreen.svg)](https://github.com/marcosfpina/adr-ledger/releases/tag/v0.1.0)
 [![Python](https://img.shields.io/badge/python-3.13-blue.svg)](https://www.python.org/)
 [![Nix](https://img.shields.io/badge/nix-flakes-5277C3.svg)](https://nixos.org/)
 
-Registro computável de decisões arquiteturais. Cada ADR é versionado em Git, validado por schema, e exportado como JSON para consumo por agentes de IA.
+Computable registry of architectural decisions. Each ADR is versioned in Git, cryptographically signed, validated against a strict schema, and exported as JSON for AI agent consumption and programmatic governance enforcement.
 
-> **Alpha** — O projeto está em fase Alpha. A camada blockchain e a CLI estão operacionais no ambiente Nix (plataforma primária), mas IAM/autenticação de aprovadores, Nix modules e suporte multiplataforma ainda estão em roadmap ativo. Não use em produção sem avaliação de risco.
+> **Beta** — The project has reached Beta. The cryptographic blockchain layer, advanced CLI, Temporal Anchoring (OpenTimestamps), SBOM governance, and 80+ MCP tools are fully operational in the Nix environment. Cross-platform non-Nix support is currently in progress.
 
-## Por que existe
+## Why it exists
 
-Decisões arquiteturais tendem a se dispersar — Notion, Slack, memória de quem estava na sala. Quando alguém pergunta "por que NixOS?", a resposta é reconstruída a partir de fragmentos, se tanto.
+Architectural decisions tend to scatter — Notion, Slack, the memory of whoever was in the room. When someone asks "why NixOS?", the answer is reconstructed from fragments, if at all.
 
-O ADR Ledger trata decisões como dados estruturados: YAML frontmatter para máquinas, Markdown para humanos, Git como audit trail. Quatro agentes consomem esse conhecimento:
+ADR Ledger treats decisions as structured data: YAML frontmatter for machines, Markdown for humans, Git as an audit trail, and cryptographic chains for immutability. Five autonomous agents consume this knowledge:
 
-| Agente | Função | Consome |
+| Agent | Function | Consumes |
 |--------|--------|---------|
-| **CEREBRO** | RAG retrieval | `knowledge_base.json` |
-| **SPECTRE** | Análise de padrões (NLP) | `spectre_corpus.json` |
-| **PHANTOM** | Classificação e sanitização | `phantom_training.json` |
-| **NEUTRON** | Enforcement de compliance | ADR compliance tags |
+| **CEREBRO** | RAG Retrieval & Knowledge Vault | `knowledge_base.json` |
+| **SPECTRE** | Pattern & Sentiment Analysis (NLP) | `spectre_corpus.json` |
+| **PHANTOM** | ML Classification & Sanitization | `phantom_training.json` |
+| **NEUTRON** | Declarative Infra & Compliance | ADR compliance tags |
+| **IntelSense** | Security Ops & Intelligence (OSINT) | Security tagged ADRs |
 
-O resultado: decisões rastreáveis, versionadas e queryable por humanos e máquinas.
+The result: decisions that are traceable, versioned, cryptographically verifiable, and queryable by both humans and machines.
 
 ---
 
-## Arquitetura
+## Architecture
 
 ```
 adr-ledger/
-├── .schema/                    # JSON Schema para validação
-│   └── adr.schema.json
-├── .governance/                # Governança como código
+├── .schema/                    # JSON Schema for strict validation
+│   ├── adr.schema.json
+│   └── stf.schema.json
+├── .governance/                # Governance as code (roles, approval matrix)
 │   └── governance.yaml
-├── .parsers/                   # AST Parser (Python)
+├── .parsers/                   # AST Parser (Python 3.13)
 │   └── adr_parser.py
-├── .chain/                     # Blockchain layer (provenance)
-│   ├── chain.json
-│   ├── crypto.py
-│   └── ...
-├── adr/                        # ADRs por status
+├── .chain/                     # Cryptographic Governance Layer
+│   ├── chain_manager.py        # Private blockchain engine
+│   ├── merkle_tree.py          # Merkle inclusion proofs
+│   ├── sbom_manager.py         # Supply chain & dependency drift governance
+│   ├── temporal.py             # OpenTimestamps anchoring
+│   ├── pre_sign.py             # Multi-sig management
+│   └── economics.py            # Decision quality metrics
+├── adr/                        # ADRs by lifecycle status
 │   ├── proposed/
 │   ├── accepted/
 │   ├── superseded/
 │   └── rejected/
-├── knowledge/                  # Output para agentes
-│   ├── knowledge_base.json    → CEREBRO
+├── knowledge/                  # Artifacts for Agent Ingestion
+│   ├── knowledge_base.json    → CEREBRO & NEUTRON
 │   ├── spectre_corpus.json    → SPECTRE
 │   ├── phantom_training.json  → PHANTOM
-│   └── graph.json             # Knowledge graph
+│   └── graph.json             # Entity-Relationship Knowledge Graph
 └── scripts/
-    └── adr                    # CLI operacional
+    └── adr                    # Advanced Operational CLI
 ```
+
+## SecureLLM-MCP Integration
+
+ADR Ledger is the foundational knowledge layer for the **SecureLLM-MCP** ecosystem. It provides over **80+ native MCP tools** enabling autonomous agents to interact with the system architecture deeply and securely:
+
+- **Provider & API Management:** LLM connectivity testing, TLS generation.
+- **Emergency Framework:** CPU/Memory/SWAP rescue operations, thermal protection.
+- **Laptop Defense Framework:** Thermal forensics, rebuild safety checks.
+- **Code Analysis:** Deep AST debugging, complexity metrics, dead code detection.
+- **Browser Automation:** Web research, scraping, form interaction.
+- **Secure Execution:** Ephemeral Nix sandboxes for safe command execution.
+
+Agents can natively query the ADR Ledger, validate new proposals against existing `knowledge_base.json`, and enforce rules during CI/CD.
+
+---
 
 ## Quick Start
 
-### NixOS / Nix
+### NixOS / Nix (Recommended)
 
 ```bash
 git clone https://github.com/marcosfpina/adr-ledger.git
 cd adr-ledger
-nix develop          # entra no devShell com todas as deps + CLI
+nix develop          # enters devShell, provisions Python, hooks, and deps
 adr list
-adr new -t "Minha Decisão" -p CEREBRO -c major
+adr new -t "My Decision" -p CEREBRO -c major
+adr validate
 adr sync
 ```
 
 ### Linux (non-Nix)
 
-Requer: `bash`, `python3.13`, `pyyaml`, `pynacl`, `git`.
+Requires: `bash`, `python3.13`, `pyyaml`, `pynacl`, `git`.
 
 ```bash
 git clone https://github.com/marcosfpina/adr-ledger.git
 cd adr-ledger
 
-# Instalar deps Python
-pip install pyyaml pynacl
+# Install Python deps
+pip install pyyaml pynacl jsonschema
 
-# Instalar CLI e git hooks
+# Install CLI and git hooks
 bash scripts/install.sh
 
-# Adicionar ao PATH (bash/zsh)
-echo 'export PATH="$HOME/adr-ledger/scripts:$PATH"' >> ~/.bashrc
-source ~/.bashrc
-
-# Usar
+# Usage
 adr list
-adr new -t "Minha Decisão" -p CEREBRO -c major
+adr new -t "Adopt Redis" -p SPECTRE -c major
 adr sync
 ```
-
-Ou, sem instalar, direto do repo:
-
-```bash
-bash scripts/adr list
-bash scripts/validate.sh      # valida todos os ADRs
-```
-
----
-
-## Suporte a Plataformas
-
-O ADR Ledger é desenvolvido primariamente no ecossistema Nix. O suporte a outras plataformas segue um roadmap incremental.
-
-| Plataforma | Status | Release alvo | Notas |
-|---|---|---|---|
-| **NixOS / Nix** | ✅ GA | **v0.0.1** | Integração completa via flake. Plataforma primária. |
-| **Linux (non-Nix)** | 🔧 Em andamento | v0.1.0 | `scripts/install.sh` funcional. Empacotamento `.deb` / `.rpm` / binário estático pendente. |
-| **macOS** | 🔄 Planejado | v0.1.0 | Homebrew tap (curto prazo). `nix-darwin` + Home Manager (recomendado). |
-| **Windows** | 🔄 Planejado | v0.2.0 | WSL2 no curto prazo. Suporte nativo (PowerShell + binário) no longo prazo. |
-
-### Instalação via Nix (recomendado)
-
-```bash
-# Direto do flake sem instalar
-nix run github:marcosfpina/adr-ledger -- list
-
-# Entrar no devShell com todas as deps
-nix develop github:marcosfpina/adr-ledger
-
-# Futuro: como NixOS module
-# services.adr-ledger.enable = true;  # ainda não disponível — ver roadmap
-```
-
-### Binário estático (v0.0.1)
-
-O release inicial `v0.0.1` disponibiliza um binário compilado para Linux x86_64. Disponível em [GitHub Releases](https://github.com/marcosfpina/adr-ledger/releases/tag/v0.0.1). Futuramente será submetido ao canal `nixpkgs` oficial.
-
-```bash
-# Linux x86_64
-curl -L https://github.com/marcosfpina/adr-ledger/releases/download/v0.0.1/adr-linux-x86_64 \
-  -o ~/.local/bin/adr && chmod +x ~/.local/bin/adr
-```
-
-### Nota de port — Linux non-Nix
-
-> **Para contribuidores:** A lógica operacional está em dois lugares: `scripts/adr` (bash CLI, ~1130 LOC — núcleo portável) e `flake.nix` (wrappers e checks como derivações Nix). Os scripts de instalação standalone já foram extraídos do flake para o port Linux não-Nix:
-
-| Componente | Situação no `flake.nix` | Script portável |
-|---|---|---|
-| `adr validate` — Python inline | Usava `${python.withPackages ...}/bin/python3` (Nix store) | ✅ `scripts/validate.sh` |
-| Gerador de git hooks | Escrevia `PYTHON=<nix-store-path>` no hook | ✅ `scripts/install-hooks.sh` |
-| `post-merge` / `post-commit` hooks | Chamavam `${adr-cli}/bin/adr sync` (Nix store) | ✅ Incluído em `scripts/install-hooks.sh` |
-| Setup inicial (deps + PATH + hooks) | Inexistente fora do Nix | ✅ `scripts/install.sh` |
-| `adr bash-cli` / `adr-bash` | Wrappavam `scripts/adr` via path Nix | ✅ `scripts/adr` já funciona standalone |
-| 9 `checks` do flake | Exclusivamente `nix build .#checks` (Nix sandbox) | `scripts/run-checks.sh` — pendente (v0.1.0) |
-| NixOS module (systemd) | Stub presente, incompleto | Pendente — fase Nix modules |
-
-O núcleo real (`scripts/adr`) já é portável — requer apenas `bash` + `python3.13` + `pyyaml` + `pynacl`. Os scripts de instalação foram criados para fechar o gap.
-
-Para instruções detalhadas por plataforma, ver [docs/PLATFORMS.md](docs/PLATFORMS.md).
 
 ---
 
 ## Workflow
 
-### Cenário 1: Nova decisão — Redis para caching
+### Scenario 1: New Decision & Cryptographic Pre-Signing
 
 ```bash
-# Engenheiro identifica necessidade de decisão arquitetural
-$ adr new \
-  -t "Add Redis for API Caching" \
-  -p SPECTRE \
-  -c major
+# Propose a new architecture change
+$ adr new -t "Add Redis for API Caching" -p SPECTRE -c critical
 
-# Output: Created adr/proposed/ADR-0042.md
-```
+# Critical ADRs require multi-sig (e.g., Architect + Security Lead)
+$ adr pre-sign ADR-0042
+# Generates a pending signature block in .chain/pending_signatures/
 
-O engenheiro preenche o ADR com contexto, decisão, consequências e alternativas:
-
-```yaml
----
-id: "ADR-0042"
-title: "Add Redis for API Caching"
-status: proposed
-date: "2026-01-29"
-
-authors:
-  - name: "Maria Silva"
-    role: "Backend Engineer"
-
-governance:
-  classification: "major"
-  requires_approval_from: [architect, security_lead]
-  compliance_tags: ["PERFORMANCE", "INFRASTRUCTURE"]
-
-scope:
-  projects: [SPECTRE]
-  layers: [api, data]
-  environments: [staging, production]
-
-knowledge_extraction:
-  keywords: ["redis", "caching", "performance"]
-  concepts: ["Distributed Caching", "Cache Invalidation"]
-  questions_answered:
-    - "Why Redis over Memcached?"
-    - "How do we handle cache invalidation?"
----
-
-## Context
-
-API response times increased 3x in the last month (p95: 1.2s → 3.6s).
-Profiling shows 80% of time spent on repeated database queries.
-
-## Decision
-
-Implement Redis cluster (3 nodes) with TTL-based expiration,
-write-through strategy, and Sentinel for HA.
-
-## Consequences
-
-### Positive
-- Reduces DB load by ~60%
-- Improves p95 latency to <500ms
-
-### Negative
-- Additional cost: ~$200/month
-- Cache invalidation complexity
-
-## Alternatives Considered
-
-1. **Memcached**: No persistence, limited data structures
-2. **PostgreSQL materialized views**: Not real-time enough
-3. **Application-level caching**: Doesn't scale across replicas
-```
-
-```bash
-# Commit aciona validação via pre-commit hook
-$ git add adr/proposed/ADR-0042.md
-$ git commit -m "ADR-0042: Propose Redis caching for API"
-
-# Após aprovação do arquiteto
+# After all required approvals, accept the ADR into the ledger
 $ adr accept ADR-0042
 
-# Sincroniza para os agentes
+# Sync agents, rebuild the Merkle tree, and check SBOM drift
 $ adr sync
 ```
 
-### Cenário 2: Deprecação — Supersedendo decisão antiga
+### Scenario 2: Temporal Anchoring (OpenTimestamps)
 
 ```bash
-# Propor nova decisão que supersede a antiga
-$ adr new -t "Deprecate v1 REST API" -p SPECTRE -c critical
-
-# Após aprovação
-$ adr supersede ADR-0012 ADR-0043
-# ADR-0012 status: accepted → superseded
-# Knowledge graph atualizado
+# Anchor the current blockchain state to the Bitcoin blockchain for immutable proof
+$ adr anchor
+# Output: Creating OpenTimestamps proof for chain height 42...
 ```
 
-### Cenário 3: Decisão emergencial — Incidente de segurança
+### Scenario 3: Supply Chain Governance (SBOM)
 
 ```bash
-$ adr new \
-  -t "Emergency: Rotate all API keys after breach" \
-  -p GLOBAL \
-  -c critical
-
-$ adr accept ADR-0044 --fast-track --reason "security-incident-2026-01-29"
-$ adr sync
-```
-
-### Transições de estado
-
-```mermaid
-stateDiagram-v2
-    [*] --> Proposed: adr new
-    Proposed --> UnderReview: git push
-    UnderReview --> Proposed: request changes
-    UnderReview --> Accepted: adr accept
-    UnderReview --> Rejected: adr reject
-    Accepted --> Superseded: adr supersede
-    Accepted --> Deprecated: adr deprecate
-    Superseded --> [*]
-    Deprecated --> [*]
-    Rejected --> [*]
-```
-
----
-
-## Pipeline de dados
-
-O fluxo de uma decisão até virar conhecimento queryable:
-
-```
-Engineer writes ADR
-    → Git commit + pre-commit validation
-    → adr sync gera knowledge_base.json
-    → PHANTOM chunka e gera embeddings
-    → CEREBRO indexa no knowledge vault
-    → Agente responde com citações
-```
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│ ADR-LEDGER (source of truth)                                  │
-│                                                                │
-│  .md files → Parser → JSON artifacts → Git commit             │
-└──────────────────┬───────────────────────────────────────────┘
-                   │ adr export --format jsonl
-                   ▼
-┌──────────────────────────────────────────────────────────────┐
-│ PHANTOM (sanitização)                                         │
-│                                                                │
-│  Semantic chunking → Embedding generation → FAISS indexing    │
-└──────────────────┬───────────────────────────────────────────┘
-                   │ Chunks + embeddings
-                   ▼
-┌──────────────────────────────────────────────────────────────┐
-│ CEREBRO (knowledge vault)                                     │
-│                                                                │
-│  RAG retrieval → Graph traversal → Context + citations        │
-└──────────────────┬───────────────────────────────────────────┘
-                   │ MCP / API
-                   ▼
-┌──────────────────────────────────────────────────────────────┐
-│ AI-Agent-OS (interface)                                       │
-│                                                                │
-│  claude-code → "Why Redis?" → ADR-0042 com citações           │
-└──────────────────────────────────────────────────────────────┘
-```
-
-### Formato de export (RAG-optimized)
-
-```json
-{
-  "id": "ADR-0001",
-  "type": "architecture_decision",
-  "title": "Use NixOS for Infrastructure",
-  "status": "accepted",
-  "summary": "[ADR-0001] Use NixOS: We will use NixOS...",
-  "scope": {
-    "projects": ["NEUTRON", "CEREBRO"],
-    "layers": ["infrastructure"]
-  },
-  "knowledge": {
-    "what": "Decision text",
-    "why": "Context and rationale",
-    "implications": {
-      "positive": ["Reproducibility", "Rollbacks"],
-      "negative": ["Learning curve"]
-    },
-    "alternatives_rejected": ["Docker Compose", "Kubernetes"]
-  },
-  "questions": ["Why NixOS?", "How does rollback work?"],
-  "keywords": ["nixos", "infrastructure", "declarative"],
-  "relations": {
-    "supersedes": [],
-    "related": ["ADR-0002"],
-    "enables": ["ADR-0003"]
-  },
-  "governance": {
-    "classification": "critical",
-    "compliance": ["INFRASTRUCTURE"]
-  },
-  "metadata": {
-    "date": "2025-01-10",
-    "version": 1,
-    "hash": "a1b2c3d4e5f6"
-  }
-}
+# Check if current flake.lock dependencies drift from the accepted ADRs
+$ adr sbom
+# Output: Validating CycloneDX 1.6 SBOM... No drift detected.
 ```
 
 ---
@@ -369,131 +151,72 @@ Engineer writes ADR
 ## CLI Reference
 
 ```bash
-adr new       # Criar nova ADR
-adr list      # Listar ADRs
-adr show      # Mostrar detalhes
-adr accept    # Aceitar ADR proposta
-adr supersede # Marcar como superseded
-adr search    # Buscar por texto
-adr sync      # Sincronizar knowledge base
-adr graph     # Gerar grafo Mermaid
-adr validate  # Validar ADRs
-adr export    # Export como JSON/JSONL
+# Core Operations
+adr new       # Create new ADR
+adr list      # List ADRs by status/project
+adr show      # Show ADR details
+adr accept    # Accept proposed ADR (triggers blockchain state transition)
+adr supersede # Mark as superseded and link bidirectional graph
+adr search    # Semantic and full-text search
+adr validate  # Validate schema, mandatory fields, and compliance rules
+adr sync      # Sync knowledge base, generate JSON artifacts
+
+# Export & Visualization
+adr export    # Export as JSON/JSONL (RAG-optimized streaming)
+adr graph     # Generate Mermaid graph
+adr viz       # Generate visual knowledge graph (dot/svg/html)
+
+# Cryptographic Governance (.chain)
+adr sbom         # Supply chain SBOM & dependency inventory
+adr anchor       # Temporal anchoring (OpenTimestamps proofs)
+adr pre-sign     # Pre-sign an ADR (Multi-sig setup)
+adr pending-sigs # Manage and view pending signatures
 ```
-
-### Export e filtering
-
-```bash
-# JSON (pretty-printed)
-adr export adr/accepted --format json
-
-# JSONL (streaming, uma ADR por linha)
-adr export adr/accepted --format jsonl --compact
-
-# Filtros combinados
-adr export adr --format jsonl \
-  --filter-status accepted \
-  --filter-project CEREBRO \
-  --since 2026-01-01 \
-  --compact
-
-# Integração direta com PHANTOM
-adr export adr/accepted --format jsonl --compact | \
-  phantom-cli ingest --source adr-ledger
-```
-
-Para documentação completa de export, ver [docs/EXPORT_GUIDE.md](docs/EXPORT_GUIDE.md).
 
 ---
 
-## Governança
+## Governance as Code
 
-Governança é código, não processo manual. Definida em `.governance/governance.yaml`:
+Governance is automated, not a manual process. Defined in `.governance/governance.yaml`:
 
-```yaml
-approval_matrix:
-  critical:
-    required_approvals: 2
-    approvers: [architect, security_lead]
-    review_deadline: "7 days"
+### Compliance Automation
 
-  major:
-    required_approvals: 1
-    approvers: [architect, senior_engineer]
-    review_deadline: "3 days"
-
-  minor:
-    required_approvals: 1
-    approvers: [architect, senior_engineer]
-    auto_approve_after: "2 days"
-
-  patch:
-    auto_approve: true
-    post_review: true
-```
-
-### O que é validado automaticamente
-
-Pre-commit hooks verificam:
-- Schema YAML contra `.schema/adr.schema.json`
-- Campos obrigatórios preenchidos
-- Classificação vs. aprovadores corretos (critical exige architect + security_lead)
-- Compliance tags coerentes com layers (data layer exige LGPD)
-- Seções obrigatórias: Context, Decision, Consequences
-
-Post-commit hooks disparam:
-- Sincronização do knowledge base
-- Atualização do knowledge graph
-- Notificação de stakeholders
-
-### Compliance
-
-O sistema suporta validação automática para frameworks de compliance:
+The system uses Git hooks (Pre-commit/Post-commit) to enforce:
+- **Approval Matrix**: `critical` requires 2 signatures (Architect + Security Lead).
+- **Compliance Triggers**: ADRs modifying `data` layers automatically require the `LGPD` tag.
+- **Supply Chain Drift**: `post-commit` verifies if new Nix flake inputs map to an accepted ADR.
+- **Integrity**: Validates the private blockchain Merkle root against tampered markdown files.
 
 ```yaml
-compliance_rules:
-  LGPD:
-    applies_to:
-      - layers: [data, api]
-      - keywords: ["pii", "personal data"]
-    requirements:
-      - data_retention_policy: true
-      - encryption_at_rest: true
+compliance:
+  lgpd:
+    trigger_keywords: ["PII", "personal data", "user data"]
+    required_tags: ["LGPD"]
+    required_sections: ["data_retention"]
+    required_reviewer_role: "security_lead"
 
-  SOC2:
-    applies_to:
-      - environments: [production]
-    requirements:
-      - change_management: true
-      - rollback_plan: true
-      - monitoring_plan: true
+chain:
+  require_signatures: true
+  merkle_tree:
+    enabled: true
+  supply_chain:
+    drift_detection:
+      enabled: true
+      check_on_commit: true
 ```
-
-### Audit export
-
-```bash
-# Pacote de auditoria SOC2
-adr governance audit \
-  --framework SOC2 \
-  --start-date 2026-01-01 \
-  --end-date 2026-01-31 \
-  --output soc2-audit-jan-2026.zip
-```
-
-O pacote inclui ADRs aceitas com trail de aprovação, política de governança, assinaturas GPG verificadas, e relatórios de validação.
 
 ---
 
-## Schema ADR
+## ADR Schema
 
-Cada ADR segue o schema em `.schema/adr.schema.json`:
+Each ADR is validated against `.schema/adr.schema.json`:
 
 ```yaml
 ---
-id: "ADR-0001"
-title: "Título da Decisão"
+id: "ADR-0042"
+title: "Decision Title"
 status: accepted  # proposed | accepted | rejected | deprecated | superseded
-date: "2025-01-10"
+date: "2026-02-15"
 
 authors:
   - name: "Pina"
@@ -501,27 +224,21 @@ authors:
 
 governance:
   classification: "major"  # critical | major | minor | patch
-  compliance_tags: ["LGPD", "SECURITY"]
+  compliance_tags: ["SECURITY", "INFRA"]
 
 scope:
-  projects: [CEREBRO, SPECTRE]
-  layers: [data, ml]
-  environments: [all]
+  projects: [IntelSense, NEUTRON]
+  layers: [infrastructure, security]
+  environments: [production]
 
 knowledge_extraction:
-  keywords: ["RAG", "vector search"]
-  concepts: ["Semantic Search"]
+  keywords: ["OSINT", "spider-nix"]
+  concepts: ["Threat Intelligence"]
   questions_answered:
-    - "Como funciona o retrieval?"
+    - "How do we gather external threat feeds?"
 ---
 
 ## Context
-...
-
-## Decision
-...
-
-## Consequences
 ...
 ```
 
@@ -529,71 +246,46 @@ knowledge_extraction:
 
 ## Roadmap
 
-### v0.0.1 — Release inicial (NixOS / Nix) ← _em preparação_
-- [x] Schema JSON, Parser AST, CLI operacional
-- [x] Git hooks (pre-commit, post-commit)
-- [x] Export JSON/JSONL com filtering
-- [x] Blockchain layer (provenance + imutabilidade)
-- [x] Assinatura criptográfica de ADRs (NaCl)
-- [x] MCP tools para Claude Code (21 ferramentas)
+### v0.1.0 — Beta Release (Current)
+- [x] JSON Schema, AST Parser, Advanced CLI
+- [x] Pre-commit & Post-commit Git hooks integration
+- [x] JSON/JSONL streaming export with deep filtering
+- [x] Cryptographic private blockchain layer (Provenance + Immutability)
+- [x] Ed25519 Cryptographic signing & Multi-sig (`pre-sign`)
+- [x] Temporal Anchoring via OpenTimestamps
+- [x] Supply Chain drift detection (SBOM Governance)
+- [x] 80+ MCP tools for SecureLLM-MCP Integration
 - [x] CI/CD (GitHub Actions + Gitleaks)
-- [ ] Tag `v0.0.1` + binário Linux x86_64 no GitHub Releases
-- [ ] Submissão inicial ao `nixpkgs` oficial
 
-### Phase 3: Security & Integração (em andamento)
+### Phase 3: Security & Ecosystem Integration
+- [ ] `NixOS module` — `services.adr-ledger.enable = true`
+- [ ] Integration with GitHub Teams as the source of truth for IAM roles
+- [ ] Standalone Binary Packaging (Linux x86_64, `.deb`, `.rpm`)
+- [ ] Package submission to official `nixpkgs` (`unstable` channel)
+- [ ] `nix-darwin` + Home Manager for declarative macOS
 
-**IAM — Identidade e Autorização** _(crítico — bloqueador para Beta)_
-- [ ] Registry de chaves por papel (`architect`, `security_lead`, etc.) vinculado a identidades GPG/SSH reais
-- [ ] Verificação criptográfica de aprovadores: só assina quem tem chave registrada no papel correspondente
-- [ ] RBAC declarativo em `governance.yaml` — papéis com chaves públicas vinculadas
-- [ ] Integração com GitHub Teams como fonte de verdade de papéis (OAuth device flow)
-- [ ] Audit trail imutável de aprovações com prova de identidade
-
-**Nix Ecosystem** _(lacuna crítica de integração)_
-- [ ] `NixOS module` — `services.adr-ledger.enable = true` com todas as opções configuráveis
-- [ ] `Home Manager module` — setup por usuário, sem root
-- [ ] Pacote no `nixpkgs` oficial (channel `unstable` → `stable`)
-- [ ] `nix-darwin` + Home Manager para macOS declarativo
-
-**Plataformas**
-- [x] Extrair lógica embarcada no `flake.nix` para scripts standalone — `scripts/install.sh`, `scripts/install-hooks.sh`, `scripts/validate.sh`
-- [ ] `scripts/run-checks.sh` — equivalente aos 9 checks Nix para CI não-Nix (v0.1.0)
-- [ ] Linux non-Nix: binário estático + `.deb` / `.rpm`
-- [ ] macOS: Homebrew tap
-- [ ] Windows: WSL2 (v0.1.x), nativo (v0.2.x)
-
-**Funcionalidades**
-- [ ] Real-time sync via webhooks
-- [ ] Temporal anchoring (OpenTimestamps/RFC3161)
-- [ ] Visualização avançada de grafo
-
-### Phase 4: Automação (planejado)
-- [ ] Geração automática de ADRs a partir de commits
-- [ ] Análise preditiva de impacto
-- [ ] Detecção de anomalias (decisões conflitantes, policy drift)
-- [ ] Federação multi-repo descentralizada (ADR-0049)
+### Phase 4: Full Automation
+- [ ] Automatic ADR generation from Git commits (Detection Engine)
+- [ ] Predictive impact analysis using `SPECTRE`
+- [ ] Decentralized multi-repo federation (ADR-0049)
 
 ---
 
 ## Contributing
 
-Áreas de interesse:
-
-- **Parsers**: Suporte a outros formatos (MADR, Y-statements)
-- **Validators**: Novos frameworks de compliance (HIPAA, PCI-DSS)
-- **Integrations**: Jira, Linear, Confluence
-- **Visualizations**: Layouts de grafo, timeline views
+Areas of interest:
+- **Parsers**: Support for other formats (MADR, Y-statements)
+- **Validators**: New compliance frameworks (HIPAA, PCI-DSS)
+- **Visualizations**: Advanced interactive graph layouts
 
 ## License
 
-Apache 2.0 — ver [LICENSE](LICENSE).
+Apache 2.0 — see [LICENSE](LICENSE).
 
 ---
 
-Documentação adicional:
-
-- [Architecture](ARCHITECTURE.md) — Princípios de design e visão detalhada
-- [Export Guide](docs/EXPORT_GUIDE.md) — Documentação completa de export
-- [Stack Reference](docs/STACK_REFERENCE.md) — Referência técnica da stack
-- [Platforms](docs/PLATFORMS.md) — Setup em NixOS, Linux, macOS e Windows
-- [Contributing](CONTRIBUTING.md) — Setup e guia de contribuição
+Additional documentation:
+- [Architecture](ARCHITECTURE.md) — Design principles and detailed vision
+- [Export Guide](docs/EXPORT_GUIDE.md) — Complete export documentation
+- [Platforms](docs/PLATFORMS.md) — Setup on NixOS, Linux, macOS, and Windows
+- [Contributing](CONTRIBUTING.md) — Setup and contribution guide

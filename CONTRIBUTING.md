@@ -5,44 +5,44 @@
 ```bash
 git clone https://github.com/marcosfpina/adr-ledger.git
 cd adr-ledger
-nix develop  # instala dependências e git hooks automaticamente
+nix develop  # automatically installs dependencies and git hooks
 ```
 
-Sem Nix: instale `python3`, `python3-pyyaml`, `yamllint`, `jq` manualmente e rode `.hooks/install.sh`.
+Without Nix: manually install `python3`, `python3-pyyaml`, `yamllint`, `jq` and run `.hooks/install.sh`.
 
-## Estrutura
+## Structure
 
 ```
-adr/              # ADRs por status (proposed, accepted, superseded, rejected)
-.schema/          # JSON Schema de validação
-.governance/      # Governança como código (approval matrix, compliance rules)
-.parsers/         # Parser Python (adr_parser.py)
-.chain/           # Blockchain layer (provenance, assinaturas)
+adr/              # ADRs by status (proposed, accepted, superseded, rejected)
+.schema/          # JSON Schema for validation
+.governance/      # Governance as code (approval matrix, compliance rules)
+.parsers/         # Python parser (adr_parser.py)
+.chain/           # Blockchain layer (provenance, signatures)
 scripts/adr       # CLI
-docs/             # Documentação
+docs/             # Documentation
 ```
 
-## Fluxo de contribuição
+## Contribution Workflow
 
-1. Fork + branch descritiva (`feat/hipaa-compliance-validator`)
-2. Para mudanças no parser ou CLI: adicione testes em `.parsers/tests/`
-3. `nix flake check` antes do PR — todos os checks devem passar
-4. PRs pequenos e focados são mais fáceis de revisar
+1. Fork + descriptive branch (`feat/hipaa-compliance-validator`)
+2. For parser or CLI changes: add tests in `.parsers/tests/`
+3. Run `nix flake check` before opening a PR — all checks must pass
+4. Small, focused PRs are easier to review
 
-## Áreas abertas
+## Open Areas
 
-- **Parsers**: suporte a outros formatos ADR (MADR, Y-statements)
-- **Validators**: novos frameworks de compliance (HIPAA, PCI-DSS, ISO 27001)
-- **Integrações**: conectores para Jira, Linear, Confluence
-- **Visualizações**: layouts de grafo, timeline views
+- **Parsers**: support for other ADR formats (MADR, Y-statements)
+- **Validators**: new compliance frameworks (HIPAA, PCI-DSS, ISO 27001)
+- **Integrations**: connectors for Jira, Linear, Confluence
+- **Visualizations**: graph layouts, timeline views
 
-## Convenções
+## Conventions
 
-- ADRs em `adr/proposed/` seguem o schema em `.schema/adr.schema.json`
-- Commits de código: `feat(parser):`, `fix(cli):`, `chore:`
-- Commits de ADR: `arch(adr):` ou `ADR:`
-- Não commite artefatos gerados (`knowledge/`, `reports/`) — estão no `.gitignore`
+- ADRs in `adr/proposed/` follow the schema defined in `.schema/adr.schema.json`
+- Code commits: `feat(parser):`, `fix(cli):`, `chore:`
+- ADR commits: `arch(adr):` or `ADR:`
+- Do not commit generated artifacts (`knowledge/`, `reports/`) — they are listed in `.gitignore`
 
-## Licença
+## License
 
-MIT. Contribuições são feitas sob a mesma licença.
+Apache 2.0. Contributions are made under the same license.

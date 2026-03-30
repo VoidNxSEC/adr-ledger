@@ -1,84 +1,84 @@
-# Arquitetura do ADR Ledger
+# ADR Ledger Architecture
 
-> Sistema de governança arquitetural para sistemas inteligentes.
+> Architectural governance system for intelligent systems.
 
 ---
 
-## O Problema
+## The Problem
 
-Quatro agentes de IA operam sobre a mesma base de conhecimento arquitetural:
+Four AI agents operate on the same architectural knowledge base:
 
-- **CEREBRO** (RAG) — responde perguntas sobre arquitetura
-- **SPECTRE** (NLP) — analisa padrões em decisões
-- **PHANTOM** (ML) — classifica e sanitiza documentos
-- **NEUTRON** (Infra) — enforça compliance em deployments
+- **CEREBRO** (RAG) — answers questions about architecture
+- **SPECTRE** (NLP) — analyzes patterns in decisions
+- **PHANTOM** (ML) — classifies and sanitizes documents
+- **NEUTRON** (Infra) — enforces compliance in deployments
 
-Sem uma fonte de verdade centralizada, cada agente opera com informação potencialmente desatualizada ou inconsistente. Decisões se fragmentam entre Notion, Slack threads e memória de quem estava na sala.
+Without a centralized source of truth, each agent operates with potentially outdated or inconsistent information. Decisions get fragmented across Notion, Slack threads, and the memory of whoever was in the room.
 
-## A Solução
+## The Solution
 
-Um repositório Git que trata decisões arquiteturais como dados estruturados. YAML frontmatter para máquinas, Markdown para humanos. Tudo versionado, assinado e auditável.
+A Git repository that treats architectural decisions as structured data. YAML frontmatter for machines, Markdown for humans. Everything versioned, signed, and auditable.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                          ADR LEDGER                                  │
-│                     (Source of Truth)                                │
+│                          ADR LEDGER                                 │
+│                     (Source of Truth)                               │
 ├─────────────────────────────────────────────────────────────────────┤
-│                                                                      │
-│  ┌──────────┐     ┌──────────┐     ┌──────────┐     ┌──────────┐   │
-│  │   ADR    │────▶│  Parser  │────▶│   Nix    │────▶│ Artifacts│   │
-│  │   .md    │     │  Python  │     │  Build   │     │   JSON   │   │
-│  └──────────┘     └──────────┘     └──────────┘     └──────────┘   │
-│       │                                                    │         │
-│       ▼                                                    ▼         │
-│  ┌─────────────────────────────────────────────────────────────┐   │
-│  │                  GIT COMMIT (Immutable)                      │   │
-│  │  - GPG Signed · Timestamped · Auditable · Revertible        │   │
-│  └─────────────────────────────────────────────────────────────┘   │
-│                                                                      │
+│                                                                     │
+│  ┌──────────┐     ┌──────────┐     ┌──────────┐     ┌──────────┐    │
+│  │   ADR    │────▶│  Parser  │────▶│   Nix    │────▶│ Artifacts│    │
+│  │   .md    │     │  Python  │     │  Build   │     │   JSON   │    │
+│  └──────────┘     └──────────┘     └──────────┘     └──────────┘    │
+│       │                                                    │        │
+│       ▼                                                    ▼        │
+│  ┌─────────────────────────────────────────────────────────────┐    │
+│  │                  GIT COMMIT (Immutable)                     │    │
+│  │  - GPG Signed · Timestamped · Auditable · Revertible        │    │
+│  └─────────────────────────────────────────────────────────────┘    │
+│                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
                               │
                               ▼
         ┌──────────────────────────────────────────────┐
-        │          AGENTES CONSOMEM                     │
+        │               AGENTS CONSUME                 │
         ├──────────────────────────────────────────────┤
-        │  CEREBRO (RAG) · SPECTRE (NLP) · PHANTOM (ML)│
-        │              │                                │
-        │              ▼                                │
-        │     NEUTRON (Infrastructure)                  │
-        │              │                                │
-        │              ▼                                │
-        │      NixOS Config (Declarative)               │
+        │ CEREBRO (RAG) · SPECTRE (NLP) · PHANTOM (ML) │
+        │              │                               │
+        │              ▼                               │
+        │     NEUTRON (Infrastructure)                 │
+        │              │                               │
+        │              ▼                               │
+        │      NixOS Config (Declarative)              │
         └──────────────────────────────────────────────┘
 ```
 
 ---
 
-## Princípios de Design
+## Design Principles
 
-### 1. Imutabilidade
+### 1. Immutability
 
-Cada ADR é um registro. Não editamos decisões passadas — criamos novas que supersede as antigas.
+Each ADR is a record. We do not edit past decisions — we create new ones that supersede the old ones.
 
 ```yaml
 # ADR-0001.md
 status: accepted
 ---
-# Depois de 6 meses
+# 6 months later
 status: superseded
 superseded_by: "ADR-0042"
 ```
 
-Motivo: audit trail completo, compreensão de evolução arquitetural, compliance (LGPD, SOC2, ISO27001), e a capacidade de responder "por que decidimos X em 2024?".
+Reason: Complete audit trail, understanding of architectural evolution, compliance (LGPD, SOC2, ISO27001), and the ability to answer "why did we decide X in 2024?".
 
-### 2. Parseabilidade
+### 2. Parseability
 
-ADRs são YAML frontmatter + Markdown. Humanos leem Markdown. Máquinas leem YAML.
+ADRs are YAML frontmatter + Markdown. Humans read Markdown. Machines read YAML.
 
 ```yaml
 ---
 id: "ADR-0005"
-title: "NixOS como Base Declarativa"
+title: "NixOS as Declarative Base"
 status: accepted
 classification: critical
 
@@ -94,34 +94,34 @@ knowledge_extraction:
   keywords: [NixOS, declarative, reproducible]
   concepts: [Infrastructure as Code, Immutability]
   questions_answered:
-    - "Por que NixOS?"
-    - "Como garantir reproducibilidade?"
+    - "Why NixOS?"
+    - "How to guarantee reproducibility?"
 ---
 ```
 
-O Parser transforma ADRs em:
+The Parser transforms ADRs into:
 - `knowledge_base.json` → CEREBRO (RAG retrieval)
-- `spectre_corpus.json` → SPECTRE (análise de padrões)
-- `phantom_training.json` → PHANTOM (features de ML)
-- `graph.json` → Grafo de relações entre decisões
+- `spectre_corpus.json` → SPECTRE (pattern analysis)
+- `phantom_training.json` → PHANTOM (ML features)
+- `graph.json` → Decision relationship graph
 
-### 3. Automação
+### 3. Automation
 
-Git hooks + Nix eliminam friction no workflow.
+Git hooks + Nix eliminate friction in the workflow.
 
-**Pre-commit:** valida YAML schema, checa compliance triggers, bloqueia se inválido.
+**Pre-commit:** Validates YAML schema, checks compliance triggers, blocks if invalid.
 
-**Post-commit:** regenera knowledge_base.json, notifica agentes, atualiza graph.
+**Post-commit:** Regenerates knowledge_base.json, notifies agents, updates graph.
 
 **Nix rebuild:**
 ```nix
-# NEUTRON importa o ADR Ledger
+# NEUTRON imports the ADR Ledger
 inputs.adr-ledger.url = "path:/infra/adr-ledger";
 
-# Extrai compliance rules
+# Extracts compliance rules
 complianceRules = adr-ledger.lib.getComplianceADRs knowledgeBase;
 
-# Enforça declarativamente
+# Enforces declaratively
 boot.initrd.luks.devices =
   if (hasRule complianceRules "disk-encryption")
   then { root = { device = "/dev/sda2"; }; }
@@ -130,24 +130,24 @@ boot.initrd.luks.devices =
 
 ---
 
-## Workflow Completo
+## Complete Workflow
 
-### Fase 1: Proposta
+### Phase 1: Proposal
 
 ```bash
-nix develop  # devShell com git hooks auto-instalados
+nix develop  # devShell with auto-installed git hooks
 
 adr new \
-  -t "Migrar de PostgreSQL para FoundationDB" \
+  -t "Migrate from PostgreSQL to FoundationDB" \
   -p CEREBRO -p PHANTOM \
   -c major
 
-# Gera: adr/proposed/ADR-0042.md
+# Generates: adr/proposed/ADR-0042.md
 ```
 
-### Fase 2: Revisão
+### Phase 2: Review
 
-Governança em código (`.governance/governance.yaml`):
+Governance as code (`.governance/governance.yaml`):
 ```yaml
 approval_matrix:
   major:
@@ -156,7 +156,7 @@ approval_matrix:
     timeout_days: 5
 ```
 
-Compliance triggers automáticos:
+Automatic compliance triggers:
 ```yaml
 compliance:
   data:
@@ -164,38 +164,38 @@ compliance:
     required_reviewer_role: security_lead
 ```
 
-### Fase 3: Aprovação
+### Phase 3: Approval
 
 ```bash
-# Após code review no PR
+# After code review in the PR
 adr accept ADR-0042
-# → Move para adr/accepted/
-# → Atualiza status
-# → Roda adr sync
+# → Moves to adr/accepted/
+# → Updates status
+# → Runs adr sync
 ```
 
-### Fase 4: Sincronização
+### Phase 4: Synchronization
 
 ```bash
-# Auto-executado por post-commit hook
+# Auto-executed by post-commit hook
 adr sync
 
-# Gera:
+# Generates:
 # - knowledge/knowledge_base.json
 # - knowledge/graph.json
 # - knowledge/spectre_corpus.json
 # - knowledge/phantom_training.json
 ```
 
-### Fase 5: Ingestão pelos Agentes
+### Phase 5: Agent Ingestion
 
-**CEREBRO** detecta mudança, re-chunks ADRs modificados, gera embeddings (text-embedding-3-large), atualiza vector store (pgvector), invalida cache.
+**CEREBRO** detects change, re-chunks modified ADRs, generates embeddings (text-embedding-3-large), updates vector store (pgvector), invalidates cache.
 
-**SPECTRE** analisa sentiment do corpus — negativity score alto pode indicar decisão forçada ou tech debt.
+**SPECTRE** analyzes sentiment of the corpus — high negativity score may indicate forced decision or tech debt.
 
-**PHANTOM** retreina classificador com features extraídas dos ADRs (context_length, num_risks, etc).
+**PHANTOM** retrains classifier with features extracted from ADRs (context_length, num_risks, etc).
 
-**NEUTRON** enforça compliance declarativamente via NixOS modules:
+**NEUTRON** enforces compliance declaratively via NixOS modules:
 ```nix
 { config, lib, pkgs, adr-ledger, ... }:
 let
@@ -218,23 +218,23 @@ in {
 
 ---
 
-## Propriedades do Sistema
+## System Properties
 
-### Source of Truth única
+### Single Source of Truth
 
 ```
-"Por que usamos NixOS?"
+"Why do we use NixOS?"
     → git log --grep ADR-0005
-    → ADR-0005.md (decisão documentada)
+    → ADR-0005.md (documented decision)
     → knowledge_base.json (knowledge graph)
-    → CEREBRO responde com citações e fontes
+    → CEREBRO responds with citations and sources
 ```
 
-Sem ambiguidade. Fonte rastreável.
+No ambiguity. Traceable source.
 
-### Governança Git-native
+### Git-native Governance
 
-Governança não é processo separado — é código versionado no mesmo repo.
+Governance is not a separate process — it is versioned code in the same repo.
 
 ```yaml
 # .governance/governance.yaml
@@ -251,14 +251,14 @@ lifecycle:
       max_duration_days: 14
 ```
 
-Git hooks enforçam automaticamente: schema validation, required approvers, compliance sections, status transitions válidos.
+Git hooks automatically enforce: schema validation, required approvers, compliance sections, valid status transitions.
 
 ### Nix: Declarative Everything
 
 ```nix
 {
   packages = {
-    adr-parser = ...;      # Parser Python empacotado
+    adr-parser = ...;      # Packaged Python parser
     adr-cli = ...;         # CLI wrapper
     adr-hooks = ...;       # Git hooks installer
   };
@@ -286,7 +286,7 @@ Git hooks enforçam automaticamente: schema validation, required approvers, comp
 }
 ```
 
-Qualquer sistema importa via flake input:
+Any system imports via flake input:
 ```nix
 inputs.adr-ledger.url = "path:/infra/adr-ledger";
 ```
@@ -294,19 +294,19 @@ inputs.adr-ledger.url = "path:/infra/adr-ledger";
 ### Zero friction
 
 ```bash
-nix develop        # Ambiente completo, hooks instalados
-adr new -t "..." -p CEREBRO -c minor  # Template gerado
-git commit         # Pre-commit valida, post-commit sincroniza
+nix develop        # Full environment, hooks installed
+adr new -t "..." -p CEREBRO -c minor  # Template generated
+git commit         # Pre-commit validates, post-commit syncs
 ```
 
-Sem configuração manual. Sem "esqueci de rodar o parser".
+No manual configuration. No "I forgot to run the parser".
 
-### Auditabilidade
+### Auditability
 
 ```bash
-git log --follow adr/accepted/ADR-0005.md    # Quando
-git log --grep="ADR-0005" --format="%an %s"  # Quem aprovou
-git diff ADR-0005.md ADR-0042.md             # Por que mudou
+git log --follow adr/accepted/ADR-0005.md    # When
+git log --grep="ADR-0005" --format="%an %s"  # Who approved
+git diff ADR-0005.md ADR-0042.md             # Why it changed
 
 # Compliance audit
 cat knowledge/knowledge_base.json | \
@@ -315,50 +315,50 @@ cat knowledge/knowledge_base.json | \
 
 ---
 
-## Visão de Futuro: Closed Loop
+## Future Vision: Closed Loop
 
 ADR → Code → Deploy → Monitoring → ADR
 
 ```
-1. DECISÃO
+1. DECISION
    ADR-0050: "Use gRPC for inter-service comms"
        ↓
-2. IMPLEMENTAÇÃO
-   PHANTOM valida: "Está usando gRPC conforme ADR-0050?"
-   Se não: bloqueia merge
+2. IMPLEMENTATION
+   PHANTOM validates: "Is it using gRPC per ADR-0050?"
+   If not: blocks merge
        ↓
 3. DEPLOYMENT
-   NEUTRON checa compliance, enforça TLS obrigatório
+   NEUTRON checks compliance, enforces mandatory TLS
        ↓
 4. MONITORING
-   SPECTRE analisa: "Latency 30% maior que esperado"
-   Cria issue: "ADR-0050 assumptions may be wrong"
+   SPECTRE analyzes: "Latency 30% higher than expected"
+   Creates issue: "ADR-0050 assumptions may be wrong"
        ↓
-5. EVOLUÇÃO
-   Propõe ADR-0067: "Optimize gRPC with compression"
+5. EVOLUTION
+   Proposes ADR-0067: "Optimize gRPC with compression"
    supersedes: ADR-0050
    rationale: "Production data shows..."
 ```
 
-### Recursos planejados
+### Planned Features
 
-**ADR-as-Policy**: Nix enforça ADRs como políticas de deploy, bloqueando violações e monitorando compliance.
+**ADR-as-Policy**: Nix enforces ADRs as deploy policies, blocking violations and monitoring compliance.
 
-**AI-Suggested ADRs**: CEREBRO detecta padrões anômalos e sugere ADRs automaticamente.
+**AI-Suggested ADRs**: CEREBRO detects anomalous patterns and suggests ADRs automatically.
 
-**Compliance Dashboards**: `adr compliance-report --format html` com status por framework.
+**Compliance Dashboards**: `adr compliance-report --format html` with status per framework.
 
-**ADR Diffing**: `adr diff ADR-0005@v1 ADR-0005@v3` com mudanças em scope, risks e consequences.
+**ADR Diffing**: `adr diff ADR-0005@v1 ADR-0005@v3` showing changes in scope, risks, and consequences.
 
 ---
 
-## Stack Técnico
+## Technical Stack
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│                    ADR LEDGER STACK                       │
+│                    ADR LEDGER STACK                      │
 ├──────────────────────────────────────────────────────────┤
-│                                                           │
+│                                                          │
 │  Storage:        Git (version control + audit)           │
 │  Format:         YAML frontmatter + Markdown             │
 │  Validation:     JSON Schema + yamllint                  │
@@ -369,28 +369,28 @@ ADR → Code → Deploy → Monitoring → ADR
 │  Distribution:   Nix packages (adr-parser, adr-cli)      │
 │  Integration:    NixOS modules + lib functions           │
 │  Chain:          Private blockchain (provenance layer)   │
-│                                                           │
+│                                                          │
 ├──────────────────────────────────────────────────────────┤
-│                   AGENTES                                 │
+│                      AGENTS                              │
 ├──────────────────────────────────────────────────────────┤
-│                                                           │
+│                                                          │
 │  CEREBRO:        pgvector + text-embedding-3-large       │
 │  SPECTRE:        spaCy + Transformers (NLP)              │
 │  PHANTOM:        scikit-learn (classification)           │
 │  NEUTRON:        NixOS (declarative infra)               │
-│                                                           │
+│                                                          │
 └──────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Referências
+## References
 
 - [Architecture Decision Records (ADRs)](https://adr.github.io/)
 - [Nix Flakes](https://nixos.wiki/wiki/Flakes)
 - [Knowledge Graphs](https://en.wikipedia.org/wiki/Knowledge_graph)
 - [RAG (Retrieval Augmented Generation)](https://arxiv.org/abs/2005.11401)
 
-## Licença
+## License
 
-MIT
+Apache 2.0

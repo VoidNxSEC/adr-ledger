@@ -6,19 +6,26 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+    }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
 
         # Versão
-        version = "1.0.0";
+        version = "0.1.0";
 
         # Python e dependências
         python = pkgs.python313;
         pythonPackages = python.pkgs;
 
-      in {
+      in
+      {
         # =================================================================
         # PACKAGES
         # =================================================================
@@ -33,7 +40,7 @@
             # Dependências Python
             propagatedBuildInputs = with pythonPackages; [
               pyyaml
-              pynacl   # Ed25519 signatures for decision chain
+              pynacl # Ed25519 signatures for decision chain
             ];
 
             # Script de entrada
@@ -249,7 +256,12 @@
 
             REPO_ROOT=$(git rev-parse --show-toplevel)
             CHAIN_DIR="$REPO_ROOT/.chain"
-            PYTHON="${python.withPackages (ps: [ ps.pyyaml ps.pynacl ])}/bin/python3"
+            PYTHON="${
+              python.withPackages (ps: [
+                ps.pyyaml
+                ps.pynacl
+              ])
+            }/bin/python3"
             ERRORS=0
 
             # --- 1. ADR Schema Validation ---
@@ -400,7 +412,7 @@
             # Python 3.13 e dependências
             python
             pythonPackages.pyyaml
-            pythonPackages.pynacl    # Ed25519 for decision chain
+            pythonPackages.pynacl # Ed25519 for decision chain
             pythonPackages.jsonschema
 
             # Ferramentas de validação
@@ -460,225 +472,251 @@
         # =================================================================
         checks = {
           # Validar schema JSON
-          schema-valid = pkgs.runCommand "validate-schema" {
-            buildInputs = [ pkgs.check-jsonschema ];
-          } ''
-            ${pkgs.check-jsonschema}/bin/check-jsonschema \
-              --check-metaschema ${./.schema/adr.schema.json}
+          schema-valid =
+            pkgs.runCommand "validate-schema"
+              {
+                buildInputs = [ pkgs.check-jsonschema ];
+              }
+              ''
+                ${pkgs.check-jsonschema}/bin/check-jsonschema \
+                  --check-metaschema ${./.schema/adr.schema.json}
 
-            touch $out
-          '';
+                touch $out
+              '';
 
           # Validar governance.yaml
-          governance-valid = pkgs.runCommand "validate-governance" {
-            buildInputs = [ pkgs.yamllint ];
-          } ''
-            ${pkgs.yamllint}/bin/yamllint \
-              -d "{extends: default, rules: {line-length: {max: 120}}}" \
-              ${./.governance/governance.yaml}
+          governance-valid =
+            pkgs.runCommand "validate-governance"
+              {
+                buildInputs = [ pkgs.yamllint ];
+              }
+              ''
+                ${pkgs.yamllint}/bin/yamllint \
+                  -d "{extends: default, rules: {line-length: {max: 120}}}" \
+                  ${./.governance/governance.yaml}
 
-            touch $out
-          '';
+                touch $out
+              '';
 
           # Testar parser
-          parser-tests = pkgs.runCommand "parser-tests" {
-            buildInputs = [
-              self.packages.${system}.adr-parser
-              pythonPackages.pyyaml
-            ];
-          } ''
-            # Tentar parsear os ADRs aceitos
-            ${self.packages.${system}.adr-parser}/bin/adr-parser \
-              ${./adr/accepted} \
-              --format json > /dev/null
+          parser-tests =
+            pkgs.runCommand "parser-tests"
+              {
+                buildInputs = [
+                  self.packages.${system}.adr-parser
+                  pythonPackages.pyyaml
+                ];
+              }
+              ''
+                # Tentar parsear os ADRs aceitos
+                ${self.packages.${system}.adr-parser}/bin/adr-parser \
+                  ${./adr/accepted} \
+                  --format json > /dev/null
 
-            echo "Parser tests passed"
-            touch $out
-          '';
+                echo "Parser tests passed"
+                touch $out
+              '';
 
           # Verificar SBOM integrity (se existir)
-          sbom-valid = pkgs.runCommand "validate-sbom" {
-            buildInputs = [
-              python
-              pythonPackages.pyyaml
-              pythonPackages.pynacl
-            ];
-          } ''
-            if [ -f ${./.chain/sbom/sbom_current.json} ]; then
-              cd ${./.}
-              ${python}/bin/python3.13 .chain/sbom_manager.py verify
-              echo "SBOM verification passed"
-            else
-              echo "No SBOM found (skipping verification)"
-            fi
-            touch $out
-          '';
+          sbom-valid =
+            pkgs.runCommand "validate-sbom"
+              {
+                buildInputs = [
+                  python
+                  pythonPackages.pyyaml
+                  pythonPackages.pynacl
+                ];
+              }
+              ''
+                if [ -f ${./.chain/sbom/sbom_current.json} ]; then
+                  cd ${./.}
+                  ${python}/bin/python3.13 .chain/sbom_manager.py verify
+                  echo "SBOM verification passed"
+                else
+                  echo "No SBOM found (skipping verification)"
+                fi
+                touch $out
+              '';
 
           # Verificar integridade da chain (se existir)
-          chain-valid = pkgs.runCommand "validate-chain" {
-            buildInputs = [
-              python
-              pythonPackages.pyyaml
-              pythonPackages.pynacl
-            ];
-          } ''
-            if [ -f ${./.chain/chain.json} ]; then
-              cd ${./.}
-              ${python}/bin/python3.13 .chain/chain_manager.py verify
-              echo "Chain verification passed"
-            else
-              echo "No chain found (skipping verification)"
-            fi
-            touch $out
-          '';
+          chain-valid =
+            pkgs.runCommand "validate-chain"
+              {
+                buildInputs = [
+                  python
+                  pythonPackages.pyyaml
+                  pythonPackages.pynacl
+                ];
+              }
+              ''
+                if [ -f ${./.chain/chain.json} ]; then
+                  cd ${./.}
+                  ${python}/bin/python3.13 .chain/chain_manager.py verify
+                  echo "Chain verification passed"
+                else
+                  echo "No chain found (skipping verification)"
+                fi
+                touch $out
+              '';
 
           # Validar governance contracts em todos os ADRs aceitos
-          governance-contracts = pkgs.runCommand "validate-governance-contracts" {
-            buildInputs = [
-              python
-              pythonPackages.pyyaml
-              pythonPackages.pynacl
-            ];
-          } ''
-            cd ${./.}
-            ${python}/bin/python3.13 .chain/governance_engine.py validate-all \
-              --adr-dir adr/accepted \
-              --mode warn
-            echo "Governance contracts validation passed"
-            touch $out
-          '';
+          governance-contracts =
+            pkgs.runCommand "validate-governance-contracts"
+              {
+                buildInputs = [
+                  python
+                  pythonPackages.pyyaml
+                  pythonPackages.pynacl
+                ];
+              }
+              ''
+                cd ${./.}
+                ${python}/bin/python3.13 .chain/governance_engine.py validate-all \
+                  --adr-dir adr/accepted \
+                  --mode warn
+                echo "Governance contracts validation passed"
+                touch $out
+              '';
 
           # Verificar consistência da Merkle tree com a chain
-          merkle-valid = pkgs.runCommand "validate-merkle" {
-            buildInputs = [
-              python
-              pythonPackages.pyyaml
-              pythonPackages.pynacl
-            ];
-          } ''
-            cd ${./.}
-            ${python}/bin/python3.13 << 'PYEOF'
-import sys, json, hashlib
-sys.path.insert(0, ".chain")
-from merkle_tree import MerkleTree
+          merkle-valid =
+            pkgs.runCommand "validate-merkle"
+              {
+                buildInputs = [
+                  python
+                  pythonPackages.pyyaml
+                  pythonPackages.pynacl
+                ];
+              }
+              ''
+                            cd ${./.}
+                            ${python}/bin/python3.13 << 'PYEOF'
+                import sys, json, hashlib
+                sys.path.insert(0, ".chain")
+                from merkle_tree import MerkleTree
 
-# Rebuild from chain in memory
-tree = MerkleTree()
-root = tree.build_from_chain()
+                # Rebuild from chain in memory
+                tree = MerkleTree()
+                root = tree.build_from_chain()
 
-# Load stored state
-state = json.loads(open(".chain/merkle/merkle_state.json").read())
-stored_root = state.get("root_hash", "")
+                # Load stored state
+                state = json.loads(open(".chain/merkle/merkle_state.json").read())
+                stored_root = state.get("root_hash", "")
 
-if root != stored_root:
-    print(f"Merkle root mismatch: computed={root[:32]}... stored={stored_root[:32]}...", file=sys.stderr)
-    sys.exit(1)
+                if root != stored_root:
+                    print(f"Merkle root mismatch: computed={root[:32]}... stored={stored_root[:32]}...", file=sys.stderr)
+                    sys.exit(1)
 
-print(f"Merkle tree consistent: {state['leaf_count']} leaves, {state['height']} levels")
-print(f"Root: {root[:32]}...")
-PYEOF
-            echo "Merkle tree validation passed"
-            touch $out
-          '';
+                print(f"Merkle tree consistent: {state['leaf_count']} leaves, {state['height']} levels")
+                print(f"Root: {root[:32]}...")
+                PYEOF
+                            echo "Merkle tree validation passed"
+                            touch $out
+              '';
 
           # Detectar IDs duplicados entre proposed/, accepted/, superseded/
-          id-conflicts = pkgs.runCommand "check-id-conflicts" {
-            buildInputs = [
-              python
-              pythonPackages.pyyaml
-            ];
-          } ''
-            ${python}/bin/python3.13 -c "
-import os, re, sys
-ids = {}
-for root, _, files in os.walk('${./adr}'):
-    for f in files:
-        if f.endswith('.md'):
-            path = os.path.join(root, f)
-            with open(path) as fh:
-                for line in fh:
-                    m = re.match(r'^id:\s*\"?(ADR-\d+)\"?', line)
-                    if m:
-                        aid = m.group(1)
-                        if aid in ids:
-                            print(f'CONFLICT: {aid} in {ids[aid]} AND {path}', file=sys.stderr)
-                            sys.exit(1)
-                        ids[aid] = path
-                        break
-print(f'No ID conflicts ({len(ids)} unique ADRs)')
-            "
-            touch $out
-          '';
+          id-conflicts =
+            pkgs.runCommand "check-id-conflicts"
+              {
+                buildInputs = [
+                  python
+                  pythonPackages.pyyaml
+                ];
+              }
+              ''
+                            ${python}/bin/python3.13 -c "
+                import os, re, sys
+                ids = {}
+                for root, _, files in os.walk('${./adr}'):
+                    for f in files:
+                        if f.endswith('.md'):
+                            path = os.path.join(root, f)
+                            with open(path) as fh:
+                                for line in fh:
+                                    m = re.match(r'^id:\s*\"?(ADR-\d+)\"?', line)
+                                    if m:
+                                        aid = m.group(1)
+                                        if aid in ids:
+                                            print(f'CONFLICT: {aid} in {ids[aid]} AND {path}', file=sys.stderr)
+                                            sys.exit(1)
+                                        ids[aid] = path
+                                        break
+                print(f'No ID conflicts ({len(ids)} unique ADRs)')
+                            "
+                            touch $out
+              '';
 
           # Verificar assinaturas criptográficas na chain
-          signatures-valid = pkgs.runCommand "validate-signatures" {
-            buildInputs = [
-              python
-              pythonPackages.pyyaml
-              pythonPackages.pynacl
-            ];
-          } ''
-            cd ${./.}
-            ${python}/bin/python3.13 -c "
-import sys
-sys.path.insert(0, '.chain')
-from chain_manager import ChainManager
-from crypto import verify_signature, Signature
+          signatures-valid =
+            pkgs.runCommand "validate-signatures"
+              {
+                buildInputs = [
+                  python
+                  pythonPackages.pyyaml
+                  pythonPackages.pynacl
+                ];
+              }
+              ''
+                            cd ${./.}
+                            ${python}/bin/python3.13 -c "
+                import sys
+                sys.path.insert(0, '.chain')
+                from chain_manager import ChainManager
+                from crypto import verify_signature, Signature
 
-cm = ChainManager()
-cm.load()
-checked = 0
-for block in cm.state.chain:
-    for sig in block.signatures:
-        s = Signature(**sig) if isinstance(sig, dict) else sig
-        if not verify_signature(block.block_hash, s):
-            print(f'WARN: {block.adr_id} sig by {s.signer_id} — key may not be registered', file=sys.stderr)
-        else:
-            checked += 1
-            print(f'  OK: {block.adr_id} sig by {s.signer_id}')
-print(f'Verified {checked} signature(s)')
-            "
-            touch $out
-          '';
+                cm = ChainManager()
+                cm.load()
+                checked = 0
+                for block in cm.state.chain:
+                    for sig in block.signatures:
+                        s = Signature(**sig) if isinstance(sig, dict) else sig
+                        if not verify_signature(block.block_hash, s):
+                            print(f'WARN: {block.adr_id} sig by {s.signer_id} — key may not be registered', file=sys.stderr)
+                        else:
+                            checked += 1
+                            print(f'  OK: {block.adr_id} sig by {s.signer_id}')
+                print(f'Verified {checked} signature(s)')
+                            "
+                            touch $out
+              '';
         };
       }
-    ) // {
+    )
+    // {
       # ===================================================================
       # OUTPUTS CROSS-SYSTEM (lib, NixOS modules)
       # ===================================================================
 
       lib = {
         # Carregar knowledge base em Nix
-        loadKnowledgeBase = path:
-          builtins.fromJSON (builtins.readFile path);
+        loadKnowledgeBase = path: builtins.fromJSON (builtins.readFile path);
 
         # Filtrar ADRs por projeto
-        filterByProject = kb: project:
-          builtins.filter
-            (adr: builtins.elem project adr.scope.projects)
-            kb.decisions;
+        filterByProject =
+          kb: project: builtins.filter (adr: builtins.elem project adr.scope.projects) kb.decisions;
 
         # Extrair ADRs de compliance
-        getComplianceADRs = kb:
-          builtins.filter
-            (adr: adr.governance.compliance_tags != [])
-            kb.decisions;
+        getComplianceADRs = kb: builtins.filter (adr: adr.governance.compliance_tags != [ ]) kb.decisions;
 
         # Extrair ADRs por status
-        filterByStatus = kb: status:
-          builtins.filter
-            (adr: adr.status == status)
-            kb.decisions;
+        filterByStatus = kb: status: builtins.filter (adr: adr.status == status) kb.decisions;
       };
 
       # NixOS Module (para integração futura)
-      nixosModules.adr-ledger = { config, lib, pkgs, ... }:
+      nixosModules.adr-ledger =
+        {
+          config,
+          lib,
+          pkgs,
+          ...
+        }:
         with lib;
 
         let
           cfg = config.services.adr-ledger;
 
-        in {
+        in
+        {
           options.services.adr-ledger = {
             enable = mkEnableOption "ADR Ledger auto-sync";
 

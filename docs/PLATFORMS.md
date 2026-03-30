@@ -1,13 +1,13 @@
 # Platform Support
 
-ADR Ledger é desenvolvido e operado primariamente em NixOS. As outras plataformas funcionam,
-mas exigem setup manual do que o Nix entrega automaticamente.
+ADR Ledger is primarily developed and operated on NixOS. Other platforms work,
+but require manual setup for what Nix provides automatically.
 
 ---
 
 ## NixOS / Nix (Linux, macOS)
 
-Setup completo em um comando:
+Full setup in one command:
 
 ```bash
 git clone https://github.com/marcosfpina/adr-ledger.git
@@ -15,23 +15,23 @@ cd adr-ledger
 nix develop
 ```
 
-O `devShell` provisiona Python 3.13, dependências, e instala os git hooks automaticamente.
-Ambiente reproduzível — funciona igual em qualquer máquina com Nix.
+The `devShell` provisions Python 3.13, dependencies, and installs git hooks automatically.
+Reproducible environment — works the exact same way on any machine with Nix.
 
-Para validar:
+To validate:
 
 ```bash
 nix flake check
 ```
 
-**Nix no macOS**: instale via [determinate.systems/nix](https://determinate.systems/nix) ou
-o installer oficial. O flake funciona em `aarch64-darwin` (Apple Silicon) e `x86_64-darwin`.
+**Nix on macOS**: install via [determinate.systems/nix](https://determinate.systems/nix) or
+the official installer. The flake works on `aarch64-darwin` (Apple Silicon) and `x86_64-darwin`.
 
 ---
 
-## Linux (sem Nix)
+## Linux (without Nix)
 
-Instale as dependências manualmente:
+Install dependencies manually:
 
 ```bash
 # Debian/Ubuntu
@@ -44,17 +44,17 @@ sudo dnf install python3 python3-pyyaml yamllint jq git
 sudo pacman -S python python-yaml yamllint jq git
 ```
 
-Clone e configure:
+Clone and configure:
 
 ```bash
 git clone https://github.com/marcosfpina/adr-ledger.git
 cd adr-ledger
 chmod +x scripts/adr
 export PATH="$PWD/scripts:$PATH"
-bash .hooks/install.sh   # instala git hooks manualmente
+bash .hooks/install.sh   # manually install git hooks
 ```
 
-Adicione ao seu shell profile para persistir o PATH:
+Add to your shell profile to persist the PATH:
 
 ```bash
 echo 'export PATH="/path/to/adr-ledger/scripts:$PATH"' >> ~/.bashrc
@@ -64,14 +64,14 @@ echo 'export PATH="/path/to/adr-ledger/scripts:$PATH"' >> ~/.bashrc
 
 ## macOS
 
-Requer [Homebrew](https://brew.sh):
+Requires [Homebrew](https://brew.sh):
 
 ```bash
 brew install python3 yamllint jq
 pip3 install pyyaml
 ```
 
-Clone e configure:
+Clone and configure:
 
 ```bash
 git clone https://github.com/marcosfpina/adr-ledger.git
@@ -81,17 +81,17 @@ export PATH="$PWD/scripts:$PATH"
 bash .hooks/install.sh
 ```
 
-Para uma experiência mais próxima do ambiente de desenvolvimento original, considere instalar
-Nix — o flake funciona em Apple Silicon e Intel sem modificações.
+For an experience closer to the original development environment, consider installing
+Nix — the flake works on Apple Silicon and Intel without modifications.
 
 ---
 
 ## Windows
 
-O caminho recomendado é WSL2 com Ubuntu. Após instalar o WSL2:
+The recommended path is WSL2 with Ubuntu. After installing WSL2:
 
 ```bash
-# No terminal WSL2
+# In WSL2 terminal
 sudo apt install python3 python3-yaml yamllint jq git
 
 git clone https://github.com/marcosfpina/adr-ledger.git
@@ -101,44 +101,44 @@ export PATH="$PWD/scripts:$PATH"
 bash .hooks/install.sh
 ```
 
-O CLI (`scripts/adr`) é um script Bash — requer WSL2 ou Git Bash. PowerShell não é suportado.
+The CLI (`scripts/adr`) is a Bash script — it requires WSL2 or Git Bash. PowerShell is not supported.
 
-Alternativamente, Nix funciona dentro do WSL2:
+Alternatively, Nix works inside WSL2:
 
 ```bash
-# No WSL2, após instalar Nix
+# In WSL2, after installing Nix
 cd adr-ledger
 nix develop
 ```
 
 ---
 
-## Matriz de suporte
+## Support Matrix
 
-| Plataforma | Setup | Git hooks | `nix flake check` | Suporte |
+| Platform | Setup | Git hooks | `nix flake check` | Support |
 |------------|-------|-----------|-------------------|---------|
-| NixOS | `nix develop` | automático | nativo | primário |
-| Linux + Nix | `nix develop` | automático | nativo | primário |
-| macOS + Nix | `nix develop` | automático | nativo | primário |
-| Linux (sem Nix) | manual | manual | não disponível | community |
-| macOS (sem Nix) | manual | manual | não disponível | community |
-| Windows (WSL2 + Nix) | `nix develop` | automático | nativo | community |
-| Windows (WSL2, sem Nix) | manual | manual | não disponível | community |
+| NixOS | `nix develop` | automatic | native | primary |
+| Linux + Nix | `nix develop` | automatic | native | primary |
+| macOS + Nix | `nix develop` | automatic | native | primary |
+| Linux (without Nix) | manual | manual | not available | community |
+| macOS (without Nix) | manual | manual | not available | community |
+| Windows (WSL2 + Nix) | `nix develop` | automatic | native | community |
+| Windows (WSL2, without Nix) | manual | manual | not available | community |
 
-**Primário**: testado continuamente, CI roda aqui.
-**Community**: funciona, mas não é o ambiente de desenvolvimento padrão.
+**Primary**: continuously tested, CI runs here.
+**Community**: works, but is not the default development environment.
 
 ---
 
-## Dependências
+## Dependencies
 
-| Dependência | Versão mínima | Uso |
+| Dependency | Minimum Version | Usage |
 |-------------|---------------|-----|
 | Python | 3.8+ | Parser, CLI, chain modules |
-| PyYAML | qualquer | Parsing de frontmatter |
-| yamllint | qualquer | Validação de YAML |
-| jq | qualquer | Queries no knowledge base |
-| git | 2.x | Controle de versão, hooks |
-| PyNaCl | qualquer | Assinaturas criptográficas (chain) |
+| PyYAML | any | Frontmatter parsing |
+| yamllint | any | YAML validation |
+| jq | any | Knowledge base queries |
+| git | 2.x | Version control, hooks |
+| PyNaCl | any | Cryptographic signatures (chain) |
 
-Com Nix, todas as versões são fixadas no `flake.lock`.
+With Nix, all versions are pinned in `flake.lock`.
