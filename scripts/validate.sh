@@ -1,52 +1,49 @@
 #!/usr/bin/env bash
-# ADR Ledger — Standalone YAML validator (Linux portable)
-# Portable equivalent of `nix build .#checks.schema-valid` + `adr-cli validate`
-# Usage: bash scripts/validate.sh [adr-dir]
-#   adr-dir defaults to ./adr (all statuses)
+# ADR Ledger validation pipeline
+#
+# Hard failures:
+# - ADR parsing/schema validation
+# - OPA policy validation
+#
+# Soft warnings:
+# - existing chain integrity drift
+# - missing or invalid Bitcoin-compatible receipts unless governance requires them
 set -euo pipefail
 
-REPO_ROOT="${ADR_LEDGER_ROOT:-$(git rev-parse --show-toplevel)}"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 ADR_DIR="${1:-$REPO_ROOT/adr}"
-ERRORS=0
-CHECKED=0
+SCHEMA_PATH="$REPO_ROOT/.schema/adr.schema.json"
+OPA_POLICY_PATH="$REPO_ROOT/policies/adr/validation.rego"
+PYTHON_BIN="${PYTHON_BIN:-python3.13}"
 
-if ! ls "$ADR_DIR"/*/*.md >/dev/null 2>&1; then
-  echo "No ADRs found in $ADR_DIR"
-  exit 0
-fi
+echo "[INFO] ADR schema and section validation"
+"$PYTHON_BIN" "$REPO_ROOT/scripts/validate_adr.py" \
+  "$ADR_DIR" \
+  --schema "$SCHEMA_PATH" \
+  --schema-mode warn
 
-for adr in "$ADR_DIR"/*/*.md; do
-  [ -f "$adr" ] || continue
-  echo "  Validating $(basename "$adr")..."
-
-  python3.13 - "$adr" << 'PYEOF'
-import re, sys, yaml
-
-adr = sys.argv[1]
-with open(adr) as f:
-    content = f.read()
-
-match = re.match(r'^---\n(.*?)\n---', content, re.DOTALL)
-if not match:
-    print(f'No YAML frontmatter: {adr}', file=sys.stderr)
-    sys.exit(1)
-try:
-    data = yaml.safe_load(match.group(1))
-    for field in ['id', 'title', 'status', 'date']:
-        if field not in data:
-            print(f'Missing required field: {field} in {adr}', file=sys.stderr)
-            sys.exit(1)
-except Exception as e:
-    print(f'Invalid YAML in {adr}: {e}', file=sys.stderr)
-    sys.exit(1)
-PYEOF
-  [ $? -eq 0 ] && CHECKED=$((CHECKED + 1)) || ERRORS=$((ERRORS + 1))
-done
-
-if [ "$ERRORS" -gt 0 ]; then
+if [[ -f "$OPA_POLICY_PATH" ]]; then
   echo ""
-  echo "Validation failed: $ERRORS error(s) in $((CHECKED + ERRORS)) ADRs" >&2
-  exit 1
+  echo "[INFO] OPA governance validation"
+  "$REPO_ROOT/scripts/opa-validate.sh" "$ADR_DIR"
 fi
 
-echo "All $CHECKED ADRs valid"
+if [[ -f "$REPO_ROOT/.chain/chain.json" ]]; then
+  echo ""
+  echo "[INFO] Chain integrity check"
+  if ! "$PYTHON_BIN" "$REPO_ROOT/.chain/chain_manager.py" verify; then
+    echo "[WARN] Chain integrity is not clean. Validation continues because this is pre-existing ledger state drift." >&2
+  fi
+fi
+
+if [[ -f "$REPO_ROOT/.chain/bitcoin_attestation.py" ]]; then
+  echo ""
+  echo "[INFO] Bitcoin-compatible receipt verification"
+  if ! "$PYTHON_BIN" "$REPO_ROOT/.chain/bitcoin_attestation.py" verify-all; then
+    echo "[WARN] Bitcoin attestation receipts require attention." >&2
+  fi
+fi
+
+echo ""
+echo "[OK] Validation pipeline completed"

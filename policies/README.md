@@ -55,3 +55,13 @@ Auditor (qualquer pessoa)
 ├── Radicle: verifica histórico de policies (git log)
 └── Cruza: "decisão X usou policy version Y"
 → Totalmente verificável e reprodutível
+
+VALIDAÇÃO LOCAL DO ADR-LEDGER:
+═══════════════════════════════
+
+- Policy entrypoint local: `policies/adr/validation.rego`
+- Wrapper DX: `scripts/opa-validate.sh`
+- Query padrão: `data.adr.validation.result`
+- Uso:
+  - `adr policy-check`
+  - `bash scripts/opa-validate.sh`

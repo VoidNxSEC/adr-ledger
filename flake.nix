@@ -82,7 +82,13 @@
           adr-cli = pkgs.writeShellScriptBin "adr" ''
             set -euo pipefail
 
-            LEDGER_ROOT="''${ADR_LEDGER_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"
+            if [ -f "$PWD/flake.nix" ] && [ -f "$PWD/scripts/adr" ] && [ -d "$PWD/adr" ]; then
+              LEDGER_ROOT="$PWD"
+            elif [ -n "''${ADR_LEDGER_ROOT:-}" ] && [ -f "''${ADR_LEDGER_ROOT}/scripts/adr" ]; then
+              LEDGER_ROOT="$ADR_LEDGER_ROOT"
+            else
+              LEDGER_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+            fi
             SCHEMA="$LEDGER_ROOT/.schema/adr.schema.json"
             GOVERNANCE="$LEDGER_ROOT/.governance/governance.yaml"
             KNOWLEDGE_DIR="$LEDGER_ROOT/knowledge"
@@ -135,53 +141,18 @@
                 ;;
 
               validate)
-                echo "🔍 Validating ADRs..."
+                export ADR_LEDGER_ROOT="$LEDGER_ROOT"
+                ${pkgs.bash}/bin/bash $LEDGER_ROOT/scripts/validate.sh "$LEDGER_ROOT/adr"
+                ;;
 
-                # Validate schema
-                if [ ! -f "$SCHEMA" ]; then
-                  echo "❌ Schema not found: $SCHEMA"
-                  exit 1
-                fi
+              policy-check)
+                export ADR_LEDGER_ROOT="$LEDGER_ROOT"
+                ${pkgs.bash}/bin/bash $LEDGER_ROOT/scripts/opa-validate.sh "$LEDGER_ROOT/adr"
+                ;;
 
-                # Check if any ADRs exist
-                if ! ls "$LEDGER_ROOT/adr"/*/*.md 1> /dev/null 2>&1; then
-                  echo "⚠️  No ADRs found"
-                  exit 0
-                fi
-
-                # Validate each ADR
-                for adr in "$LEDGER_ROOT/adr"/*/*.md; do
-                  [ -f "$adr" ] || continue
-
-                  echo "  Validating $(basename $adr)..."
-
-                  # Extract YAML frontmatter and validate
-                  ${python.withPackages (ps: [ ps.pyyaml ])}/bin/python3 -c "
-            import re, sys, yaml, json
-
-            with open('$adr') as f:
-                content = f.read()
-
-            match = re.match(r'^---\n(.*?)\n---', content, re.DOTALL)
-            if not match:
-                print('❌ No YAML frontmatter found', file=sys.stderr)
-                sys.exit(1)
-
-            try:
-                data = yaml.safe_load(match.group(1))
-                # Basic validation
-                required_fields = ['id', 'title', 'status', 'date']
-                for field in required_fields:
-                    if field not in data:
-                        print(f'❌ Missing required field: {field}', file=sys.stderr)
-                        sys.exit(1)
-            except Exception as e:
-                print(f'❌ Invalid YAML: {e}', file=sys.stderr)
-                sys.exit(1)
-                  " || exit 1
-                done
-
-                echo "✅ All ADRs valid"
+              bitcoin)
+                export ADR_LEDGER_ROOT="$LEDGER_ROOT"
+                ${python}/bin/python3.13 $LEDGER_ROOT/.chain/bitcoin_attestation.py "$@"
                 ;;
 
               parser)
@@ -200,21 +171,28 @@
                 ;;
 
               *)
-                cat <<HELP
+                if [ "$cmd" = "help" ] || [ "$cmd" = "--help" ] || [ "$cmd" = "-h" ]; then
+                  cat <<HELP
             ADR Ledger CLI (Nix)
 
             Usage: adr <command> [options]
 
             Commands:
               sync         Generate knowledge artifacts (JSON outputs)
-              validate     Validate ADRs against schema
+              validate     Run schema + OPA + cryptographic health validation
+              policy-check Evaluate OPA/Rego policy only
+              bitcoin      Bitcoin-compatible secp256k1 attestation helper
               parser       Direct access to Python parser
               export       Export ADRs as JSON/JSONL with filtering
-              bash-cli     Use original bash CLI
+              bash-cli     Use original bash CLI explicitly
+              <other>      Delegated to scripts/adr automatically
 
             Examples:
               adr sync
               adr validate
+              adr policy-check
+              adr bitcoin list
+              adr list
               adr parser adr/accepted --format json --pretty
 
               # Export examples
@@ -236,6 +214,9 @@
             For full bash CLI help:
               adr bash-cli help
             HELP
+                else
+                  exec ${pkgs.bash}/bin/bash ${./scripts/adr} "$cmd" "$@"
+                fi
                 ;;
             esac
           '';
@@ -419,18 +400,19 @@
             pkgs.check-jsonschema
             pkgs.yamllint
             pkgs.jq
+            pkgs.open-policy-agent
+            pkgs.conftest
+            pkgs.openssl
 
             # Ferramentas de visualização
             pkgs.graphviz
 
             # Git
             pkgs.git
+            pkgs.nix
 
             # OpenTimestamps CLI for temporal anchoring
             pkgs.opentimestamps-client
-
-            # Secret scanning
-            pkgs.gitleaks
 
             # Packages deste flake
             self.packages.${system}.adr-parser
@@ -440,6 +422,15 @@
             # Bash CLI original
             (pkgs.writeShellScriptBin "adr-bash" ''
               ${pkgs.bash}/bin/bash ${./scripts/adr} "$@"
+            '')
+            (pkgs.writeShellScriptBin "adr-phantom-scan" ''
+              ${pkgs.bash}/bin/bash ${./scripts/phantom-scan-check.sh} "$@"
+            '')
+            (pkgs.writeShellScriptBin "adr-opa-validate" ''
+              ${pkgs.bash}/bin/bash ${./scripts/opa-validate.sh} "$@"
+            '')
+            (pkgs.writeShellScriptBin "adr-bitcoin" ''
+              ${python}/bin/python3.13 ${./.chain/bitcoin_attestation.py} "$@"
             '')
           ];
 
@@ -451,10 +442,12 @@
             echo "  adr-bash         - Original Bash CLI"
             echo "  adr-parser       - Parse ADRs directly"
             echo "  adr-install-hooks - Install git hooks"
+            echo "  adr-phantom-scan - Phantom-backed leak scan"
+            echo "  adr-opa-validate - OPA/Rego policy validation"
+            echo "  adr-bitcoin      - Bitcoin-compatible attestation helper"
             echo "  yamllint         - Validate YAML files"
             echo "  check-jsonschema - Validate JSON against schema"
             echo "  jq               - JSON processor"
-            echo "  gitleaks         - Secret scanning"
             echo ""
 
             # Auto-instalar hooks se ainda não existir
@@ -463,7 +456,9 @@
               adr-install-hooks
             fi
 
-            export ADR_LEDGER_ROOT="$PWD"
+            if [ -f "$PWD/scripts/adr" ] && [ -d "$PWD/adr" ]; then
+              export ADR_LEDGER_ROOT="$PWD"
+            fi
           '';
         };
 
@@ -514,6 +509,47 @@
                   --format json > /dev/null
 
                 echo "Parser tests passed"
+                touch $out
+              '';
+
+          # Validar ADRs contra policy OPA
+          opa-policy-valid =
+            pkgs.runCommand "validate-opa-policy"
+              {
+                buildInputs = [
+                  python
+                  pythonPackages.pyyaml
+                  pythonPackages.jsonschema
+                  pkgs.open-policy-agent
+                ];
+              }
+              ''
+                cd ${./.}
+                export PATH=${pkgs.open-policy-agent}/bin:$PATH
+                ${python}/bin/python3.13 scripts/validate_adr.py \
+                  adr \
+                  --skip-schema \
+                  --opa-policy policies/adr/validation.rego
+                touch $out
+              '';
+
+          # Pipeline de validação principal
+          validation-pipeline =
+            pkgs.runCommand "validate-adr-ledger"
+              {
+                buildInputs = [
+                  python
+                  pythonPackages.pyyaml
+                  pythonPackages.pynacl
+                  pythonPackages.jsonschema
+                  pkgs.open-policy-agent
+                  pkgs.openssl
+                ];
+              }
+              ''
+                cd ${./.}
+                export PATH=${pkgs.open-policy-agent}/bin:${pkgs.openssl}/bin:$PATH
+                ${pkgs.bash}/bin/bash scripts/validate.sh
                 touch $out
               '';
 

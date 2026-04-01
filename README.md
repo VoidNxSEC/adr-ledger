@@ -6,9 +6,9 @@
 [![Python](https://img.shields.io/badge/python-3.13-blue.svg)](https://www.python.org/)
 [![Nix](https://img.shields.io/badge/nix-flakes-5277C3.svg)](https://nixos.org/)
 
-Computable registry of architectural decisions. Each ADR is versioned in Git, cryptographically signed, validated against a strict schema, and exported as JSON for AI agent consumption and programmatic governance enforcement.
+Computable registry of architectural decisions. Each ADR is versioned in Git, cryptographically signed, validated against a strict schema, evaluated by OPA policy, and exported as JSON for AI agent consumption and programmatic governance enforcement.
 
-> **Beta** — The project has reached Beta. The cryptographic blockchain layer, advanced CLI, Temporal Anchoring (OpenTimestamps), SBOM governance, and 80+ MCP tools are fully operational in the Nix environment. Cross-platform non-Nix support is currently in progress.
+> **Beta** — The project has reached Beta. The cryptographic blockchain layer, advanced CLI, OPA policy validation, Temporal Anchoring (OpenTimestamps), Bitcoin-compatible secp256k1 receipts, SBOM governance, and 80+ MCP tools are operational in the Nix environment. Cross-platform non-Nix support is currently in progress.
 
 ## Why it exists
 
@@ -84,14 +84,17 @@ git clone https://github.com/marcosfpina/adr-ledger.git
 cd adr-ledger
 nix develop          # enters devShell, provisions Python, hooks, and deps
 adr list
+adr list --delivery-status completed
 adr new -t "My Decision" -p CEREBRO -c major
 adr validate
+adr policy-check
+adr bitcoin list
 adr sync
 ```
 
 ### Linux (non-Nix)
 
-Requires: `bash`, `python3.13`, `pyyaml`, `pynacl`, `git`.
+Requires: `bash`, `python3.13`, `pyyaml`, `pynacl`, `jsonschema`, `git`, `opa`, `openssl`.
 
 ```bash
 git clone https://github.com/marcosfpina/adr-ledger.git
@@ -106,8 +109,30 @@ bash scripts/install.sh
 # Usage
 adr list
 adr new -t "Adopt Redis" -p SPECTRE -c major
+bash scripts/opa-validate.sh
+./scripts/phantom-scan-check.sh .
 adr sync
 ```
+
+---
+
+## Validation Pipeline
+
+The default validator is now layered:
+
+1. `scripts/validate_adr.py` merges YAML frontmatter with Markdown sections and validates against `.schema/adr.schema.json`.
+2. `scripts/opa-validate.sh` evaluates each ADR through `policies/adr/validation.rego`.
+3. `.chain/bitcoin_attestation.py` verifies local secp256k1 snapshot receipts under `.chain/bitcoin/receipts/`.
+
+The main entrypoints are:
+
+```bash
+adr validate
+adr policy-check
+adr bitcoin verify-all
+```
+
+Implementation details and tradeoffs are documented in [docs/VALIDATION.md](docs/VALIDATION.md).
 
 ---
 
@@ -138,7 +163,28 @@ $ adr anchor
 # Output: Creating OpenTimestamps proof for chain height 42...
 ```
 
-### Scenario 3: Supply Chain Governance (SBOM)
+### Scenario 3: Policy Validation (OPA)
+
+```bash
+# Evaluate ADRs against the local governance policy bundle
+$ adr policy-check
+# Output: hard denies fail the command, soft warnings are printed per ADR.
+```
+
+### Scenario 4: Bitcoin-compatible Snapshot Receipt
+
+```bash
+# Generate local secp256k1 key material for attestations
+$ adr bitcoin keygen --name kernelcore
+
+# Sign the latest snapshot receipt
+$ adr bitcoin attest --signer kernelcore
+
+# Verify every receipt currently stored
+$ adr bitcoin verify-all
+```
+
+### Scenario 5: Supply Chain Governance (SBOM)
 
 ```bash
 # Check if current flake.lock dependencies drift from the accepted ADRs
@@ -158,19 +204,22 @@ adr show      # Show ADR details
 adr accept    # Accept proposed ADR (triggers blockchain state transition)
 adr supersede # Mark as superseded and link bidirectional graph
 adr search    # Semantic and full-text search
-adr validate  # Validate schema, mandatory fields, and compliance rules
+adr validate  # Validate schema, OPA policy, and cryptographic health report
+adr policy-check  # Evaluate OPA/Rego governance policy only
 adr sync      # Sync knowledge base, generate JSON artifacts
 
 # Export & Visualization
 adr export    # Export as JSON/JSONL (RAG-optimized streaming)
 adr graph     # Generate Mermaid graph
 adr viz       # Generate visual knowledge graph (dot/svg/html)
+adr-phantom-scan  # Run Phantom-backed leak scan with allowlist enforcement
 
 # Cryptographic Governance (.chain)
 adr sbom         # Supply chain SBOM & dependency inventory
 adr anchor       # Temporal anchoring (OpenTimestamps proofs)
 adr pre-sign     # Pre-sign an ADR (Multi-sig setup)
 adr pending-sigs # Manage and view pending signatures
+adr bitcoin      # Bitcoin-compatible secp256k1 attestation helpers
 ```
 
 ---
@@ -227,9 +276,16 @@ governance:
   compliance_tags: ["SECURITY", "INFRA"]
 
 scope:
-  projects: [IntelSense, NEUTRON]
-  layers: [infrastructure, security]
+  projects: [IntelSense, NEUTRON, INTELAGENT]
+  layers: [infrastructure, security, application]
   environments: [production]
+
+delivery:
+  status: completed  # planned | in_progress | completed | blocked | deferred | cancelled
+  completed_at: "2026-04-01"
+  evidence:
+    - "crates/core/tests/phantom_worker.rs"
+    - "docs/release-checklist.md"
 
 knowledge_extraction:
   keywords: ["OSINT", "spider-nix"]
@@ -255,7 +311,7 @@ knowledge_extraction:
 - [x] Temporal Anchoring via OpenTimestamps
 - [x] Supply Chain drift detection (SBOM Governance)
 - [x] 80+ MCP tools for SecureLLM-MCP Integration
-- [x] CI/CD (GitHub Actions + Gitleaks)
+- [x] CI/CD (GitHub Actions + Phantom secret scan wrapper)
 
 ### Phase 3: Security & Ecosystem Integration
 - [ ] `NixOS module` — `services.adr-ledger.enable = true`

@@ -189,6 +189,24 @@ projects:
     dependencies:
       - SPECTRE # uses SPECTRE for feature extraction
 
+  PHANTOM-RAY:
+    description: "Phantom runtime and SOC kernel lineage referenced by ADR-0054"
+    owners: ["pina"]
+    default_classification: "major"
+    required_tags: []
+
+  PHANTOM-NX:
+    description: "Current repository carrying the Phantom NX stack and phantom-soc-kernel lineage"
+    owners: ["pina"]
+    default_classification: "major"
+    required_tags: []
+
+  INTELAGENT:
+    description: "Standalone agent orchestration workspace and worker boundary layer"
+    owners: ["pina"]
+    default_classification: "major"
+    required_tags: []
+
   CEREBRO:
     description: "RAG Knowledge System"
     owners: ["pina"]
@@ -350,6 +368,24 @@ chain:
     enabled: true
     create_on_accept: true
     sign_snapshots: true
+
+  # Local policy gate used by adr validate / CI
+  policy_validation:
+    enabled: true
+    engine: "opa"
+    query: "data.adr.validation.result"
+    policy_path: "policies/adr/validation.rego"
+    mode: "enforce"
+
+  # Bitcoin-compatible secp256k1 receipts over snapshots.
+  # This is an off-chain attestation layer, not a wallet broadcast flow.
+  bitcoin_attestations:
+    enabled: true
+    algorithm: "ecdsa-secp256k1-sha256"
+    mode: "warn"                  # warn | enforce | audit
+    default_target: "latest_snapshot"
+    require_receipt_on_validate: false
+    receipts_dir: ".chain/bitcoin/receipts"
 
   # Smart governance contracts
   governance_contracts:

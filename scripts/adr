@@ -15,6 +15,9 @@ SCHEMA_PATH="${ADR_ROOT}/.schema/adr.schema.json"
 GOVERNANCE_PATH="${ADR_ROOT}/.governance/governance.yaml"
 KNOWLEDGE_DIR="${ADR_ROOT}/knowledge"
 PARSER="${ADR_ROOT}/.parsers/adr_parser.py"
+VALIDATE_SCRIPT="${ADR_ROOT}/scripts/validate.sh"
+OPA_VALIDATE_SCRIPT="${ADR_ROOT}/scripts/opa-validate.sh"
+BITCOIN_ATTEST_SCRIPT="${ADR_ROOT}/.chain/bitcoin_attestation.py"
 
 # Colors
 RED='\033[0;31m'
@@ -68,8 +71,7 @@ get_adr_path() {
 
 validate_project() {
     local project="$1"
-    local valid_projects="SPECTRE PHANTOM CEREBRO NEUTRON GLOBAL IntelSense"
-    if [[ " $valid_projects " =~ " $project " ]]; then
+    if [[ "$project" =~ ^[A-Za-z0-9][A-Za-z0-9_-]*$ ]]; then
         return 0
     fi
     return 1
@@ -111,7 +113,7 @@ cmd_new() {
         read -p "Título da decisão: " title
         
         echo ""
-        echo "Projetos disponíveis: SPECTRE, PHANTOM, CEREBRO, NEUTRON, GLOBAL, IntelSense"
+        echo "Projetos sugeridos: SPECTRE, PHANTOM, PHANTOM-RAY, PHANTOM-NX, CEREBRO, NEUTRON, GLOBAL, IntelSense, INTELAGENT"
         read -p "Projetos (separados por espaço): " -a projects
         
         echo ""
@@ -404,6 +406,16 @@ cmd_new() {
         
     
           tasks: []
+
+        delivery:
+
+          status: "planned"
+
+          completed_at: null
+
+          evidence: []
+
+          notes: ""
     
         
     
@@ -612,12 +624,14 @@ EOF
 cmd_list() {
     local status_filter=""
     local project_filter=""
+    local delivery_filter=""
     local format="table"
     
     while [[ $# -gt 0 ]]; do
         case "$1" in
             -s|--status) status_filter="$2"; shift 2 ;;
             -p|--project) project_filter="$2"; shift 2 ;;
+            -d|--delivery-status) delivery_filter="$2"; shift 2 ;;
             -f|--format) format="$2"; shift 2 ;;
             *) shift ;;
         esac
@@ -629,53 +643,75 @@ cmd_list() {
     echo ""
     
     if [[ "$format" == "table" ]]; then
-        printf "% -10s │ % -8s │ % -45s │ % -10s\n" "ID" "Status" "Title" "Date"
-        echo "───────────┼──────────┼───────────────────────────────────────────────┼───────────"
+        printf "% -10s │ % -11s │ % -12s │ % -45s │ % -10s\n" "ID" "Status" "Delivery" "Title" "Date"
+        echo "───────────┼─────────────┼──────────────┼───────────────────────────────────────────────┼───────────"
     fi
-    
-    for status_dir in proposed accepted superseded rejected deprecated; do
-        if [[ -n "$status_filter" && "$status_filter" != "$status_dir" ]]; then
-            continue
-        fi
-        
-        for file in "${ADR_DIR}/${status_dir}"/ADR-*.md; do
-            if [[ ! -f "$file" ]]; then
-                continue
-            fi
-            
-            local id=$(grep -oP '^id:\s*"\K[^"]+' "$file" 2>/dev/null || basename "$file" .md)
-            local title=$(grep -oP '^title:\s*"\K[^"]+' "$file" 2>/dev/null || echo "Unknown")
-            local date=$(grep -oP '^date:\s*"\K[^"]+' "$file" 2>/dev/null || echo "Unknown")
-            local status=$(grep -oP '^status:\s*\K\w+' "$file" 2>/dev/null || echo "$status_dir")
-            
-            # Project filter
-            if [[ -n "$project_filter" ]]; then
-                if ! grep -q "$project_filter" "$file"; then
-                    continue
-                fi
-            fi
-            
-            # Truncate title if too long
-            if (( ${#title} > 45 )); then
-                title="${title:0:42}..."
-            fi
-            
-            local status_icon=""
-            case "$status" in
-                proposed) status_icon="🟡" ;;
-                accepted) status_icon="🟢" ;;
-                rejected) status_icon="🔴" ;;
-                deprecated) status_icon="🟠" ;;
-                superseded) status_icon="⚪" ;;
-            esac
-            
-            if [[ "$format" == "table" ]]; then
-                printf "% -10s │ %s % -6s │ % -45s │ % -10s\n" "$id" "$status_icon" "$status" "$title" "$date"
-            elif [[ "$format" == "json" ]]; then
-                echo "{\"id\":\"$id\",\"status\":\"$status\",\"title\":\"$title\",\"date\":\"$date\"}"
-            fi
-        done
-    done
+
+    python3.13 - "$ADR_DIR" "$status_filter" "$project_filter" "$delivery_filter" "$format" <<'PY'
+import json
+import re
+import sys
+from pathlib import Path
+
+import yaml
+
+adr_dir, status_filter, project_filter, delivery_filter, output_format = sys.argv[1:6]
+rows = []
+
+for file_path in sorted(Path(adr_dir).glob("*/*.md")):
+    content = file_path.read_text(encoding="utf-8")
+    match = re.match(r'^---\s*\n(.*?)\n---\s*\n', content, re.DOTALL)
+    if not match:
+        continue
+
+    try:
+        data = yaml.safe_load(match.group(1)) or {}
+    except Exception as exc:
+        print(f"[WARN] Skipping {file_path.name}: {exc}", file=sys.stderr)
+        continue
+    scope = data.get("scope", {}) or {}
+    delivery = data.get("delivery", {}) or {}
+    approval = data.get("approval", {}) or {}
+    if not isinstance(delivery, dict):
+        delivery = {}
+    if not isinstance(approval, dict):
+        approval = {}
+
+    status = str(data.get("status", file_path.parent.name))
+    projects = [str(project) for project in scope.get("projects", []) or []]
+    delivery_status = str(delivery.get("status") or approval.get("implementation_status") or "unspecified")
+
+    row = {
+        "id": str(data.get("id", file_path.stem)),
+        "title": str(data.get("title", "Unknown")),
+        "date": str(data.get("date", "Unknown")),
+        "status": status,
+        "delivery_status": delivery_status,
+        "projects": projects,
+    }
+
+    if status_filter and row["status"] != status_filter:
+        continue
+    if project_filter and project_filter not in projects:
+        continue
+    if delivery_filter and row["delivery_status"] != delivery_filter:
+        continue
+
+    rows.append(row)
+
+if output_format == "json":
+    for row in rows:
+        print(json.dumps(row, ensure_ascii=False))
+else:
+    for row in rows:
+        title = row["title"]
+        if len(title) > 45:
+            title = f"{title[:42]}..."
+        print(
+            f"{row['id']:<10} │ {row['status']:<11} │ {row['delivery_status']:<12} │ "
+            f"{title:<45} │ {row['date']:<10}"
+        )
+PY
 }
 
 cmd_show() {
@@ -1017,61 +1053,37 @@ cmd_export() {
 }
 
 cmd_validate() {
-    local target="${1:-.}"
-    local errors=0
-    
-    log_info "Validando ADRs..."
-    
-        for file in "${ADR_DIR}"/{proposed,accepted,superseded,rejected}/*.md; do
-        if [[ ! -f "$file" ]]; then
-            continue
-        fi
-        
-        local id=$(basename "$file" .md)
-        local valid=true
-        
-        # Check required fields
-        if ! grep -q '^id:' "$file"; then
-            log_error "$id: Campo 'id' ausente"
-            valid=false
-            ((errors++))
-        fi
-        
-        if ! grep -q '^title:' "$file"; then
-            log_error "$id: Campo 'title' ausente"
-            valid=false
-            ((errors++))
-        fi
-        
-        if ! grep -q '^status:' "$file"; then
-            log_error "$id: Campo 'status' ausente"
-            valid=false
-            ((errors++))
-        fi
-        
-        if ! grep -q '^date:' "$file"; then
-            log_error "$id: Campo 'date' ausente"
-            valid=false
-            ((errors++))
-        fi
-        
-        # Check for empty sections
-        if grep -q '^\[Descreva' "$file"; then
-            log_warn "$id: Contém placeholders não preenchidos"
-        fi
-        
-        if [[ "$valid" == true ]]; then
-            log_success "$id: OK"
-        fi
-    done
-    
-    echo ""
-    if (( errors > 0 )); then
-        log_error "Validação falhou com $errors erros"
-        return 1
-    else
-        log_success "Todos os ADRs são válidos"
+    local target="${1:-$ADR_DIR}"
+
+    if [[ ! -x "$VALIDATE_SCRIPT" ]]; then
+        log_error "Validator script não encontrado: $VALIDATE_SCRIPT"
+        exit 1
     fi
+
+    ADR_LEDGER_ROOT="$ADR_ROOT" bash "$VALIDATE_SCRIPT" "$target"
+}
+
+cmd_policy_check() {
+    local target="${1:-$ADR_DIR}"
+
+    if [[ ! -x "$OPA_VALIDATE_SCRIPT" ]]; then
+        log_error "OPA validation script não encontrado: $OPA_VALIDATE_SCRIPT"
+        exit 1
+    fi
+
+    ADR_LEDGER_ROOT="$ADR_ROOT" bash "$OPA_VALIDATE_SCRIPT" "$target"
+}
+
+cmd_bitcoin() {
+    local subcmd="${1:-list}"
+    shift || true
+
+    if [[ ! -f "$BITCOIN_ATTEST_SCRIPT" ]]; then
+        log_error "Bitcoin attestation helper não encontrado: $BITCOIN_ATTEST_SCRIPT"
+        exit 1
+    fi
+
+    python3.13 "$BITCOIN_ATTEST_SCRIPT" "$subcmd" "$@"
 }
 
 cmd_help() {
@@ -1094,12 +1106,14 @@ COMMANDS:
     sync      Sincronizar Knowledge Base
     graph     Gerar grafo de dependências (Mermaid)
     viz       Gerar knowledge graph visual (dot|svg|html|all)
-    validate  Validar ADRs
+    validate  Validar schema + OPA + saúde criptográfica do ledger
+    policy-check Validar ADRs contra policies OPA/Rego
     export    Export ADRs as JSON/JSONL with filtering
     sbom       Supply chain SBOM & dependency inventory
     anchor     Temporal anchoring (OpenTimestamps proofs)
     pre-sign   Pre-sign ADR for critical acceptance (before accept)
     pending-sigs  Manage pending pre-signatures
+    bitcoin    Helpers para recibos secp256k1 Bitcoin-compatible
 
 EXAMPLES:
     adr new -t "Use Rust for Parser" -p SPECTRE -c major
@@ -1110,17 +1124,23 @@ EXAMPLES:
     adr search "kubernetes"
     adr sync
     adr graph > graph.mmd
+    adr policy-check
+    adr bitcoin keygen --name kernelcore
+    adr bitcoin attest --signer kernelcore
+    adr bitcoin verify-all
 
     # Export examples
     adr export adr/accepted --format jsonl --compact
     adr export adr --filter-status accepted --filter-project CEREBRO
+    adr export adr --filter-delivery-status completed --format json
     adr export adr/accepted --format json --since 2026-01-01
 
 OPTIONS:
     -t, --title           Título da ADR
-    -p, --project         Projeto (SPECTRE, PHANTOM, CEREBRO, NEUTRON, GLOBAL)
+    -p, --project         Projeto (ex: SPECTRE, PHANTOM-RAY, PHANTOM-NX, INTELAGENT)
     -c, --classification  Classificação (critical, major, minor, patch)
     -s, --status          Filtrar por status
+    -d, --delivery-status Filtrar por delivery (planned, in_progress, completed, blocked, deferred, cancelled)
     -f, --format          Formato de saída (table, json)
 
 INTEGRATION:
@@ -1128,6 +1148,8 @@ INTEGRATION:
     SPECTRE  → spectre_corpus.json (sentiment analysis)
     PHANTOM  → phantom_training.json (ML classification)
     NEUTRON  → knowledge_base.json (compliance enforcement)
+    OPA      → policies/adr/validation.rego (policy gate)
+    BITCOIN  → .chain/bitcoin/receipts/*.json (local secp256k1 attestations)
 
 EOF
 }
@@ -1261,6 +1283,7 @@ main() {
         viz|graph-viz|knowledge-graph)
                    cmd_viz "$@" ;;
         validate)  cmd_validate "$@" ;;
+        policy-check|opa-validate) cmd_policy_check "$@" ;;
         export)    cmd_export "$@" ;;
         # --- Blockchain commands ---
         chain)     cmd_chain "$@" ;;
@@ -1275,6 +1298,7 @@ main() {
         anchor)    cmd_anchor "$@" ;;
         pre-sign)  cmd_pre_sign "$@" ;;
         pending-sigs) cmd_pending_sigs "$@" ;;
+        bitcoin|btc) cmd_bitcoin "$@" ;;
         verify-chain) cmd_chain verify ;;
         help|--help|-h) cmd_help ;;
         *)
