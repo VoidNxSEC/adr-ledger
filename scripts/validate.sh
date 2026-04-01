@@ -15,6 +15,7 @@ REPO_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 ADR_DIR="${1:-$REPO_ROOT/adr}"
 SCHEMA_PATH="$REPO_ROOT/.schema/adr.schema.json"
 OPA_POLICY_PATH="$REPO_ROOT/policies/adr/validation.rego"
+BASH_BIN="${BASH:-bash}"
 PYTHON_BIN="${PYTHON_BIN:-python3.13}"
 
 echo "[INFO] ADR schema and section validation"
@@ -26,7 +27,7 @@ echo "[INFO] ADR schema and section validation"
 if [[ -f "$OPA_POLICY_PATH" ]]; then
   echo ""
   echo "[INFO] OPA governance validation"
-  "$REPO_ROOT/scripts/opa-validate.sh" "$ADR_DIR"
+  "$BASH_BIN" "$REPO_ROOT/scripts/opa-validate.sh" "$ADR_DIR"
 fi
 
 if [[ -f "$REPO_ROOT/.chain/chain.json" ]]; then

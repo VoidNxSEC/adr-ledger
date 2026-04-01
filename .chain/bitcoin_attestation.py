@@ -324,8 +324,7 @@ def verify_all() -> int:
         print("[INFO] Bitcoin attestation verification is disabled by governance config")
         return 0
 
-    ensure_dirs()
-    receipts = sorted(RECEIPTS_DIR.glob("*.json"))
+    receipts = sorted(RECEIPTS_DIR.glob("*.json")) if RECEIPTS_DIR.exists() else []
 
     if not receipts:
         message = "No Bitcoin attestation receipts found"
@@ -352,8 +351,7 @@ def verify_all() -> int:
 
 
 def list_receipts() -> None:
-    ensure_dirs()
-    receipts = sorted(RECEIPTS_DIR.glob("*.json"))
+    receipts = sorted(RECEIPTS_DIR.glob("*.json")) if RECEIPTS_DIR.exists() else []
     if not receipts:
         print("No Bitcoin attestation receipts found")
         return
