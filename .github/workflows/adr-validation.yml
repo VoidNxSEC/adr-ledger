@@ -20,20 +20,13 @@ jobs:
         with:
           fetch-depth: 0  # Full history for git operations
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+      - name: Install Nix
+        uses: cachix/install-nix-action@v27
 
-      - name: Install dependencies
+      - name: Validate ADR Pipeline
         run: |
-          python -m pip install --upgrade pip
-          pip install pyyaml jsonschema
-
-      - name: Validate ADR Schema
-        run: |
-          echo "Validating ADRs against schema..."
-          python .parsers/adr_parser.py adr/ --validate
+          echo "Validating ADRs against the supported pipeline..."
+          nix build -L .#checks.x86_64-linux.validation-pipeline
 
       - name: Check ADR Frontmatter
         run: |
@@ -139,19 +132,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install dependencies
-        run: |
-          pip install pyyaml
+      - name: Install Nix
+        uses: cachix/install-nix-action@v27
 
       - name: Sync Knowledge Base
         run: |
-          chmod +x scripts/adr
-          ./scripts/adr sync
+          nix run -L .#adr-sync
 
       - name: Commit Knowledge Base Updates
         uses: stefanzweifel/git-auto-commit-action@v5
