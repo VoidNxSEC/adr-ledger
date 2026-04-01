@@ -82,21 +82,23 @@
           "type": "array",
           "items": {
             "type": "string",
-            "enum": ["SPECTRE", "PHANTOM", "CEREBRO", "NEUTRON", "GLOBAL", "IntelSense"]
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$",
+            "description": "Project identifier (for example: PHANTOM, PHANTOM-RAY, PHANTOM-NX, INTELAGENT)"
           }
         },
         "layers": {
           "type": "array",
           "items": {
             "type": "string",
-            "enum": ["infrastructure", "data", "ml", "api", "security", "governance"]
+            "pattern": "^[a-z][a-z0-9-]*$",
+            "description": "Architectural layer identifier (for example: application, control-plane, data-plane)"
           }
         },
         "environments": {
           "type": "array",
           "items": {
             "type": "string",
-            "enum": ["development", "staging", "production", "all"]
+            "enum": ["development", "dev", "staging", "production", "all"]
           }
         }
       }
@@ -190,6 +192,27 @@
               "status": { "type": "string", "enum": ["todo", "in_progress", "done", "blocked"] }
             }
           }
+        }
+      }
+    },
+    "delivery": {
+      "type": "object",
+      "description": "Implementation delivery status, orthogonal to the ADR lifecycle status",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["planned", "in_progress", "completed", "blocked", "deferred", "cancelled"]
+        },
+        "completed_at": {
+          "type": "string",
+          "format": "date"
+        },
+        "evidence": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "notes": {
+          "type": "string"
         }
       }
     },

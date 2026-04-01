@@ -39,6 +39,15 @@ class Classification(Enum):
     PATCH = "patch"
 
 
+class DeliveryStatus(Enum):
+    PLANNED = "planned"
+    IN_PROGRESS = "in_progress"
+    COMPLETED = "completed"
+    BLOCKED = "blocked"
+    DEFERRED = "deferred"
+    CANCELLED = "cancelled"
+
+
 @dataclass
 class Author:
     name: str
@@ -121,6 +130,12 @@ class ADRNode:
     dependencies: List[str] = field(default_factory=list)
     blocked_by: List[str] = field(default_factory=list)
     tasks: List[Task] = field(default_factory=list)
+
+    # Delivery state (orthogonal to ADR lifecycle)
+    delivery_status: Optional[DeliveryStatus] = None
+    delivery_completed_at: Optional[str] = None
+    delivery_evidence: List[str] = field(default_factory=list)
+    delivery_notes: Optional[str] = None
     
     # Relations (for knowledge graph)
     supersedes: List[str] = field(default_factory=list)
@@ -198,6 +213,12 @@ class ADRNode:
                 "classification": self.classification.value if self.classification else None,
                 "compliance": self.compliance_tags,
             },
+            "delivery": {
+                "status": self.delivery_status.value if self.delivery_status else None,
+                "completed_at": self.delivery_completed_at,
+                "evidence": self.delivery_evidence,
+                "notes": self.delivery_notes,
+            },
             "metadata": {
                 "date": self.date,
                 "version": self.version,
@@ -208,7 +229,10 @@ class ADRNode:
     
     def _generate_summary(self) -> str:
         """Generate a one-line summary for quick reference."""
-        return f"[{self.id}] {self.title}: {self.decision[:100]}..."
+        decision_text = self.decision
+        if not isinstance(decision_text, str):
+            decision_text = json.dumps(decision_text, ensure_ascii=False, default=str)
+        return f"[{self.id}] {self.title}: {decision_text[:100]}..."
 
 
 # =============================================================================
@@ -372,6 +396,31 @@ class ADRParser:
                         owner=t.get('owner'),
                         status=t.get('status', 'todo')
                     ))
+
+        # Parse delivery state
+        delivery = fm.get('delivery', {})
+        if not isinstance(delivery, dict):
+            delivery = {}
+
+        approval = fm.get('approval', {})
+        if not isinstance(approval, dict):
+            approval = {}
+
+        delivery_status_str = delivery.get('status') or approval.get('implementation_status')
+        if isinstance(delivery_status_str, str):
+            delivery_status_str = delivery_status_str.lower()
+
+        delivery_status = None
+        if delivery_status_str in [s.value for s in DeliveryStatus]:
+            delivery_status = DeliveryStatus(delivery_status_str)
+
+        delivery_evidence = delivery.get('evidence', [])
+        if isinstance(delivery_evidence, str):
+            delivery_evidence = [delivery_evidence]
+        elif delivery_evidence is None:
+            delivery_evidence = []
+        else:
+            delivery_evidence = [str(item) for item in delivery_evidence]
         
         # Parse changelog
         changelog = []
@@ -423,6 +472,10 @@ class ADRParser:
             dependencies=fm.get('implementation', {}).get('dependencies', []),
             blocked_by=fm.get('implementation', {}).get('blocked_by', []),
             tasks=tasks,
+            delivery_status=delivery_status,
+            delivery_completed_at=delivery.get('completed_at'),
+            delivery_evidence=delivery_evidence,
+            delivery_notes=delivery.get('notes'),
             
             # Relations
             supersedes=fm.get('relations', {}).get('supersedes', []),
@@ -485,6 +538,7 @@ class KnowledgeTransformer:
                 "generated_at": datetime.now().isoformat(),
                 "total_decisions": len(self.nodes),
                 "by_status": self._count_by_status(),
+                "by_delivery_status": self._count_by_delivery_status(),
                 "by_project": self._count_by_project(),
             },
             "decisions": [n.to_knowledge_fragment() for n in self.nodes],
@@ -506,6 +560,13 @@ class KnowledgeTransformer:
             for p in n.projects:
                 counts[p] = counts.get(p, 0) + 1
         return counts
+
+    def _count_by_delivery_status(self) -> Dict[str, int]:
+        counts = {}
+        for n in self.nodes:
+            status = n.delivery_status.value if n.delivery_status else "unspecified"
+            counts[status] = counts.get(status, 0) + 1
+        return counts
     
     def _build_graph(self) -> Dict[str, Any]:
         """Build knowledge graph for traversal."""
@@ -518,6 +579,7 @@ class KnowledgeTransformer:
                 "type": "adr",
                 "label": adr.title,
                 "status": adr.status.value if isinstance(adr.status, Enum) else adr.status,
+                "delivery_status": adr.delivery_status.value if adr.delivery_status else None,
                 "projects": adr.projects,
             })
             
@@ -593,6 +655,7 @@ class KnowledgeTransformer:
                 "metadata": {
                     "type": "architecture_decision",
                     "status": n.status.value if isinstance(n.status, Enum) else n.status,
+                    "delivery_status": n.delivery_status.value if n.delivery_status else None,
                     "date": n.date,
                     "classification": n.classification.value if n.classification else None,
                 }
@@ -629,6 +692,7 @@ class KnowledgeTransformer:
 class ExportFilter:
     """Filter criteria for ADR export."""
     statuses: Optional[List[ADRStatus]] = None
+    delivery_statuses: Optional[List[str]] = None
     projects: Optional[List[str]] = None
     classifications: Optional[List[Classification]] = None
     since_date: Optional[str] = None  # YYYY-MM-DD
@@ -638,6 +702,11 @@ class ExportFilter:
         """Check if node matches all filter criteria."""
         # Status filter
         if self.statuses and node.status not in self.statuses:
+            return False
+
+        # Delivery status filter
+        node_delivery_status = node.delivery_status.value if node.delivery_status else "unspecified"
+        if self.delivery_statuses and node_delivery_status not in self.delivery_statuses:
             return False
 
         # Project filter (OR logic: matches if node has ANY of the specified projects)
@@ -773,6 +842,9 @@ def main():
     export_cmd.add_argument('--filter-status', action='append',
                             choices=['proposed', 'accepted', 'rejected', 'deprecated', 'superseded'],
                             help='Filter by status (can specify multiple)')
+    export_cmd.add_argument('--filter-delivery-status', action='append',
+                            choices=['planned', 'in_progress', 'completed', 'blocked', 'deferred', 'cancelled', 'unspecified'],
+                            help='Filter by delivery status (can specify multiple)')
     export_cmd.add_argument('--filter-project', action='append',
                             help='Filter by project (can specify multiple)')
     export_cmd.add_argument('--filter-classification', action='append',
@@ -850,10 +922,11 @@ def handle_export(args):
 
     # Build filter object if any filters specified
     filter_obj = None
-    if any([args.filter_status, args.filter_project, args.filter_classification,
+    if any([args.filter_status, args.filter_delivery_status, args.filter_project, args.filter_classification,
             args.since, args.until]):
         filter_obj = ExportFilter(
             statuses=[ADRStatus(s) for s in args.filter_status] if args.filter_status else None,
+            delivery_statuses=args.filter_delivery_status,
             projects=args.filter_project,
             classifications=[Classification(c) for c in args.filter_classification]
                            if args.filter_classification else None,
