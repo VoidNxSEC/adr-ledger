@@ -1,8 +1,57 @@
 {
   "nodes": {
+    "advisory-db": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1774427839,
+        "narHash": "sha256-BfkPsVAP269pe1pD+vQndpEjwZ87Vw3uOv9Nt2IJ2cs=",
+        "owner": "rustsec",
+        "repo": "advisory-db",
+        "rev": "64ca93bd6e5ad5b686c963a989d16f038349c6ae",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rustsec",
+        "repo": "advisory-db",
+        "type": "github"
+      }
+    },
+    "crane": {
+      "locked": {
+        "lastModified": 1774313767,
+        "narHash": "sha256-hy0XTQND6avzGEUFrJtYBBpFa/POiiaGBr2vpU6Y9tY=",
+        "owner": "ipetkov",
+        "repo": "crane",
+        "rev": "3d9df76e29656c679c744968b17fbaf28f0e923d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ipetkov",
+        "repo": "crane",
+        "type": "github"
+      }
+    },
     "flake-utils": {
       "inputs": {
         "systems": "systems"
+      },
+      "locked": {
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "flake-utils_2": {
+      "inputs": {
+        "systems": "systems_2"
       },
       "locked": {
         "lastModified": 1731533236,
@@ -34,13 +83,147 @@
         "type": "github"
       }
     },
+    "phantom": {
+      "inputs": {
+        "advisory-db": "advisory-db",
+        "crane": "crane",
+        "flake-utils": "flake-utils_2",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "rust-overlay": "rust-overlay"
+      },
+      "locked": {
+        "lastModified": 1774879386,
+        "narHash": "sha256-RMY8cMUBLftKbqwHkK80ouwEVl4xM7i/oX39BmhJsJ8=",
+        "ref": "refs/heads/main",
+        "rev": "aa5e2c2ccd48db59f9029048138115c0414ae5fc",
+        "revCount": 99,
+        "type": "git",
+        "url": "ssh://git@github.com/marcosfpina/phantom"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com/marcosfpina/phantom"
+      }
+    },
     "root": {
       "inputs": {
         "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "phantom": "phantom",
+        "securellm-mcp": "securellm-mcp",
+        "spider-nix": "spider-nix"
+      }
+    },
+    "rust-overlay": {
+      "inputs": {
+        "nixpkgs": [
+          "phantom",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1774408260,
+        "narHash": "sha256-Jn9d9r85dmf3gTMnSRt6t+DP2nQ5uJns/MMXg2FpzfM=",
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "d6471ee5a8f470251e6e5b83a20a182eb6c46c9b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "rust-overlay_2": {
+      "inputs": {
+        "nixpkgs": [
+          "securellm-mcp",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1774535687,
+        "narHash": "sha256-dpKS/8+uB0EoI4mCrpio+xs8Xxry6ZhLLwV8VIbbfrs=",
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "75900435aa883f84b038316864b3f60956681523",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "securellm-mcp": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "rust-overlay": "rust-overlay_2",
+        "spider-nix": [
+          "spider-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1774850115,
+        "narHash": "sha256-yjjFJ3An2InoOZxpeDVvVMMXP/J7IRjI9WtrpKQ2yDM=",
+        "ref": "refs/heads/main",
+        "rev": "443e65f1926d3c69d8efdb6febcc9f1f89a8c56f",
+        "revCount": 129,
+        "type": "git",
+        "url": "ssh://git@github.com/VoidNxSEC/securellm-mcp"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com/VoidNxSEC/securellm-mcp"
+      }
+    },
+    "spider-nix": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1774757061,
+        "narHash": "sha256-EpKUha2neiwBQRSJ4LtwezC95h+LfWWqfUytX8CVsGE=",
+        "ref": "refs/heads/main",
+        "rev": "77b5d37a12627b9487e3c15738b2d689f931427b",
+        "revCount": 21,
+        "type": "git",
+        "url": "ssh://git@github.com/VoidNxSEC/spider-nix"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com/VoidNxSEC/spider-nix"
       }
     },
     "systems": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
+    "systems_2": {
       "locked": {
         "lastModified": 1681028828,
         "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",

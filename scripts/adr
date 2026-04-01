@@ -69,6 +69,30 @@ get_adr_path() {
     return 1
 }
 
+resolve_adr_target() {
+    local target="${1:-}"
+
+    if [[ -z "$target" ]]; then
+        echo "$ADR_DIR"
+        return 0
+    fi
+
+    if [[ -e "$target" ]]; then
+        echo "$target"
+        return 0
+    fi
+
+    local adr_path
+    adr_path=$(get_adr_path "$target" || true)
+    if [[ -n "$adr_path" ]]; then
+        echo "$adr_path"
+        return 0
+    fi
+
+    log_error "ADR ou caminho não encontrado: $target"
+    return 1
+}
+
 validate_project() {
     local project="$1"
     if [[ "$project" =~ ^[A-Za-z0-9][A-Za-z0-9_-]*$ ]]; then
@@ -1053,7 +1077,8 @@ cmd_export() {
 }
 
 cmd_validate() {
-    local target="${1:-$ADR_DIR}"
+    local target
+    target=$(resolve_adr_target "${1:-}") || exit 1
 
     if [[ ! -x "$VALIDATE_SCRIPT" ]]; then
         log_error "Validator script não encontrado: $VALIDATE_SCRIPT"
@@ -1064,7 +1089,8 @@ cmd_validate() {
 }
 
 cmd_policy_check() {
-    local target="${1:-$ADR_DIR}"
+    local target
+    target=$(resolve_adr_target "${1:-}") || exit 1
 
     if [[ ! -x "$OPA_VALIDATE_SCRIPT" ]]; then
         log_error "OPA validation script não encontrado: $OPA_VALIDATE_SCRIPT"

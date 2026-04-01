@@ -342,6 +342,8 @@ Apache 2.0 — see [LICENSE](LICENSE).
 
 Additional documentation:
 - [Architecture](ARCHITECTURE.md) — Design principles and detailed vision
+- [Daemon Integration](docs/DAEMON.md) — NixOS modules, agent users, and SecureLLM-MCP backend model
 - [Export Guide](docs/EXPORT_GUIDE.md) — Complete export documentation
+- [Release Roadmap](docs/RELEASE_ROADMAP.md) — Publication plan for the next public release
 - [Platforms](docs/PLATFORMS.md) — Setup on NixOS, Linux, macOS, and Windows
 - [Contributing](CONTRIBUTING.md) — Setup and contribution guide

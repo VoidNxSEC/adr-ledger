@@ -4,14 +4,36 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    spider-nix = {
+      url = "git+ssh://git@github.com/VoidNxSEC/spider-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
+    securellm-mcp = {
+      url = "git+ssh://git@github.com/VoidNxSEC/securellm-mcp";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+      inputs.spider-nix.follows = "spider-nix";
+    };
+
+    phantom = {
+      url = "git+ssh://git@github.com/marcosfpina/phantom";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+
   };
 
   outputs =
-    {
+    inputs@{
       self,
       nixpkgs,
       flake-utils,
+      ...
     }:
+    let
+      securellmMcp = inputs.securellm-mcp;
+    in
     flake-utils.lib.eachDefaultSystem (
       system:
       let
@@ -718,10 +740,19 @@
         };
       }
     )
-    // {
+    // (
+    let
       # ===================================================================
       # OUTPUTS CROSS-SYSTEM (lib, NixOS modules)
       # ===================================================================
+      syncModule = import ./nix/modules/adr-ledger-sync.nix { inherit self; };
+      agentsModule = import ./nix/modules/adr-ledger-iam.nix {
+        inherit self securellmMcp;
+      };
+      fullModule = import ./nix/modules/adr-ledger-full.nix {
+        inherit self securellmMcp;
+      };
+    in {
 
       lib = {
         # Carregar knowledge base em Nix
@@ -738,71 +769,10 @@
         filterByStatus = kb: status: builtins.filter (adr: adr.status == status) kb.decisions;
       };
 
-      # NixOS Module (para integração futura)
-      nixosModules.adr-ledger =
-        {
-          config,
-          lib,
-          pkgs,
-          ...
-        }:
-        with lib;
-
-        let
-          cfg = config.services.adr-ledger;
-
-        in
-        {
-          options.services.adr-ledger = {
-            enable = mkEnableOption "ADR Ledger auto-sync";
-
-            ledgerPath = mkOption {
-              type = types.path;
-              description = "Path to ADR ledger repository";
-            };
-
-            autoSync = mkOption {
-              type = types.bool;
-              default = true;
-              description = "Auto-sync knowledge on system rebuild";
-            };
-
-            knowledgeBasePath = mkOption {
-              type = types.path;
-              default = "${cfg.ledgerPath}/knowledge/knowledge_base.json";
-              description = "Path to generated knowledge base";
-            };
-          };
-
-          config = mkIf cfg.enable {
-            # Systemd service para auto-sync
-            systemd.services.adr-sync = mkIf cfg.autoSync {
-              description = "ADR Knowledge Sync";
-              after = [ "network.target" ];
-
-              serviceConfig = {
-                Type = "oneshot";
-                ExecStart = "${self.packages.${pkgs.system}.adr-cli}/bin/adr sync";
-                WorkingDirectory = cfg.ledgerPath;
-              };
-            };
-
-            # Timer para sync periódico (opcional)
-            systemd.timers.adr-sync = mkIf cfg.autoSync {
-              description = "ADR Knowledge Sync Timer";
-              wantedBy = [ "timers.target" ];
-
-              timerConfig = {
-                OnCalendar = "daily";
-                Persistent = true;
-              };
-            };
-
-            # Disponibilizar knowledge base como arquivo do sistema
-            environment.etc."adr/knowledge_base.json" = mkIf cfg.autoSync {
-              source = cfg.knowledgeBasePath;
-            };
-          };
-        };
-    };
+      nixosModules = {
+        adr-ledger = fullModule;
+        adr-ledger-sync = syncModule;
+        adr-ledger-agents = agentsModule;
+      };
+    });
 }
