@@ -2,20 +2,303 @@
   "meta": {
     "type": "adr_knowledge_base",
     "version": "1.0",
-    "generated_at": "2026-01-22T00:15:17.154931",
-    "total_decisions": 10,
+    "generated_at": "2026-04-01T19:37:14.669901",
+    "total_decisions": 34,
     "by_status": {
-      "accepted": 10
+      "accepted": 34
+    },
+    "by_delivery_status": {
+      "unspecified": 32,
+      "completed": 1,
+      "in_progress": 1
     },
     "by_project": {
-      "NEUTRON": 5,
-      "CEREBRO": 6,
-      "SPECTRE": 3,
-      "PHANTOM": 5,
-      "GLOBAL": 6
+      "GLOBAL": 16,
+      "CEREBRO": 16,
+      "NEUTRON": 8,
+      "SPECTRE": 10,
+      "PHANTOM": 11,
+      "CEREBRO-INFRA": 1,
+      "SECURELLM-BRIDGE": 1,
+      "AI-ASSISTANT-HUB": 1,
+      "OWASAKA": 1,
+      "SPIDER‑NIX": 1,
+      "MATRIX_AI_ASSISTANT": 1,
+      "ADR_LEDGER": 1,
+      "IP_GUARD": 1,
+      "ASTRIX": 1,
+      "CHAOS_NUANCE": 1,
+      "PHANTOM-RAY": 1,
+      "INTELAGENT": 1
     }
   },
   "decisions": [
+    {
+      "id": "ADR-0016",
+      "type": "architecture_decision",
+      "title": "Validação das Ferramentas de ADR",
+      "status": "accepted",
+      "summary": "[ADR-0016] Validação das Ferramentas de ADR: [Describe the decision being made]...",
+      "scope": {
+        "projects": [
+          "GLOBAL"
+        ],
+        "layers": [
+          "infrastructure"
+        ]
+      },
+      "knowledge": {
+        "what": "[Describe the decision being made]",
+        "why": "[Describe the context and problem that led to this decision]",
+        "implications": {
+          "positive": [],
+          "negative": []
+        },
+        "alternatives_rejected": []
+      },
+      "questions": [],
+      "keywords": [],
+      "concepts": [],
+      "relations": {
+        "supersedes": [],
+        "related": [],
+        "enables": []
+      },
+      "governance": {
+        "classification": "minor",
+        "compliance": []
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
+      "metadata": {
+        "date": "2026-01-28",
+        "version": 1,
+        "hash": "212103f120bf",
+        "embedding_priority": "normal"
+      }
+    },
+    {
+      "id": "ADR-0022",
+      "type": "architecture_decision",
+      "title": "Consolidação de Scripts para CLI Typer",
+      "status": "accepted",
+      "summary": "[ADR-0022] Consolidação de Scripts para CLI Typer: **Consolidate all 15 scripts into Typer command groups, creating unified `cerebro` CLI with 24 total...",
+      "scope": {
+        "projects": [
+          "CEREBRO"
+        ],
+        "layers": [
+          "infrastructure"
+        ]
+      },
+      "knowledge": {
+        "what": "**Consolidate all 15 scripts into Typer command groups, creating unified `cerebro` CLI with 24 total commands.**\n\n**New structure:**\n```\ncerebro (24 commands in 7 groups)\n├── knowledge (9 cmds) - 5 existing + 4 migrated\n├── rag (3 cmds) - existing\n├── ops (1 cmd) - existing\n├── gcp (3 cmds) - NEW: burn, monitor, create-engine\n├── strategy (4 cmds) - NEW: optimize, salary, moat, trends\n├── content (1 cmd) - NEW: mine\n└── test (3 cmds) - NEW: grounded-search, grounded-gen, verify-api\n```\n\n**Keep original scripts with deprecation warning** for backward compatibility during transition.",
+        "why": "Cerebro started with a basic Typer CLI (`cerebro`) with 9 commands in 3 groups (knowledge, rag, ops). Over time, 15 additional Python scripts accumulated in `scripts/`:\n\n**GCP Management (3):**\n- `batch_burn.py` - Burn GCP credits via batch queries\n- `monitor_credits.py` - Track credit consumption\n- `create_search_engine.py` - Configure Google Search Engine\n\n**Strategy/Intelligence (4):**\n- `strategy_optimizer.py` - Optimize strategic planning\n- `salary_intel.py` - Salary intelligence gathering\n- `personal_moat_builder.py` - Personal competitive advantage\n- `trend_predictor.py` - Trend prediction\n\n**Content (1):**\n- `content_gold_miner.py` - Content mining\n\n**Knowledge (4):**\n- `generate_queries.py` - Query generation\n- `index_repository.py` - Repository indexing\n- `etl_docs.py` - Document ETL\n- `generate_docs.py` - Documentation generation\n\n**Testing (3):**\n- `grounded_search.py` - Google Search API testing\n- `grounded_generation_test.py` - Grounded generation testing\n- `verify_grounded_api.py` - API verification\n\n**Problems with scattered scripts:**\n\n1. **Discoverability:** Users must know scripts exist, no `--help` listing\n2. **Inconsistent UX:** Each script has different arg parsing (argparse vs typer vs custom)\n3. **No Integration:** Scripts can't easily call each other or share state\n4. **Duplication:** Common code (config loading, logging) duplicated\n5. **Testing:** Harder to test standalone scripts vs CLI commands\n6. **Documentation:** 15 separate README sections vs unified help system\n7. **Maintenance:** Changes require updating multiple files",
+        "implications": {
+          "positive": [],
+          "negative": []
+        },
+        "alternatives_rejected": []
+      },
+      "questions": [],
+      "keywords": [],
+      "concepts": [],
+      "relations": {
+        "supersedes": [],
+        "related": [],
+        "enables": []
+      },
+      "governance": {
+        "classification": "major",
+        "compliance": []
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
+      "metadata": {
+        "date": "2026-02-03",
+        "version": 1,
+        "hash": "bc0022001317",
+        "embedding_priority": "normal"
+      }
+    },
+    {
+      "id": "ADR-0025",
+      "type": "architecture_decision",
+      "title": "Phantom test suite fully green after production readiness audit",
+      "status": "accepted",
+      "summary": "[ADR-0025] Phantom test suite fully green after production readiness audit: Restore the archived modules, implement the missing interfaces directly in the existing\nsource files...",
+      "scope": {
+        "projects": [
+          "GLOBAL"
+        ],
+        "layers": [
+          "application",
+          "infrastructure"
+        ]
+      },
+      "knowledge": {
+        "what": "Restore the archived modules, implement the missing interfaces directly in the existing\nsource files (no new abstractions), sync `flake.nix` with `pyproject.toml`, and fix the\nhandful of test/route mismatches. Do not delete tests to make them pass — the modules are\nreal and required by the RAG pipeline.",
+        "why": "The 10-phase Phantom production readiness audit (ADR-0024) completed on 2026-02-04.\nPhase 2 archived `cortex_chunker.py` and `cortex_embeddings.py` as dead code because a\ngrep over `src/` showed no imports — it missed `tests/unit/` which actively imports both.\nPhases 3 and 10 added/removed deps in `pyproject.toml` without mirroring the changes in\n`flake.nix` `pythonEnv`, so `prometheus-client`, `structlog`, `httpx`, `typer`, and `faiss`\nwere all absent from the Nix dev shell. Several interfaces declared in `__init__.py`\n(`LatencyOptimizer`, `SpectreAnalyzer.analyze`, `SanitizationEngine.scan_sensitive_patterns`)\nhad no implementation. The `/rag/query` endpoint was registered as POST but every consumer\nused GET.\n\nRunning `pytest` after the audit produced 5 collection errors and, once those were fixed,\n12 runtime failures. Zero tests passed cleanly end-to-end.",
+        "implications": {
+          "positive": [
+            "88/88 tests passing, 0 skipped",
+            "flake.nix and pyproject.toml are now in sync (faiss, prometheus-client, structlog, httpx, typer all present in both)",
+            {
+              "RAG module exports are complete": "MarkdownChunker, ChunkStrategy, Chunk, EmbeddingManager, EmbeddingGenerator"
+            },
+            "SpectreAnalyzer.analyze(text) available for in-memory NLP without file I/O",
+            "SanitizationEngine.scan_sensitive_patterns(text) available for programmatic PII scanning"
+          ],
+          "negative": [
+            "Core CLI commands (phantom-scan, phantom-hash, phantom-api) not yet exercised by automated tests"
+          ]
+        },
+        "alternatives_rejected": [
+          "Delete the tests instead of restoring the modules — rejected, the modules are real and used by the RAG pipeline"
+        ]
+      },
+      "questions": [
+        "Why was FAISS skipped? python313Packages.faiss was missing from pythonEnv",
+        "Why did test_components fail? cortex_chunker/cortex_embeddings were archived but tests still imported them",
+        "What does LatencyOptimizer expose? QueryCache + ConnectionPool + BatchProcessor + LatencyMetrics facade"
+      ],
+      "keywords": [
+        "phantom",
+        "test-suite",
+        "flake-sync",
+        "faiss",
+        "cortex-chunker",
+        "spectre",
+        "sanitization"
+      ],
+      "concepts": [
+        "flake.nix ↔ pyproject.toml parity is a hard invariant; any Phase that touches deps must update both",
+        "dead-code archival grep must search tests/ not only src/",
+        "NumpyVectorStore is the fallback; FAISSVectorStore is the production path — both must be exercisable in CI"
+      ],
+      "relations": {
+        "supersedes": [],
+        "related": [
+          "ADR-0024"
+        ],
+        "enables": [
+          "Phase 3 auto-remediation (judge pipeline now fully testable)"
+        ]
+      },
+      "governance": {
+        "classification": "major",
+        "compliance": []
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
+      "metadata": {
+        "date": "2026-02-04",
+        "version": 1,
+        "hash": "d67983880b95",
+        "embedding_priority": "high"
+      }
+    },
+    {
+      "id": "ADR-0048",
+      "type": "architecture_decision",
+      "title": "Gitleaks como ferramenta de secret scanning — rejeição explícita do Trivy",
+      "status": "accepted",
+      "summary": "[ADR-0048] Gitleaks como ferramenta de secret scanning — rejeição explícita do Trivy: ...",
+      "scope": {
+        "projects": [
+          "GLOBAL"
+        ],
+        "layers": [
+          "security",
+          "ci"
+        ]
+      },
+      "knowledge": {
+        "what": "",
+        "why": "",
+        "implications": {
+          "positive": [
+            "Garantia criptograficamente auditável de ausência de secrets no branch og antes de publicação",
+            "Pipeline CI rodando em main e og via gitleaks-action@v2 sem dependências Nix",
+            "Gitleaks disponível localmente via `nix develop` para scan ad-hoc",
+            "Exclusão explícita e documentada do Trivy previne adoção acidental futura sem revisão",
+            "Allowlist no .gitleaks.toml cobre falsos positivos conhecidos (public keys Ed25519, chain hashes)"
+          ],
+          "negative": [
+            "CVE scanning de containers/dependências requer ferramenta separada quando necessário",
+            "Manutenção do .gitleaks.toml à medida que o projeto evolui"
+          ]
+        },
+        "alternatives_rejected": [
+          "Trivy (aquasecurity/trivy-action)",
+          "detect-secrets (Yelp)",
+          "TruffleHog (trufflesecurity/trufflehog-actions-scan)"
+        ]
+      },
+      "questions": [
+        "Por que Gitleaks e não Trivy para secret scanning?",
+        "Qual incidente motivou a exclusão explícita do Trivy?",
+        "Como o repo garante ausência de secrets antes de publicação pública?",
+        "Qual é o pipeline de secret scan para o branch og?"
+      ],
+      "keywords": [
+        "gitleaks",
+        "trivy",
+        "secret scanning",
+        "credential detection",
+        "CI security",
+        "supply chain incident",
+        "GitHub Actions",
+        "open source hardening"
+      ],
+      "concepts": [
+        "Secret Scanning",
+        "Supply Chain Trust",
+        "Tool Vetting",
+        "CI Security Posture"
+      ],
+      "relations": {
+        "supersedes": [],
+        "related": [
+          "ADR-0033",
+          "ADR-0032"
+        ],
+        "enables": [
+          "Branch og como release open source auditada"
+        ]
+      },
+      "governance": {
+        "classification": "major",
+        "compliance": [
+          "SECURITY",
+          "SUPPLY_CHAIN"
+        ]
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
+      "metadata": {
+        "date": "2026-03-24",
+        "version": 1,
+        "hash": "e3b0c44298fc",
+        "embedding_priority": "high"
+      }
+    },
     {
       "id": "ADR-0009",
       "type": "architecture_decision",
@@ -89,6 +372,12 @@
           "INFRASTRUCTURE",
           "ORCHESTRATION"
         ]
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
       },
       "metadata": {
         "date": "2026-01-11",
@@ -190,11 +479,379 @@
           "SCALABILITY"
         ]
       },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
       "metadata": {
         "date": "2026-01-11",
         "version": 1,
         "hash": "d8237a2ebd15",
         "embedding_priority": "critical"
+      }
+    },
+    {
+      "id": "ADR-0019",
+      "type": "architecture_decision",
+      "title": "Textual Framework para TUI",
+      "status": "accepted",
+      "summary": "[ADR-0019] Textual Framework para TUI: **Adopt Textual 0.47+ as the TUI framework for Cerebro's interactive terminal interface.**\n\nTextual ...",
+      "scope": {
+        "projects": [
+          "CEREBRO"
+        ],
+        "layers": [
+          "infrastructure"
+        ]
+      },
+      "knowledge": {
+        "what": "**Adopt Textual 0.47+ as the TUI framework for Cerebro's interactive terminal interface.**\n\nTextual will power 6 specialized screens (Dashboard, Projects, Intelligence, Scripts, GCP Credits, Logs) with rich widgets, async event handling, and CSS-like styling.",
+        "why": "Cerebro needed to evolve from a basic CLI tool with 15 scattered scripts into a unified platform with three interfaces: TUI (interactive), CLI (scriptable), and GUI (visual). The primary challenge was choosing a framework for building a modern, performant Terminal User Interface that could:\n\n- Handle large datasets efficiently (1000+ projects)\n- Provide rich interactive visualizations\n- Integrate seamlessly with existing async FastAPI backend\n- Support keyboard shortcuts and mouse interaction\n- Work reliably over SSH\n- Maintain fast startup times (<2s)\n\nThe TUI would serve as the default interface for interactive terminal sessions, complementing the CLI for scripting and GUI dashboard for web-based visualization.",
+        "implications": {
+          "positive": [],
+          "negative": []
+        },
+        "alternatives_rejected": []
+      },
+      "questions": [],
+      "keywords": [],
+      "concepts": [],
+      "relations": {
+        "supersedes": [],
+        "related": [],
+        "enables": []
+      },
+      "governance": {
+        "classification": "major",
+        "compliance": []
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
+      "metadata": {
+        "date": "2026-02-03",
+        "version": 1,
+        "hash": "b3dc29d8ebe2",
+        "embedding_priority": "normal"
+      }
+    },
+    {
+      "id": "ADR-0030",
+      "type": "architecture_decision",
+      "title": "Cerebro Enterprise Repositioning & Identity Resolution",
+      "status": "accepted",
+      "summary": "[ADR-0030] Cerebro Enterprise Repositioning & Identity Resolution: Reposition Cerebro as an **enterprise catalyst**:\n\n1. **Naming**: Cerebro = product name, phantom = ...",
+      "scope": {
+        "projects": [
+          "CEREBRO"
+        ],
+        "layers": [
+          "infrastructure"
+        ]
+      },
+      "knowledge": {
+        "what": "Reposition Cerebro as an **enterprise catalyst**:\n\n1. **Naming**: Cerebro = product name, phantom = internal Python module (kept for backward compat)\n2. **Language**: All user-facing strings in English; Portuguese removed from CLI/TUI\n3. **Framing**: GCP credit consumption reframed as \"batch execution\" — a feature, not the identity\n4. **Documentation**: 16 root markdowns moved to `docs/` subdirectories (nothing deleted)\n5. **Hardcoded values**: GCP project IDs replaced with env vars / placeholders\n6. **ADR triage**: ADR-0027 accepted; this ADR (0030) supersedes ADR-0017 and ADR-0024\n\nThis ADR does NOT:\n- Rename `src/phantom/` directory (high risk, zero user value)\n- Delete any files (only moves)\n- Rewrite command logic (only reframes labels/docstrings)\n- Remove the `gcp burn` subcommand (stays as a feature)",
+        "why": "Cerebro suffers from an **identity crisis** with 3 conflicting framings:\n1. **README.md** — \"Enterprise knowledge extraction platform\" (correct)\n2. **docs/EXECUTIVE_SUMMARY.md** — \"Phoenix Credit Burn ROI Strategy\" (personal/career)\n3. **README_PORTFOLIO.md** — \"Production-grade code intelligence\" (portfolio)\n\nAdditional issues: inconsistent naming (Phantom vs Cerebro), Portuguese strings in CLI/TUI,\n\"burn\" language dominating product identity, 12 proposed ADRs pending triage, and 16 loose\nmarkdown files in the project root.",
+        "implications": {
+          "positive": [
+            "Consistent enterprise identity across all user-facing surfaces",
+            "English-only CLI enables international adoption",
+            "GCP credits reframed as a feature, not the product identity",
+            "Clean project root with organized docs/ structure"
+          ],
+          "negative": [
+            "Internal module still named phantom (acceptable trade-off)"
+          ]
+        },
+        "alternatives_rejected": [
+          "Full rename src/phantom/ to src/cerebro/ — rejected due to high risk, zero user value",
+          "Delete burn commands entirely — rejected, credit management is a valid feature"
+        ]
+      },
+      "questions": [
+        "What is Cerebro's identity? Enterprise Knowledge Extraction Platform",
+        "What is phantom? Internal Python module, not the product name",
+        "What language for user-facing strings? English only"
+      ],
+      "keywords": [
+        "enterprise repositioning",
+        "identity resolution",
+        "internationalization",
+        "naming convention"
+      ],
+      "concepts": [
+        "Product identity vs internal module naming",
+        "Feature vs identity framing"
+      ],
+      "relations": {
+        "supersedes": [
+          "ADR-0017",
+          "ADR-0024"
+        ],
+        "related": [
+          "ADR-0027"
+        ],
+        "enables": []
+      },
+      "governance": {
+        "classification": "critical",
+        "compliance": []
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
+      "metadata": {
+        "date": "2026-02-14",
+        "version": 1,
+        "hash": "ac7e8ac44e07",
+        "embedding_priority": "high"
+      }
+    },
+    {
+      "id": "ADR-0046",
+      "type": "architecture_decision",
+      "title": "Padrão mapper/engine para normalização de dados brutos (pure functions + dispatch)",
+      "status": "accepted",
+      "summary": "[ADR-0046] Padrão mapper/engine para normalização de dados brutos (pure functions + dispatch): **Padrão mapper/engine com duas camadas distintas:**\n\n1. **Mappers** (`services/normalizer/mappers/{...",
+      "scope": {
+        "projects": [
+          "GLOBAL"
+        ],
+        "layers": [
+          "normalizer",
+          "data-pipeline"
+        ]
+      },
+      "knowledge": {
+        "what": "**Padrão mapper/engine com duas camadas distintas:**\n\n1. **Mappers** (`services/normalizer/mappers/{source}_mapper.py`): funções puras,\n   sem IO, que recebem um dict/list de response e retornam `list[dict]` de rows.\n\n2. **NormalizerEngine** (`services/normalizer/engine.py`): dispatch por `source_id`\n   + `metadata[\"endpoint\"]`, chama o mapper correto, captura exceções, loga erros.\n\n```python\n# Uso:\nengine = NormalizerEngine()\nrows = engine.normalize(dp)              # nunca levanta exceção\nawait client.upsert_metrics_batch(rows)  # rows prontos para TimescaleDB\n```\n\n```python\n# Adicionar nova fonte:\n# 1. Criar services/normalizer/mappers/coingecko_mapper.py\n# 2. Adicionar ao dispatch em engine.py:\n#    \"coingecko\": self._normalize_coingecko\n```",
+        "why": "O CHAINSCOPE coleta dados de fontes heterogêneas (DefiLlama, CoinGecko, The Graph,\nDiscourse forums, etc.), cada uma com estrutura de resposta diferente. Era necessário\ndefinir como converter `RawDataPoint` (dado bruto, com `raw_payload` opaco) em\nlinhas estruturadas para `protocol_metrics` no TimescaleDB.\n\nA decisão impacta testabilidade, extensibilidade e separação de responsabilidades\nno pipeline de coleta.",
+        "implications": {
+          "positive": [
+            "Mappers são funções puras — unit tests sem qualquer mock",
+            "NormalizerEngine.normalize() nunca levanta exceção — erros logados, retorna []",
+            "Adicionar nova fonte: criar mapper + adicionar entrada no dispatch dict",
+            "engine.py é agnóstico de fonte — só conhece source_id"
+          ],
+          "negative": [
+            "Dois arquivos por fonte (mapper + entrada no engine) em vez de um"
+          ]
+        },
+        "alternatives_rejected": [
+          "",
+          ""
+        ]
+      },
+      "questions": [
+        "Como um RawDataPoint se torna linhas no TimescaleDB?",
+        "Como adicionar suporte a uma nova fonte de dados?",
+        "Por que os mappers não têm IO?"
+      ],
+      "keywords": [
+        "normalizer",
+        "mapper",
+        "pure functions",
+        "dispatch",
+        "RawDataPoint",
+        "protocol_metrics"
+      ],
+      "concepts": [
+        "Separação coleta/normalização",
+        "Funções puras para mapeamento de schema",
+        "Dispatch por source_id + endpoint"
+      ],
+      "relations": {
+        "supersedes": [],
+        "related": [
+          "ADR-0044"
+        ],
+        "enables": [
+          "CoinGecko mapper (FASE 2)",
+          "L2Beat mapper (FASE 3)",
+          "On-chain normalizers (FASE 4)"
+        ]
+      },
+      "governance": {
+        "classification": "major",
+        "compliance": []
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
+      "metadata": {
+        "date": "2026-03-08",
+        "version": 2,
+        "hash": "80f4a7a10f8e",
+        "embedding_priority": "high"
+      }
+    },
+    {
+      "id": "ADR-0045",
+      "type": "architecture_decision",
+      "title": "RateLimitedMixin + spider-nix como camada de proteção para todos os adapters REST",
+      "status": "accepted",
+      "summary": "[ADR-0045] RateLimitedMixin + spider-nix como camada de proteção para todos os adapters REST: **Usar `RateLimitedMixin` (sobre `spider_nix.AdaptiveRateLimiter` +\n`spider_nix.CircuitBreaker`) com...",
+      "scope": {
+        "projects": [
+          "GLOBAL"
+        ],
+        "layers": [
+          "collector",
+          "infrastructure"
+        ]
+      },
+      "knowledge": {
+        "what": "**Usar `RateLimitedMixin` (sobre `spider_nix.AdaptiveRateLimiter` +\n`spider_nix.CircuitBreaker`) como camada de proteção universal para adapters REST.**\n\n```python\n# Padrão de herança:\nclass DefiLlamaAdapter(RateLimitedMixin, BaseAdapter):\n    def __init__(self):\n        self.__init_rate_limiter__(initial_delay_ms=300.0)\n\n    async def collect(self, params):\n        await self._acquire()                              # aguarda delay adaptativo\n        result = await self._call_protected(self._do_get, path)  # circuit breaker\n        await self._report(result.status_code, elapsed_ms)       # ajusta rate limiter\n        yield RawDataPoint(...)\n```\n\nImplementado em: `services/collector/adapters/rate_limited_mixin.py`",
+        "why": "O CHAINSCOPE coleta dados de ~30+ fontes externas simultaneamente. Fontes públicas\ncomo DefiLlama e CoinGecko têm rate limits não documentados, e falhas em uma fonte\nnão devem propagar para o restante do pipeline.\n\nEra necessário definir um mecanismo uniforme de proteção antes de implementar\nqualquer adapter de produção.",
+        "implications": {
+          "positive": [
+            "AdaptiveRateLimiter ajusta delay baseado em latência e status codes (429, 503)",
+            "CircuitBreaker (3 estados: closed/open/half-open) isola falhas por fonte",
+            "Qualquer adapter: class MyAdapter(RateLimitedMixin, BaseAdapter) + __init_rate_limiter__()",
+            "_call_protected() envolve qualquer callable — não só HTTP",
+            "get_rate_limit_stats() para observabilidade sem instrumentação adicional"
+          ],
+          "negative": [
+            "spider-nix deve ser instalado (flake input + pyproject.toml dep)",
+            "MRO requer ordem correta na herança múltipla"
+          ]
+        },
+        "alternatives_rejected": [
+          "",
+          ""
+        ]
+      },
+      "questions": [
+        "Como adapters do CHAINSCOPE protegem contra rate limiting?",
+        "O que acontece quando uma fonte fica indisponível?",
+        "Como usar RateLimitedMixin em um novo adapter?"
+      ],
+      "keywords": [
+        "RateLimitedMixin",
+        "AdaptiveRateLimiter",
+        "CircuitBreaker",
+        "spider-nix",
+        "backpressure",
+        "fault tolerance"
+      ],
+      "concepts": [
+        "Rate limiting adaptativo baseado em latência e status codes",
+        "Circuit breaker 3 estados para isolamento de falhas",
+        "Mixin para injeção de proteção sem herança profunda"
+      ],
+      "relations": {
+        "supersedes": [],
+        "related": [
+          "ADR-0044",
+          "ADR-0001"
+        ],
+        "enables": [
+          "Todos os adapters Tier 1-4 do CHAINSCOPE"
+        ]
+      },
+      "governance": {
+        "classification": "major",
+        "compliance": []
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
+      "metadata": {
+        "date": "2026-03-08",
+        "version": 1,
+        "hash": "d602ed2908a9",
+        "embedding_priority": "high"
+      }
+    },
+    {
+      "id": "ADR-0037",
+      "type": "architecture_decision",
+      "title": "Nix-First Kubernetes Orchestration over Helm",
+      "status": "accepted",
+      "summary": "[ADR-0037] Nix-First Kubernetes Orchestration over Helm: **We adopt Nix as the primary Kubernetes orchestration mechanism**, replacing Helm charts with decla...",
+      "scope": {
+        "projects": [
+          "SPECTRE"
+        ],
+        "layers": [
+          "infrastructure"
+        ]
+      },
+      "knowledge": {
+        "what": "**We adopt Nix as the primary Kubernetes orchestration mechanism**, replacing Helm charts with declarative Nix modules that generate Kubernetes manifests. This includes:\n\n- `nix/lib/k8s.nix`: Helper functions for manifest generation\n- `nix/kubernetes/*.nix`: Resource definitions (Deployment, Service, ConfigMap, Ingress)\n- `nix/images/spectre-proxy.nix`: Container image builder using dockerTools\n- Flake integration with packages (manifests) and apps (deploy scripts)\n- Isolated operations via `nix develop .#kubernetes`\n\nHelm chart remains available for teams preferring traditional tooling, but Nix is the recommended and maintained approach.",
+        "why": "SPECTRE requires Kubernetes deployment for production with multiple environments (dev, prod). Initial exploration led to creating a full Helm chart (17 files, 813 lines) with comprehensive features. However, during implementation, we identified that Nix provides superior guarantees for reproducible deployments and eliminates external dependencies like Docker daemon.\n\nThe project already uses Nix flakes for development environment, making a Nix-first approach for infrastructure a natural fit. The key question became: should we maintain Helm charts or migrate to pure Nix orchestration?",
+        "implications": {
+          "positive": [
+            "Zero configuration drift between environments",
+            "Build-time validation of K8s manifests",
+            "Atomic updates via nix flake lock",
+            "Container images without Docker daemon",
+            "Integration with nix develop for isolated ops"
+          ],
+          "negative": [
+            "Team needs to learn Nix language",
+            "Less tooling integration than Helm ecosystem"
+          ]
+        },
+        "alternatives_rejected": [
+          "Helm Charts",
+          "Kustomize",
+          "Plain YAML manifests"
+        ]
+      },
+      "questions": [
+        "Why use Nix instead of Helm for Kubernetes?",
+        "How to build containers without Docker daemon?",
+        "How to ensure reproducible K8s deployments?"
+      ],
+      "keywords": [
+        "nix",
+        "kubernetes",
+        "helm",
+        "dockerTools",
+        "reproducible-builds",
+        "infrastructure-as-code",
+        "declarative-deployment"
+      ],
+      "concepts": [
+        "Nix-first Kubernetes orchestration",
+        "Content-addressable infrastructure",
+        "Hermetic container builds",
+        "Build-time manifest validation"
+      ],
+      "relations": {
+        "supersedes": [],
+        "related": [],
+        "enables": []
+      },
+      "governance": {
+        "classification": "critical",
+        "compliance": []
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
+      "metadata": {
+        "date": "2026-02-15",
+        "version": 1,
+        "hash": "7c0b177c7ed0",
+        "embedding_priority": "high"
       }
     },
     {
@@ -281,10 +938,107 @@
           "ML"
         ]
       },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
       "metadata": {
         "date": "2026-01-14",
         "version": 1,
         "hash": "0a8840888ddb",
+        "embedding_priority": "critical"
+      }
+    },
+    {
+      "id": "ADR-0032",
+      "type": "architecture_decision",
+      "title": "Private Blockchain Layer for Cryptographic Decision Integrity",
+      "status": "accepted",
+      "summary": "[ADR-0032] Private Blockchain Layer for Cryptographic Decision Integrity: Implementar uma camada de **blockchain privado** em 3 tiers incrementais que eleva o ADR-Ledger de \"...",
+      "scope": {
+        "projects": [
+          "GLOBAL",
+          "CEREBRO",
+          "SPECTRE",
+          "PHANTOM",
+          "NEUTRON"
+        ],
+        "layers": [
+          "security",
+          "governance",
+          "infrastructure",
+          "data"
+        ]
+      },
+      "knowledge": {
+        "what": "Implementar uma camada de **blockchain privado** em 3 tiers incrementais que eleva o ADR-Ledger de \"livro razao contabil\" para um sistema de integridade criptografica real:\n\n### Tier 1: Cryptographic Foundation\n- **Decision Chain**: Cada ADR aceito vira um bloco com hash SHA256 do arquivo completo, encadeado ao bloco anterior. Qualquer alteracao retroativa quebra a cadeia.\n- **Multi-Signature Governance**: Assinaturas Ed25519 por decisao, mapeadas a approval matrix (critical=2, major=1, minor=1, patch=1).\n- **Chain Verification**: Comando `adr chain verify` valida integridade de toda a cadeia.\n\n### Tier 2: Trust & Proof\n- **Merkle Tree**: Arvore binaria sobre content hashes para provas de inclusao O(log n). Root hash = estado do conhecimento organizacional.\n- **Smart Governance Contracts**: Engine executavel que transforma governance.yaml em validadores automaticos com audit log.\n- **Cryptographic Snapshots**: Snapshots periodicos assinados encadeando chain tip + merkle root + estatisticas.\n\n### Tier 3: Intelligence & Federation\n- **Decision Provenance**: Rastreabilidade end-to-end (research -> analysis -> proposal -> review -> acceptance -> implementation -> outcome).\n- **Decision Economics**: Quality scoring com metricas compostas (implementation compliance, review depth, risk analysis).\n- **Federated Network**: Compartilhamento cross-org com selective disclosure baseado em topics.\n\n### Arquitetura\nTodos os modulos em Python 3.13 sob `.chain/`, usando PyNaCl (libsodium) para Ed25519. Chain state em `.chain/chain.json` (append-only). Chaves privadas gitignored. Integracao completa com CLI, schema JSON, governance YAML e Nix flake.",
+        "why": "O ADR-Ledger evoluiu de um simples registro de decisoes para um sistema de governanca-as-code que alimenta 4 agentes inteligentes (CEREBRO, SPECTRE, PHANTOM, NEUTRON). Porem, a integridade das decisoes depende exclusivamente do Git, que pode ter historico reescrito via force-push. O content hash atual (SHA256[:12]) so cobre context+decision, nao o ADR completo. Nao existe assinatura digital por decisao, e as regras de governanca sao documentacao, nao codigo executavel.",
+        "implications": {
+          "positive": [],
+          "negative": []
+        },
+        "alternatives_rejected": [
+          "Full public blockchain (Ethereum/Solana)",
+          "Hyperledger Fabric",
+          "Git-only with signed commits"
+        ]
+      },
+      "questions": [
+        "How do we guarantee architectural decisions haven't been tampered with?",
+        "How can we cryptographically prove a decision existed at a specific time?",
+        "How do we enforce governance rules programmatically, not just as documentation?",
+        "How can we track the full lifecycle of a decision from research to outcome?",
+        "How do we measure decision quality over time?",
+        "How can separate organizations share decisions without exposing all internal knowledge?"
+      ],
+      "keywords": [
+        "blockchain",
+        "private blockchain",
+        "merkle tree",
+        "digital signatures",
+        "Ed25519",
+        "chain integrity",
+        "tamper evidence",
+        "cryptographic proof",
+        "decision provenance",
+        "federated network",
+        "governance contracts",
+        "decision economics"
+      ],
+      "concepts": [
+        "Cryptographic Decision Integrity",
+        "Tamper-Evident Decision Chain",
+        "Merkle Inclusion Proofs",
+        "Multi-Signature Governance",
+        "Decision Provenance Tracking",
+        "Federated Knowledge Sharing",
+        "Smart Governance Contracts"
+      ],
+      "relations": {
+        "supersedes": [],
+        "related": [],
+        "enables": []
+      },
+      "governance": {
+        "classification": "critical",
+        "compliance": [
+          "SECURITY",
+          "INFRASTRUCTURE",
+          "GOVERNANCE"
+        ]
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
+      "metadata": {
+        "date": "2026-02-14",
+        "version": 1,
+        "hash": "922bcac5a20b",
         "embedding_priority": "critical"
       }
     },
@@ -364,6 +1118,12 @@
           "KNOWLEDGE",
           "AI"
         ]
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
       },
       "metadata": {
         "date": "2025-01-10",
@@ -459,11 +1219,515 @@
           "PRIVACY"
         ]
       },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
       "metadata": {
         "date": "2026-01-11",
         "version": 1,
         "hash": "e1afaf5cb713",
         "embedding_priority": "high"
+      }
+    },
+    {
+      "id": "ADR-0031",
+      "type": "architecture_decision",
+      "title": "Cerebro Scope Boundary — Intelligence Tool vs Platform Infrastructure",
+      "status": "accepted",
+      "summary": "[ADR-0031] Cerebro Scope Boundary — Intelligence Tool vs Platform Infrastructure: **Split into two projects with a clear boundary:**\n\n### `cerebro/` — Intelligence Tool (this project...",
+      "scope": {
+        "projects": [
+          "CEREBRO",
+          "CEREBRO-INFRA"
+        ],
+        "layers": [
+          "application",
+          "infrastructure"
+        ]
+      },
+      "knowledge": {
+        "what": "**Split into two projects with a clear boundary:**\n\n### `cerebro/` — Intelligence Tool (this project)\n\nThe code intelligence platform. Analyzes codebases, runs RAG pipelines, produces metrics, serves dashboards. Ships as a Python package (`pip install cerebro-cli`) and a Nix flake.\n\n**Stays in Cerebro:**\n\n| Component | Implementation | Why it belongs |\n|-----------|---------------|----------------|\n| Vertex AI Vector Search | New provider replacing ChromaDB | Core RAG backend — this IS the product |\n| Nix `dockerTools.buildImage` | Build pipeline addition | Reproducible builds are Cerebro's identity (Nix-first) |\n| FastAPI REST API | Already exists (`dashboard_server.py`) | The public interface for integrations |\n| Provider abstractions | `interfaces/llm.py`, `interfaces/vector_store.py` | Pluggable backends — the architecture stays clean |\n\n**Does NOT change:**\n- CLI (Typer, 8 command groups, 30+ commands)\n- TUI (Textual, 6 screens)\n- Dashboard (React 18 + Vite)\n- Core analysis engine (Tree-Sitter, AST, security scanner)\n- Metrics collector (zero-token repository scanning)\n- Intelligence system (SIGINT/HUMINT/OSINT/TECHINT)\n\n### `cerebro-infra/` — Platform Engineering (new project)\n\nThe production infrastructure that runs Cerebro at enterprise scale. Provisions and manages cloud resources. Ships as Terraform modules and Kubernetes manifests.\n\n| Component | Implementation | Why it's separate |\n|-----------|---------------|-------------------|\n| GKE Standard (Dataplane V2) | Terraform + Cilium policies | Cluster lifecycle ≠ application lifecycle |\n| Cloud Run Jobs (ingestion) | Terraform + Job definitions | Orchestration layer, not business logic |\n| eBPF programs | Custom BPF, loaded via Cilium | Kernel-level networking, completely different domain |\n| VPC / IAM / monitoring | Terraform modules | Infrastructure provisioning |\n| Container registry | Artifact Registry + Nix builds | Image pipeline management |\n\n### The Interface Contract\n\nThe two projects communicate through:\n\n```\ncerebro (produces)                    cerebro-infra (consumes)\n─────────────────                     ────────────────────────\nContainer image (Nix-built)    →      GKE Deployment / Cloud Run Job\nOpenAPI spec (FastAPI)         →      Ingress / Load Balancer config\nVertex AI provider config      →      Vertex AI Vector Search index\nHealth endpoint (/health)      →      GKE liveness/readiness probes\n```\n\n**Rule: Cerebro never imports infrastructure code. cerebro-infra never imports analysis code.**",
+        "why": "Cerebro v2.0.0 is an Enterprise Knowledge Extraction Platform — a Python CLI/TUI/Dashboard tool that analyzes codebases, runs RAG pipelines, and produces repository intelligence. It currently uses ChromaDB (SQLite) for vector storage, manual Dockerfiles for builds, and Python scripts for ingestion.\n\nThe enterprise migration requires replacing these components with production-grade equivalents:\n\n| Component | Current | Enterprise (Google Way) | Rationale |\n|-----------|---------|------------------------|-----------|\n| **Vector Store** | ChromaDB (SQLite) | Vertex AI Vector Search | Serverless, scales to billions of vectors, <10ms latency |\n| **Build System** | Dockerfile manual | Nix `dockerTools.buildImage` | Bit-for-bit reproducible distroless images without Dockerfile |\n| **Ingestion** | Python scripts | Cloud Run Jobs | Perfect for batch ETL <10TB. Dataflow is overkill at this scale |\n| **Compute/eBPF** | Local / Cloud Run | GKE Standard (Dataplane V2) | Only place to load custom BPF programs with native Cilium |\n\nThe critical question: **do all four components belong in the same project?**\n\n### The Boundary Test\n\nA project should be split when:\n\n1. **Deploy cycles are independent** — You update the CLI without touching the cluster. You scale GKE without redeploying the Python package.\n2. **Ownership domains differ** — Code intelligence (analysis, RAG, metrics) vs. platform engineering (Terraform, Kubernetes, networking).\n3. **Failure domains are isolated** — A bug in the analyzer doesn't bring down the cluster. A GKE node failure doesn't break the local CLI.\n\nAll three conditions are met here.",
+        "implications": {
+          "positive": [
+            "Each project has a clear mission and owner",
+            "Independent deploy cycles — update CLI without touching cluster",
+            "Cerebro stays lean and focused on intelligence",
+            "cerebro-infra can evolve at its own pace (Terraform, GKE, Cilium)"
+          ],
+          "negative": [
+            "Cross-repo coordination needed for breaking API changes",
+            "Two CI/CD pipelines to maintain"
+          ]
+        },
+        "alternatives_rejected": [
+          "Monorepo: everything in cerebro/ with module boundaries",
+          "Cerebro-only: defer all infra, only upgrade Vector Search + Nix build",
+          "Split: two projects with clear boundary (CHOSEN)"
+        ]
+      },
+      "questions": [
+        "Should GKE/eBPF infrastructure live inside Cerebro?",
+        "Where does the boundary between intelligence tool and platform lie?",
+        "Which enterprise components belong to which project?"
+      ],
+      "keywords": [
+        "scope-boundary",
+        "project-split",
+        "gke",
+        "vertex-ai-vector-search",
+        "nix-dockertools",
+        "cloud-run-jobs",
+        "ebpf",
+        "cilium"
+      ],
+      "concepts": [
+        "Separation of concerns between tool and platform",
+        "Independent deploy cycles as project boundary signal",
+        "The Google Way — right tool for right scale"
+      ],
+      "relations": {
+        "supersedes": [],
+        "related": [
+          "ADR-0030",
+          "ADR-0027",
+          "ADR-0005"
+        ],
+        "enables": [
+          "Vertex AI Vector Search migration",
+          "Production GKE deployment",
+          "Nix-native container builds"
+        ]
+      },
+      "governance": {
+        "classification": "critical",
+        "compliance": [
+          "scope-definition",
+          "project-boundary"
+        ]
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
+      "metadata": {
+        "date": "2026-02-14",
+        "version": 1,
+        "hash": "394e2cd2393f",
+        "embedding_priority": "high"
+      }
+    },
+    {
+      "id": "ADR-0040",
+      "type": "architecture_decision",
+      "title": "Service Mesh Adoption — Linkerd for Inter-Service mTLS and Observability",
+      "status": "accepted",
+      "summary": "[ADR-0040] Service Mesh Adoption — Linkerd for Inter-Service mTLS and Observability: **Adopt Linkerd** as the service mesh for SPECTRE's Kubernetes deployments.\n\nKey configuration:\n- **...",
+      "scope": {
+        "projects": [
+          "SPECTRE"
+        ],
+        "layers": [
+          "infrastructure",
+          "networking"
+        ]
+      },
+      "knowledge": {
+        "what": "**Adopt Linkerd** as the service mesh for SPECTRE's Kubernetes deployments.\n\nKey configuration:\n- **iptables mode**: `nft` (required for kind clusters, compatible with modern kernels)\n- **NATS skip**: `config.linkerd.io/skip-outbound-ports: 4222` (NATS uses a custom TCP protocol, not HTTP)\n- **Injection**: Annotation-based (`linkerd.io/inject: enabled`) per deployment, not namespace-wide\n- **Coexistence**: Application-level circuit breaker (Rust) + mesh-level mTLS/retries",
+        "why": "SPECTRE runs multiple services in Kubernetes: spectre-proxy (Rust/axum), neutron (Python/FastAPI), and NATS (message bus). As inter-service communication grows, we need:\n\n1. **Mutual TLS (mTLS)** between pods without modifying application code\n2. **Observability** at the network layer (latency, throughput, success rate per route)\n3. **Traffic management** for canary deployments and gradual rollouts\n\nThe proxy already implements circuit breaker and rate limiting in Rust code. The mesh complements these by providing network-layer security and observability.",
+        "implications": {
+          "positive": [
+            "Automatic mTLS between all meshed pods",
+            "Golden metrics (latency, throughput, success rate) without code changes",
+            "Traffic splitting for canary deployments",
+            "Lightweight: Rust-based proxy (linkerd2-proxy)"
+          ],
+          "negative": [
+            "Additional operational complexity (control plane management)",
+            "Memory overhead per pod (~15-20MB for linkerd-proxy sidecar)",
+            "Protocol detection limitations (NATS port must be skipped)"
+          ]
+        },
+        "alternatives_rejected": [
+          "Istio — full-featured but heavy (200+ MB sidecar, complex config)",
+          "Cilium — eBPF-based, no sidecar, but requires kernel 5.10+, more complex operations",
+          "No mesh — rely on application-level TLS and circuit breakers"
+        ]
+      },
+      "questions": [
+        "Which service mesh should SPECTRE use?",
+        "How does Linkerd handle non-HTTP protocols like NATS?",
+        "What is the performance overhead of a service mesh?"
+      ],
+      "keywords": [
+        "linkerd",
+        "service-mesh",
+        "mtls",
+        "sidecar",
+        "kubernetes"
+      ],
+      "concepts": [
+        "Service mesh architecture",
+        "Transparent mTLS",
+        "Protocol detection"
+      ],
+      "relations": {
+        "supersedes": [],
+        "related": [
+          "ADR-0038: OTLP HTTP transport"
+        ],
+        "enables": [
+          "Canary deployments",
+          "Zero-trust networking"
+        ]
+      },
+      "governance": {
+        "classification": "major",
+        "compliance": []
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
+      "metadata": {
+        "date": "2026-02-16",
+        "version": 1,
+        "hash": "5a766b70e8db",
+        "embedding_priority": "high"
+      }
+    },
+    {
+      "id": "ADR-0038",
+      "type": "architecture_decision",
+      "title": "OTLP HTTP/protobuf over gRPC/tonic for trace export",
+      "status": "accepted",
+      "summary": "[ADR-0038] OTLP HTTP/protobuf over gRPC/tonic for trace export: Switch the default OTLP transport from **gRPC/tonic** to **HTTP/protobuf** for trace export, while k...",
+      "scope": {
+        "projects": [
+          "SPECTRE"
+        ],
+        "layers": [
+          "infrastructure",
+          "observability"
+        ]
+      },
+      "knowledge": {
+        "what": "Switch the default OTLP transport from **gRPC/tonic** to **HTTP/protobuf** for trace export, while keeping gRPC available as a runtime option.\n\n**Configuration:**\n- Default: `OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf` (port 4318)\n- Optional: `OTEL_EXPORTER_OTLP_PROTOCOL=grpc` (port 4317)\n- Endpoint: `OTEL_EXPORTER_OTLP_ENDPOINT=http://<host>:<port>`",
+        "why": "During Phase 3 validation (Task #41: E2E Trace Propagation), we deployed Jaeger (all-in-one:1.53) and configured `spectre-proxy` to export traces via OpenTelemetry OTLP.\n\nThe default gRPC/tonic exporter (`opentelemetry_otlp::new_exporter().tonic()`) initialized without error and the batch processor ran normally, but **zero traces reached Jaeger**. No errors were logged — the batch exporter silently dropped all spans.\n\nRoot cause investigation:\n1. Confirmed Jaeger OTLP HTTP endpoint (port 4318) accepts traces correctly via manual `curl`\n2. Confirmed Jaeger OTLP gRPC endpoint (port 4317) is listening\n3. Confirmed `tracing-opentelemetry` layer creates spans (visible in `tower_http::trace` debug logs)\n4. The tonic 0.9.2 (pulled by opentelemetry-otlp) and workspace tonic 0.11 coexist but may cause subtle runtime issues\n5. The batch exporter's async error path drops errors without surfacing them",
+        "implications": {
+          "positive": [
+            "Traces reliably exported to Jaeger/Tempo",
+            "Simpler debugging — HTTP requests visible in standard tools (curl, tcpdump)",
+            "No tonic version conflicts between workspace tonic 0.11 and opentelemetry-otlp tonic 0.9",
+            "Protocol selectable at runtime via OTEL_EXPORTER_OTLP_PROTOCOL env var"
+          ],
+          "negative": [
+            "Additional dependency: reqwest (via opentelemetry-otlp http-proto feature)",
+            "HTTP/1.1 lacks gRPC multiplexing — higher overhead under extreme trace volume"
+          ]
+        },
+        "alternatives_rejected": [
+          "",
+          ""
+        ]
+      },
+      "questions": [
+        "Why do traces not appear in Jaeger with gRPC/tonic exporter?",
+        "How to switch between gRPC and HTTP OTLP in spectre-observability?",
+        "What is the overhead of HTTP/protobuf vs gRPC for OTLP?"
+      ],
+      "keywords": [
+        "opentelemetry",
+        "OTLP",
+        "jaeger",
+        "tracing",
+        "tonic",
+        "gRPC",
+        "HTTP protobuf"
+      ],
+      "concepts": [
+        "tonic gRPC exporter can fail silently in batch mode — no error surfaces to application",
+        "opentelemetry-otlp 0.14 default features include grpc-tonic, but HTTP requires explicit opt-in",
+        "OTEL_EXPORTER_OTLP_PROTOCOL env var selects transport at runtime (grpc vs http/protobuf)",
+        "Jaeger all-in-one exposes OTLP gRPC on 4317 and OTLP HTTP on 4318",
+        "tower-http TraceLayer creates tracing spans but does not extract W3C traceparent from incoming headers"
+      ],
+      "relations": {
+        "supersedes": [],
+        "related": [
+          "ADR-0037: NATS over Kafka"
+        ],
+        "enables": [
+          "Production load testing with trace correlation",
+          "Future Tempo/Grafana integration"
+        ]
+      },
+      "governance": {
+        "classification": "major",
+        "compliance": [
+          "observability",
+          "reliability"
+        ]
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
+      "metadata": {
+        "date": "2026-02-15",
+        "version": 1,
+        "hash": "9ad6945cae1a",
+        "embedding_priority": "high"
+      }
+    },
+    {
+      "id": "ADR-0023",
+      "type": "architecture_decision",
+      "title": "Arquitetura TUI com 6 Screens",
+      "status": "accepted",
+      "summary": "[ADR-0023] Arquitetura TUI com 6 Screens: **Implement 6 specialized screens with sidebar navigation, optimized for distinct workflows.**\n\n**Sc...",
+      "scope": {
+        "projects": [
+          "CEREBRO"
+        ],
+        "layers": [
+          "infrastructure"
+        ]
+      },
+      "knowledge": {
+        "what": "**Implement 6 specialized screens with sidebar navigation, optimized for distinct workflows.**\n\n**Screen Architecture:**\n\n```\nTUI Application\n├── MainMenu (Sidebar) - Always visible navigation\n├── DashboardScreen - System overview, quick actions\n├── ProjectsScreen - Project DataTable, analysis\n├── IntelligenceScreen - Query input, results display\n├── ScriptsScreen - Command launcher with forms\n├── GCPCreditsScreen - Credit tracking, batch burn\n└── LogsScreen - Live log tail with filtering\n```\n\n**Navigation Model:**\n- Persistent sidebar (1-6 number keys + q to quit)\n- Each screen full-featured for its domain\n- Command Router bridges TUI actions to CLI functions\n- WebSocket for real-time updates (alerts, progress)",
+        "why": "Cerebro's TUI needed to provide comprehensive access to all system functionality in an intuitive, navigable interface. The system has multiple distinct operational domains:\n\n1. **System Overview:** Health metrics, alerts, recent activity\n2. **Project Management:** Browse, analyze, and summarize 1000+ projects\n3. **Intelligence Queries:** Interactive RAG/search with result visualization\n4. **Script Execution:** Launch 24 CLI commands with parameter forms\n5. **Resource Management:** GCP credit tracking and batch operations\n6. **Observability:** Real-time log streaming and filtering\n\n**Design Constraints:**\n- Terminal real estate is limited (80x24 minimum support)\n- Users need quick navigation between domains\n- Long-running operations need progress feedback\n- Some operations are related (e.g., scan projects → view in Projects screen)\n- Keyboard-first navigation for power users\n\n**Alternative Approaches Considered:**\n- **Single Screen:** Too cramped, context switching difficult\n- **Many Small Screens:** Too fragmented, hard to navigate\n- **Dynamic Screen Creation:** Complex, no stable navigation",
+        "implications": {
+          "positive": [],
+          "negative": []
+        },
+        "alternatives_rejected": []
+      },
+      "questions": [],
+      "keywords": [],
+      "concepts": [],
+      "relations": {
+        "supersedes": [],
+        "related": [],
+        "enables": []
+      },
+      "governance": {
+        "classification": "major",
+        "compliance": []
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
+      "metadata": {
+        "date": "2026-02-03",
+        "version": 1,
+        "hash": "6fa7410efd72",
+        "embedding_priority": "normal"
+      }
+    },
+    {
+      "id": "ADR-0049",
+      "type": "architecture_decision",
+      "title": "Federação Descentralizada de Advisory de Segurança — visão arquitetural de missão",
+      "status": "accepted",
+      "summary": "[ADR-0049] Federação Descentralizada de Advisory de Segurança — visão arquitetural de missão: ...",
+      "scope": {
+        "projects": [
+          "GLOBAL",
+          "CEREBRO",
+          "SPECTRE",
+          "PHANTOM",
+          "NEUTRON"
+        ],
+        "layers": [
+          "governance",
+          "security",
+          "federation",
+          "data"
+        ]
+      },
+      "knowledge": {
+        "what": "",
+        "why": "",
+        "implications": {
+          "positive": [
+            "Qualquer instância pode verificar a cadeia de qualquer outra sem depender de autoridade central",
+            "Dados de breach correlacionados com decisões arquiteturais produzem inteligência preditiva inédita",
+            "Pesquisadores de segurança ganham canal de divulgação responsável com protocolo criptográfico, não contrato",
+            "Big techs perdem monopólio de custódia sem perder responsabilidade de remediação",
+            "Modelo de credibilidade é matemático (Merkle proofs, Ed25519), não institucional",
+            "Open source como veículo: forks carregam a integridade criptográfica do histórico que herdaram"
+          ],
+          "negative": [
+            "Adoção inicial depende de massa crítica de instâncias federadas",
+            "Sem autoridade central, resolução de disputas exige protocolo de consenso robusto",
+            "Complexidade técnica da federação pode afastar contribuidores menos experientes"
+          ]
+        },
+        "alternatives_rejected": [
+          "Contribuir para o NVD/MITRE existente",
+          "Plataforma centralizada própria (SaaS)"
+        ]
+      },
+      "questions": [
+        "Qual é a visão de longo prazo do ADR Ledger como sistema federado?",
+        "Como decisões arquiteturais se tornam inteligência de segurança?",
+        "Por que este projeto existe e o que ele desafia no status quo?",
+        "Como o ChainScope se integra para produzir advisory descentralizado?",
+        "O que substitui o modelo centralizado de bug bounties e CVE databases?",
+        "Como garantir credibilidade sem autoridade central?",
+        "Qual é a relação entre open source e soberania epistemológica?"
+      ],
+      "keywords": [
+        "federated advisory",
+        "decentralized security",
+        "data breach federation",
+        "open source governance",
+        "supply chain trust",
+        "bug bounty alternative",
+        "community-driven security",
+        "cryptographic provenance",
+        "chain of custody",
+        "ChainScope",
+        "architectural decisions as data",
+        "responsible disclosure protocol",
+        "big tech data custody",
+        "epistemological sovereignty"
+      ],
+      "concepts": [
+        "Decentralized Advisory System",
+        "Federated Data Breach Intelligence",
+        "Governance-as-Law",
+        "Cryptographic Chain of Custody",
+        "Epistemological Sovereignty",
+        "Responsible Disclosure as Protocol",
+        "Community-Driven Threat Intelligence",
+        "Architectural Decision Intelligence"
+      ],
+      "relations": {
+        "supersedes": [],
+        "related": [
+          "ADR-0032",
+          "ADR-0033",
+          "ADR-0044",
+          "ADR-0045",
+          "ADR-0046",
+          "ADR-0048"
+        ],
+        "enables": [
+          "Protocolo de federação entre instâncias ADR Ledger",
+          "Advisory descentralizado de segurança",
+          "Inteligência preditiva baseada em decisões arquiteturais",
+          "Divulgação responsável como protocolo criptográfico"
+        ]
+      },
+      "governance": {
+        "classification": "critical",
+        "compliance": [
+          "SECURITY",
+          "GOVERNANCE",
+          "SUPPLY_CHAIN"
+        ]
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
+      "metadata": {
+        "date": "2026-03-24",
+        "version": 1,
+        "hash": "e3b0c44298fc",
+        "embedding_priority": "critical"
+      }
+    },
+    {
+      "id": "ADR-0027",
+      "type": "architecture_decision",
+      "title": "Phantom Phase 1: Backend API Implementation with Real Data Integration",
+      "status": "accepted",
+      "summary": "[ADR-0027] Phantom Phase 1: Backend API Implementation with Real Data Integration: {\"choice\": \"Implement all 7 Phase 1 endpoints with real data integration\", \"reasoning\": \"The fronten...",
+      "scope": {
+        "projects": [
+          "PHANTOM"
+        ],
+        "layers": [
+          "application",
+          "api",
+          "intelligence"
+        ]
+      },
+      "knowledge": {
+        "what": {
+          "choice": "Implement all 7 Phase 1 endpoints with real data integration",
+          "reasoning": "The frontend (Cortex Desktop) was fully built but unusable due to missing backend endpoints.\nAll infrastructure existed (CortexProcessor, FAISSVectorStore, EmbeddingGenerator, LlamaCppProvider)\nbut was not exposed via REST API. This ADR documents the implementation of the integration layer\nthat connects the frontend to existing backend services, enabling real document processing,\nsemantic search, RAG chat, and system monitoring.\n"
+        },
+        "why": "Phantom v2.0.0 is a local-first AI document intelligence framework with three interfaces:\n- CLI (Typer)\n- REST API (FastAPI)\n- Desktop UI (Tauri + SvelteKit)\n\nPrior to this work, the desktop UI (`cortex-desktop/`) was fully implemented but non-functional because the backend API endpoints returned empty/stub data. All backend infrastructure existed (CORTEX processor, FAISS vector store, embedding generator, LLM provider) but was not exposed via REST API.\n\n### Problem Statement\n\n**Frontend called 7 endpoints that either didn't exist or returned stub data:**\n1. `POST /process` - Document processing (returned TODO comment)\n2. `POST /vectors/search` - Vector search (didn't exist)\n3. `POST /vectors/index` - Document indexing (didn't exist)\n4. `POST /api/chat` - RAG chat (didn't exist)\n5. `GET /api/models` - Models listing (didn't exist)\n6. `POST /api/prompt/test` - Prompt testing (didn't exist)\n7. `GET /api/system/metrics` - System metrics (didn't exist)\n\n**Impact:**\n- Desktop UI appeared broken\n- No way to test real document processing\n- Vector search functionality inaccessible\n- RAG chat not functional\n- System resource monitoring unavailable",
+        "implications": {
+          "positive": [
+            "All 7 critical endpoints now functional with real backend services",
+            "Frontend can connect to actual document processing, vector search, and RAG chat",
+            "System monitoring provides live host machine metrics (CPU, memory, disk, VRAM)",
+            "30+ integration tests ensure quality and prevent regressions",
+            "Zero mock data - all responses come from actual services (CORTEX, FAISS, psutil, llama.cpp)",
+            "Production-ready error handling with proper HTTP status codes",
+            "Efficient resource management with singleton patterns"
+          ],
+          "negative": [
+            "Vector store is in-memory only (data lost on restart) - requires persistence layer",
+            "Global singletons not thread-safe for concurrent writes - needs locking mechanism",
+            "LLM availability not checked before chat requests - may fail silently",
+            "Token estimation is approximate (4 chars = 1 token) - needs tiktoken integration"
+          ]
+        },
+        "alternatives_rejected": [
+          "Mock API Responses: Rejected due to inability to test real functionality",
+          "External Services: Rejected to maintain local-first architecture",
+          "Incremental Implementation: Rejected in favor of complete Phase 1 delivery"
+        ]
+      },
+      "questions": [],
+      "keywords": [],
+      "concepts": [],
+      "relations": {
+        "supersedes": [],
+        "related": [],
+        "enables": []
+      },
+      "governance": {
+        "classification": "major",
+        "compliance": [
+          "phantom",
+          "api",
+          "backend",
+          "integration",
+          "production-ready"
+        ]
+      },
+      "delivery": {
+        "status": "completed",
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
+      "metadata": {
+        "date": "2026-02-05",
+        "version": 1,
+        "hash": "f468de62aedf",
+        "embedding_priority": "normal"
       }
     },
     {
@@ -542,6 +1806,12 @@
           "DATA",
           "ETL"
         ]
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
       },
       "metadata": {
         "date": "2025-01-10",
@@ -630,6 +1900,12 @@
           "FOUNDATION"
         ]
       },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
       "metadata": {
         "date": "2025-01-10",
         "version": 1,
@@ -713,11 +1989,274 @@
           "SECURITY"
         ]
       },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
       "metadata": {
         "date": "2025-01-10",
         "version": 1,
         "hash": "97e3e1183c0c",
         "embedding_priority": "critical"
+      }
+    },
+    {
+      "id": "ADR-0044",
+      "type": "architecture_decision",
+      "title": "TimescaleDB + asyncpg como storage de time-series para métricas de protocolo (CHAINSCOPE)",
+      "status": "accepted",
+      "summary": "[ADR-0044] TimescaleDB + asyncpg como storage de time-series para métricas de protocolo (CHAINSCOPE): **Usar TimescaleDB (extensão PostgreSQL) com hypertable `protocol_metrics`,\nacessado via pool asyncp...",
+      "scope": {
+        "projects": [
+          "GLOBAL"
+        ],
+        "layers": [
+          "storage",
+          "infrastructure"
+        ]
+      },
+      "knowledge": {
+        "what": "**Usar TimescaleDB (extensão PostgreSQL) com hypertable `protocol_metrics`,\nacessado via pool asyncpg.**\n\nSchema central:\n\n```sql\nCREATE TABLE protocol_metrics (\n    timestamp       TIMESTAMPTZ NOT NULL,\n    protocol_id     TEXT NOT NULL,\n    chain_id        TEXT,\n    metric_name     TEXT NOT NULL,\n    value_numeric   DOUBLE PRECISION,\n    value_json      JSONB,\n    source_id       TEXT NOT NULL,\n    confidence      REAL DEFAULT 1.0,\n    PRIMARY KEY (timestamp, protocol_id, metric_name)\n);\nSELECT create_hypertable('protocol_metrics', 'timestamp',\n    chunk_time_interval => INTERVAL '1 day',\n    if_not_exists => TRUE);\n```\n\nClient: `services/storage/timescale.py` — `TimescaleClient` com pool 2-10 conexões,\n`upsert_metrics_batch()` via `executemany`, retry exponencial.",
+        "why": "O CHAINSCOPE coleta métricas contínuas de ~3000 protocolos DeFi — TVL, preços,\nfees, volumes — com frequência horária. Cada ponto é um tuple\n`(timestamp, protocol_id, metric_name, value_numeric)`. O padrão de acesso\ndominante é por janela temporal.\n\nEra necessário escolher o engine de storage primário antes de implementar\nqualquer collector.",
+        "implications": {
+          "positive": [
+            "Chunk pruning automático em queries temporais (chunk_time_interval = 1 day)",
+            "Compression automática após 7 dias (~10x redução de espaço)",
+            "Retention policy de 2 anos configurada declarativamente",
+            "asyncpg ~3x throughput vs psycopg2 para I/O intensivo",
+            "ON CONFLICT DO UPDATE trata re-coletas sem duplicatas",
+            "_create_pool_with_retry() com backoff exponencial em TooManyConnectionsError"
+          ],
+          "negative": [
+            "TimescaleDB requer extensão habilitada na instância PostgreSQL",
+            "create_hypertable() sensível a dados pré-existentes — coberto com if_not_exists"
+          ]
+        },
+        "alternatives_rejected": [
+          "",
+          "",
+          ""
+        ]
+      },
+      "questions": [
+        "Qual engine persiste métricas numéricas de protocolo?",
+        "Como é feita deduplicação de inserções repetidas?",
+        "Qual client Python conecta ao TimescaleDB no CHAINSCOPE?"
+      ],
+      "keywords": [
+        "TimescaleDB",
+        "asyncpg",
+        "hypertable",
+        "protocol_metrics",
+        "time-series",
+        "continuous aggregates",
+        "upsert"
+      ],
+      "concepts": [
+        "Chunk pruning para queries temporais",
+        "Upsert via ON CONFLICT para deduplicação de re-coletas",
+        "Pool de conexões com retry em backpressure"
+      ],
+      "relations": {
+        "supersedes": [],
+        "related": [
+          "ADR-0001"
+        ],
+        "enables": [
+          "Pipeline DefiLlama → TimescaleDB (FASE 1)",
+          "CoinGecko → TimescaleDB (FASE 2)",
+          "Analytics via ClickHouse (FASE 3)"
+        ]
+      },
+      "governance": {
+        "classification": "major",
+        "compliance": []
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
+      "metadata": {
+        "date": "2026-03-08",
+        "version": 1,
+        "hash": "535ffa852368",
+        "embedding_priority": "high"
+      }
+    },
+    {
+      "id": "ADR-0033",
+      "type": "architecture_decision",
+      "title": "Supply Chain SBOM & Dependency Inventory",
+      "status": "accepted",
+      "summary": "[ADR-0033] Supply Chain SBOM & Dependency Inventory: Implementar um SBOM decision-aware que enriquece (nao duplica) o que o Nix ja oferece:\n\n1. **`sbom_m...",
+      "scope": {
+        "projects": [
+          "GLOBAL"
+        ],
+        "layers": [
+          "security",
+          "governance"
+        ]
+      },
+      "knowledge": {
+        "what": "Implementar um SBOM decision-aware que enriquece (nao duplica) o que o Nix ja oferece:\n\n1. **`sbom_manager.py`** — Modulo Python que escaneia `flake.lock`, `flake.nix` e `.chain/*.py` para gerar inventario completo\n2. **Bootstrap ADR Map** — Dict mapeando dependencias existentes para ADRs que as justificam\n3. **CycloneDX 1.6 Export** — Usando `properties[]` para ADR references (mecanismo padrao de extensao)\n4. **Drift Detection** — Re-scan + comparacao com SBOM atual para detectar mudancas nao declaradas\n5. **Snapshot Integration** — `sbom_hash` incluido nos snapshots criptograficos\n6. **Governance Contract** — `check_supply_chain_compliance()` verifica que todas deps tem ADR reference\n\nEscopo: CycloneDX + formato interno, nivel governance-aware, Nix como fonte de verdade.",
+        "why": "O adr-ledger tem 8 modulos `.chain/` implementando blockchain privado, mas nao rastreia suas proprias dependencias de forma estruturada. O Nix ja pina tudo via `flake.lock`, mas falta a camada de **governanca**: qual ADR justificou cada dependencia, quem aprovou, quando mudou.\n\nIndustry standards (CycloneDX, SPDX) exigem SBOMs para supply chain security, mas nenhuma ferramenta existente mapeia dependencias para decisoes arquiteturais.",
+        "implications": {
+          "positive": [
+            "Every dependency traceable to an ADR justification",
+            "CycloneDX 1.6 export for standard tooling interop",
+            "Drift detection catches undeclared dependency changes",
+            "Snapshot integration links SBOM state to chain state"
+          ],
+          "negative": [
+            "Additional module to maintain (.chain/sbom_manager.py)",
+            "Bootstrap map requires manual updates for pre-existing deps"
+          ]
+        },
+        "alternatives_rejected": [
+          "Pure CycloneDX without ADR enrichment",
+          "External SBOM tool (syft, trivy)"
+        ]
+      },
+      "questions": [
+        "How do we track which ADR justified each dependency?",
+        "How do we detect dependency drift from the declared SBOM?",
+        "How do we export our dependency inventory in a standard format?",
+        "How do we enforce that every dependency has governance justification?"
+      ],
+      "keywords": [
+        "SBOM",
+        "supply chain",
+        "CycloneDX",
+        "dependency inventory",
+        "dependency governance",
+        "software bill of materials",
+        "drift detection",
+        "dependency tracking"
+      ],
+      "concepts": [
+        "Decision-Aware SBOM",
+        "Supply Chain Governance",
+        "Dependency Provenance",
+        "CycloneDX ADR Properties"
+      ],
+      "relations": {
+        "supersedes": [],
+        "related": [
+          "ADR-0032",
+          "ADR-0006",
+          "ADR-0005"
+        ],
+        "enables": []
+      },
+      "governance": {
+        "classification": "major",
+        "compliance": [
+          "SECURITY",
+          "GOVERNANCE"
+        ]
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
+      "metadata": {
+        "date": "2026-02-14",
+        "version": 1,
+        "hash": "66146e33cca5",
+        "embedding_priority": "high"
+      }
+    },
+    {
+      "id": "ADR-0050",
+      "type": "architecture_decision",
+      "title": "Umbrella Delivery Roadmap — Security Intelligence Platform & ML Pipeline Hardening",
+      "status": "accepted",
+      "summary": "[ADR-0050] Umbrella Delivery Roadmap — Security Intelligence Platform & ML Pipeline Hardening: Executar o roadmap em ordem de dependência, um projeto por vez, com mudanças cirúrgicas e verificaçã...",
+      "scope": {
+        "projects": [
+          "GLOBAL",
+          "SPECTRE",
+          "PHANTOM"
+        ],
+        "layers": [
+          "infrastructure",
+          "data-plane",
+          "control-plane",
+          "api"
+        ]
+      },
+      "knowledge": {
+        "what": "Executar o roadmap em ordem de dependência, um projeto por vez, com mudanças cirúrgicas e verificação de build/testes após cada task:\n\n```\nA1 (spectre events) → A2 (scheduler fix) → A3 (owasaka NATS)\n→ A4 (data-plane subscribe) → A5 (GTK4 wire)\n→ B1 (phantom endpoints) → B2 (cortex wire) → B3 (manifest)\n→ C1 (neoland vectors) → C2+C3 (tests + deps)\n```",
+        "why": "O workspace `/home/kernelcore/master` é um monorepo Nix-first com múltiplos projetos interdependentes. Após exploração completa do ecossistema, 4 streams de entrega foram identificados com gaps concretos a fechar — não reescritas.\n\n**Spectre** é o backbone de eventos NATS, já production-ready (Phase 4 completa). Os demais projetos dependem dele para comunicação assíncrona, mas faltam os event types da camada de rede e do domínio phantom-stack.\n\n**phantom-soc** (control-plane Rust + GTK4) tem um bug crítico no scheduler que impede qualquer task de ser processada — loop infinito de sleep sem dequeue.\n\n**owasaka** (sensor Go de rede) faz descoberta ARP e queries DNS mas não publica nada no NATS.\n\n**phantom** (ML platform Python/FastAPI) tem 7 endpoints stub que bloqueiam o Cortex Desktop (Tauri + Svelte).\n\n**neoland** (Rust TUI) perde todos os vetores a cada restart por usar store in-memory.",
+        "implications": {
+          "positive": [
+            "phantom-soc passa a processar tasks via scheduler funcional",
+            "owasaka emite eventos network.* consumíveis por qualquer subscriber NATS",
+            "phantom API totalmente funcional desbloqueia Cortex Desktop (Tauri/Svelte)",
+            "neoland com persistência SQLite sobrevive a restarts"
+          ],
+          "negative": [
+            "Requer nats.go como nova dependência em owasaka",
+            "rusqlite + sqlite-vec como nova dependência em neoland"
+          ]
+        },
+        "alternatives_rejected": []
+      },
+      "questions": [
+        "Quais são os próximos entregáveis do umbrella workspace?",
+        "Por que o phantom-soc não processa tasks?",
+        "Como owasaka se integra ao Spectre?"
+      ],
+      "keywords": [
+        "NATS",
+        "phantom-soc",
+        "owasaka",
+        "spectre-events",
+        "neoland",
+        "scheduler",
+        "event-driven",
+        "network sensing"
+      ],
+      "concepts": [
+        "Security Intelligence Platform",
+        "Event-driven architecture",
+        "Sensor layer (network)",
+        "Persistent vector store"
+      ],
+      "relations": {
+        "supersedes": [],
+        "related": [
+          "ADR-0006",
+          "ADR-0027",
+          "ADR-0034"
+        ],
+        "enables": [
+          "Cortex Desktop funcional end-to-end",
+          "phantom-soc dashboard com dados reais de rede"
+        ]
+      },
+      "governance": {
+        "classification": "major",
+        "compliance": []
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
+      "metadata": {
+        "date": "2026-03-25",
+        "version": 1,
+        "hash": "e9a0c29752fa",
+        "embedding_priority": "high"
       }
     },
     {
@@ -793,11 +2332,65 @@
           "ANALYTICS"
         ]
       },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
       "metadata": {
         "date": "2025-01-10",
         "version": 1,
         "hash": "91766e2872a3",
         "embedding_priority": "high"
+      }
+    },
+    {
+      "id": "ADR-0021",
+      "type": "architecture_decision",
+      "title": "Stack Dupla Poetry + Nix",
+      "status": "accepted",
+      "summary": "[ADR-0021] Stack Dupla Poetry + Nix: **Adopt dual-stack approach: Poetry for Python dependencies + Nix for system-level reproducibility.*...",
+      "scope": {
+        "projects": [
+          "CEREBRO"
+        ],
+        "layers": [
+          "infrastructure"
+        ]
+      },
+      "knowledge": {
+        "what": "**Adopt dual-stack approach: Poetry for Python dependencies + Nix for system-level reproducibility.**\n\n**Division of responsibilities:**\n- **Poetry:** Python package management, lock file, virtual environments\n- **Nix:** System dependencies, Python interpreter, dev tools, reproducible shell\n\n**Implementation:**\n```nix\n# flake.nix\n{\n  inputs = {\n    nixpkgs.url = \"github:NixOS/nixpkgs/nixos-unstable\";\n    poetry2nix.url = \"github:nix-community/poetry2nix\";\n  };\n\n  outputs = { self, nixpkgs, poetry2nix }: {\n    devShells.x86_64-linux.default = pkgs.mkShell {\n      buildInputs = [\n        python311      # Pinned interpreter\n        poetry         # Python deps\n        nodejs         # For dashboard\n        git            # Version control\n        ruff           # Linting\n      ];\n\n      shellHook = ''\n        export POETRY_VIRTUALENVS_IN_PROJECT=true\n        poetry install\n      '';\n    };\n  };\n}\n```\n\nWorkflow:\n```bash\nnix develop          # Enter reproducible env\npoetry install       # Install Python deps\ncerebro              # Run application\n```",
+        "why": "Cerebro is a complex Python application with multiple concerns:\n\n**Python Dependency Management:**\n- 30+ Python packages (FastAPI, Textual, sentence-transformers, typer, etc.)\n- Version constraints and lock files\n- Development vs production dependencies\n- Poetry provides excellent Python-specific tooling\n\n**System-Level Reproducibility:**\n- System dependencies (git, nodejs, npm for dashboard)\n- Python interpreter version (3.11+)\n- Native libraries (SSL, database drivers)\n- Development tools (ruff, pytest)\n- Need for identical environments across machines\n\n**The Problem:** Poetry alone doesn't guarantee reproducible system-level environments. `poetry.lock` ensures Python package versions, but not:\n- Python interpreter version\n- System libraries (OpenSSL versions differ)\n- Native dependencies\n- Development tools\n- Environment variables\n\nTraditional approaches (pip+requirements.txt, conda, docker) have limitations:\n- **pip/venv:** No system dependencies, no reproducibility\n- **Conda:** Slower, larger, Python-ecosystem focused\n- **Docker:** Heavy, not suitable for development workflows\n- **pyenv + Poetry:** Still doesn't pin system deps",
+        "implications": {
+          "positive": [],
+          "negative": []
+        },
+        "alternatives_rejected": []
+      },
+      "questions": [],
+      "keywords": [],
+      "concepts": [],
+      "relations": {
+        "supersedes": [],
+        "related": [],
+        "enables": []
+      },
+      "governance": {
+        "classification": "critical",
+        "compliance": []
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
+      "metadata": {
+        "date": "2026-02-03",
+        "version": 1,
+        "hash": "7d59d588dd03",
+        "embedding_priority": "normal"
       }
     },
     {
@@ -871,21 +2464,337 @@
           "CLOUD"
         ]
       },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
       "metadata": {
         "date": "2026-01-11",
         "version": 1,
         "hash": "d4fa43d11383",
         "embedding_priority": "high"
       }
+    },
+    {
+      "id": "ADR-0013",
+      "type": "architecture_decision",
+      "title": "Technical Milestone: Integrated Dev Deployment & CEREBRO Full Implementation",
+      "status": "accepted",
+      "summary": "[ADR-0013] Technical Milestone: Integrated Dev Deployment & CEREBRO Full Implementation: Registrar a conclusão da implementação do CEREBRO e o estado integrado do ecossistema como o novo ba...",
+      "scope": {
+        "projects": [
+          "PHANTOM",
+          "NEUTRON",
+          "SECURELLM-BRIDGE",
+          "AI-ASSISTANT-HUB",
+          "CEREBRO"
+        ],
+        "layers": []
+      },
+      "knowledge": {
+        "what": "Registrar a conclusão da implementação do CEREBRO e o estado integrado do ecossistema como o novo baseline técnico para futuras expansões.",
+        "why": "Hoje, 26 de Janeiro de 2026, atingimos um marco de vitória técnica com o deploy bem-sucedido de múltiplos componentes críticos do ecossistema e a **implementação completa do CEREBRO Intelligence System**. Este projeto transicionou oficialmente de um hobby para um objetivo de carreira em tempo real.",
+        "implications": {
+          "positive": [
+            "Ambiente de desenvolvimento integrado e funcional.",
+            "CEREBRO Intelligence System totalmente funcional com Backend Python e Frontend React.",
+            "Phantom deployado e operante.",
+            "SecureLLM-Bridge ativo para coordenação inteligente de projetos.",
+            "Neutron validando compliance via blockchain.",
+            "Sentinel aplicando governança via eBPF."
+          ],
+          "negative": [
+            "Aumento da complexidade operacional do ambiente dev."
+          ]
+        },
+        "alternatives_rejected": []
+      },
+      "questions": [],
+      "keywords": [],
+      "concepts": [],
+      "relations": {
+        "supersedes": [],
+        "related": [],
+        "enables": []
+      },
+      "governance": {
+        "classification": null,
+        "compliance": [
+          "MILESTONE",
+          "DEPLOYMENT",
+          "CEREBRO",
+          "RAG"
+        ]
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
+      "metadata": {
+        "date": "2026-01-26",
+        "version": 1,
+        "hash": "8c28662ffb09",
+        "embedding_priority": "normal"
+      }
+    },
+    {
+      "id": "ADR-0020",
+      "type": "architecture_decision",
+      "title": "Lazy Loading de Dependências Pesadas",
+      "status": "accepted",
+      "summary": "[ADR-0020] Lazy Loading de Dependências Pesadas: **Implement lazy import strategy for heavyweight dependencies: defer imports until actual use.**\n\nPa...",
+      "scope": {
+        "projects": [
+          "CEREBRO"
+        ],
+        "layers": [
+          "infrastructure"
+        ]
+      },
+      "knowledge": {
+        "what": "**Implement lazy import strategy for heavyweight dependencies: defer imports until actual use.**\n\nPattern:\n```python\n# BEFORE (eager)\nfrom phantom.tui.app import CerebroApp  # Always loaded\n\n# AFTER (lazy)\ndef launch_tui():\n    from phantom.tui.app import CerebroApp  # Only on TUI invocation\n    app = CerebroApp()\n    app.run()\n```\n\nApply to:\n1. Textual framework (TUI mode only)\n2. ML models (RAG/intelligence commands only)\n3. FastAPI/Uvicorn (GUI mode only)\n4. Heavy data processing libraries (pandas, when used)",
+        "why": "Cerebro is evolving into a multi-interface platform with TUI, CLI, and GUI modes. The problem: heavyweight dependencies like Textual (TUI framework) and ML models add significant startup overhead:\n\n- Textual: ~200ms import time + 500KB package\n- Sentence transformers: ~2-3s import + 500MB models\n- FastAPI/Uvicorn: ~100ms for GUI mode\n\nWhen users invoke simple CLI commands like `cerebro knowledge analyze .`, they shouldn't pay the penalty of loading TUI widgets or ML models. The CLI should remain fast and lightweight for scripting use cases.\n\n**Baseline measurements:**\n- Pure CLI startup: ~50ms\n- With eager TUI import: ~250ms (+400%)\n- With eager ML models: ~3.2s (+6300%)",
+        "implications": {
+          "positive": [],
+          "negative": []
+        },
+        "alternatives_rejected": []
+      },
+      "questions": [],
+      "keywords": [],
+      "concepts": [],
+      "relations": {
+        "supersedes": [],
+        "related": [],
+        "enables": []
+      },
+      "governance": {
+        "classification": "major",
+        "compliance": []
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
+      "metadata": {
+        "date": "2026-02-03",
+        "version": 1,
+        "hash": "7fd8e576aa54",
+        "embedding_priority": "normal"
+      }
+    },
+    {
+      "id": "ADR-0041",
+      "type": "architecture_decision",
+      "title": "Canvnx como Espaço Orbital de Observabilidade Multipolar",
+      "status": "accepted",
+      "summary": "[ADR-0041] Canvnx como Espaço Orbital de Observabilidade Multipolar: {\"chosen_option\": \"Espaço orbital 3D construído com Three.js/React, usando metáfora de sistema solar...",
+      "scope": {
+        "projects": [
+          "SPECTRE",
+          "OWASAKA",
+          "SPIDER‑NIX",
+          "MATRIX_AI_ASSISTANT",
+          "ADR_LEDGER",
+          "IP_GUARD",
+          "ASTRIX",
+          "CHAOS_NUANCE"
+        ],
+        "layers": [
+          "visualization",
+          "observability",
+          "security",
+          "governance"
+        ]
+      },
+      "knowledge": {
+        "what": {
+          "chosen_option": "Espaço orbital 3D construído com Three.js/React, usando metáfora de sistema solar",
+          "summary": "Transformar o canvnx em um meta‑dashboard orbital onde cada projeto é uma estrela, cada serviço um planeta, e as interações são partículas em movimento orbital. A visualização será layer‑based, com toggle de camadas (segurança, compliance, IA, governança) e integração em tempo real via WebSocket/NATS.",
+          "implementation_phases": [
+            "Fase 1: Orbital SPECTRE – visualização da frota com métricas (CPU, memória, latência) como atributos visuais (raio, anéis, distância orbital).",
+            "Fase 2: Integração Owasaka – streaming de eventos via WebSocket, partículas coloridas representando tráfego.",
+            "Fase 3: Camada de segurança – Spider‑Nix (cometas vermelhos) e Chaos‑Nuance (ataques sutis como ondulações).",
+            "Fase 4: Governança – constelações de ADRs orbitando projetos relevantes.",
+            "Fase 5: Integração multipolar – Astrix (orquestração de agentes), IP‑Guard (escudos de compliance)."
+          ]
+        },
+        "why": "",
+        "implications": {
+          "positive": [
+            "Visão unificada de toda a stack inteligente em um único canvas navegável.",
+            "Capacidade de detectar padrões visuais que passariam despercebidos em dashboards 2D.",
+            "Fortalecimento da filosofia 'knowledge as law' ao integrar o ADR Ledger como camada visível.",
+            "Demonstração técnica de alto impacto que pode ser publicada como paper."
+          ],
+          "negative": [
+            "Custo de desenvolvimento elevado (≈ 2‑3 meses de esforço).",
+            "Curva de aprendizado para usuários acostumados a interfaces 2D.",
+            "Exigência de hardware gráfico razoável para renderizar centenas de partículas."
+          ]
+        },
+        "alternatives_rejected": [
+          "Dashboards 2D tradicionais (Grafana, Kibana)",
+          "Grafos 2D com layout force‑directed",
+          "Ferramentas comerciais de observabilidade 3D (ex: Unity/Unreal‑based)"
+        ]
+      },
+      "questions": [],
+      "keywords": [],
+      "concepts": [],
+      "relations": {
+        "supersedes": [],
+        "related": [],
+        "enables": []
+      },
+      "governance": {
+        "classification": null,
+        "compliance": [
+          "OBSERVABILITY",
+          "VISUALIZATION",
+          "GOVERNANCE"
+        ]
+      },
+      "delivery": {
+        "status": null,
+        "completed_at": null,
+        "evidence": [],
+        "notes": null
+      },
+      "metadata": {
+        "date": "2026-02-18",
+        "version": 1,
+        "hash": "020fa9eabc0b",
+        "embedding_priority": "normal"
+      }
+    },
+    {
+      "id": "ADR-0054",
+      "type": "architecture_decision",
+      "title": "IntelAgent — Dois projetos com o mesmo nome: separar identidades e definir destino de cada um",
+      "status": "accepted",
+      "summary": "[ADR-0054] IntelAgent — Dois projetos com o mesmo nome: separar identidades e definir destino de cada um: ...",
+      "scope": {
+        "projects": [
+          "PHANTOM",
+          "PHANTOM-RAY",
+          "INTELAGENT"
+        ],
+        "layers": [
+          "application",
+          "infrastructure"
+        ]
+      },
+      "knowledge": {
+        "what": "",
+        "why": "",
+        "implications": {
+          "positive": [
+            "Cada projeto tem identidade, nome e responsabilidade claros",
+            "phantom-ray/.../soc kernel reconhecido como ativo funcional — não descartado por engano",
+            "phantom/intelagent/ pode evoluir como framework agnóstico sem arrastar o phantom Python junto",
+            "ROADMAP passa a refletir a existência de um SOC kernel funcional em phantom-ray"
+          ],
+          "negative": [
+            "Renomear phantom-ray/.../libs/intelagent/ requer atualizar imports no phantom-stack",
+            "Desacoplar phantom/intelagent/ adiciona ciclo de release independente"
+          ]
+        },
+        "alternatives_rejected": [
+          "Tratar como drift de uma só cópia e deletar phantom-ray — descarta um SOC kernel funcional que tem valor real",
+          "Mesclar os dois em um projeto — inviável; filosofias opostas (abstrações vs. kernel puro)",
+          "Manter o status quo com dois projetos homônimos — garante confusão crescente",
+          "Renomear phantom-ray/.../intelagent como phantom-soc-kernel e desacoplar phantom/intelagent/ como standalone"
+        ]
+      },
+      "questions": [],
+      "keywords": [],
+      "concepts": [],
+      "relations": {
+        "supersedes": [],
+        "related": [],
+        "enables": []
+      },
+      "governance": {
+        "classification": "major",
+        "compliance": [
+          "ML",
+          "DATA"
+        ]
+      },
+      "delivery": {
+        "status": "in_progress",
+        "completed_at": null,
+        "evidence": [
+          "IntelAgent está materializado como workspace standalone em /home/kernelcore/master/intelagent",
+          "intelagent-core expõe PhantomWorker REST client para o phantom API",
+          "Existe teste de integração de PhantomWorker em crates/core/tests/phantom_worker.rs",
+          "phantom-soc/control-plane se declara como derivado do antigo intelagent/crates/soc"
+        ],
+        "notes": "O branch standalone do IntelAgent foi concretizado e o boundary via PhantomWorker\nestá implementado. O workspace atual contém `phantom-nx`, onde existe\n`libs/phantom-soc-kernel/` como sucessor material do ramo operacional citado\noriginalmente, e também contém `phantom-soc` como derivação do control-plane.\nO corpus ainda referencia `PHANTOM-RAY`, então o delivery permanece\nin_progress até a nomenclatura e a trilha operacional ficarem totalmente\nconsolidadas no ledger.\n"
+      },
+      "metadata": {
+        "date": "2026-03-29",
+        "version": 1,
+        "hash": "e3b0c44298fc",
+        "embedding_priority": "normal"
+      }
     }
   ],
   "graph": {
     "nodes": [
       {
+        "id": "ADR-0016",
+        "type": "adr",
+        "label": "Validação das Ferramentas de ADR",
+        "status": "accepted",
+        "delivery_status": null,
+        "projects": [
+          "GLOBAL"
+        ]
+      },
+      {
+        "id": "ADR-0022",
+        "type": "adr",
+        "label": "Consolidação de Scripts para CLI Typer",
+        "status": "accepted",
+        "delivery_status": null,
+        "projects": [
+          "CEREBRO"
+        ]
+      },
+      {
+        "id": "ADR-0025",
+        "type": "adr",
+        "label": "Phantom test suite fully green after production readiness audit",
+        "status": "accepted",
+        "delivery_status": null,
+        "projects": [
+          "GLOBAL"
+        ]
+      },
+      {
+        "id": "ADR-0048",
+        "type": "adr",
+        "label": "Gitleaks como ferramenta de secret scanning — rejeição explícita do Trivy",
+        "status": "accepted",
+        "delivery_status": null,
+        "projects": [
+          "GLOBAL"
+        ]
+      },
+      {
         "id": "ADR-0009",
         "type": "adr",
         "label": "Adaptive ML Pipeline Orchestration (Temporal + Ray + MLflow)",
         "status": "accepted",
+        "delivery_status": null,
         "projects": [
           "NEUTRON",
           "CEREBRO"
@@ -896,6 +2805,7 @@
         "type": "adr",
         "label": "Event-Driven Architecture via NATS JetStream (SPECTRE)",
         "status": "accepted",
+        "delivery_status": null,
         "projects": [
           "SPECTRE",
           "PHANTOM",
@@ -905,12 +2815,77 @@
         ]
       },
       {
+        "id": "ADR-0019",
+        "type": "adr",
+        "label": "Textual Framework para TUI",
+        "status": "accepted",
+        "delivery_status": null,
+        "projects": [
+          "CEREBRO"
+        ]
+      },
+      {
+        "id": "ADR-0030",
+        "type": "adr",
+        "label": "Cerebro Enterprise Repositioning & Identity Resolution",
+        "status": "accepted",
+        "delivery_status": null,
+        "projects": [
+          "CEREBRO"
+        ]
+      },
+      {
+        "id": "ADR-0046",
+        "type": "adr",
+        "label": "Padrão mapper/engine para normalização de dados brutos (pure functions + dispatch)",
+        "status": "accepted",
+        "delivery_status": null,
+        "projects": [
+          "GLOBAL"
+        ]
+      },
+      {
+        "id": "ADR-0045",
+        "type": "adr",
+        "label": "RateLimitedMixin + spider-nix como camada de proteção para todos os adapters REST",
+        "status": "accepted",
+        "delivery_status": null,
+        "projects": [
+          "GLOBAL"
+        ]
+      },
+      {
+        "id": "ADR-0037",
+        "type": "adr",
+        "label": "Nix-First Kubernetes Orchestration over Helm",
+        "status": "accepted",
+        "delivery_status": null,
+        "projects": [
+          "SPECTRE"
+        ]
+      },
+      {
         "id": "ADR-0010",
         "type": "adr",
         "label": "PHANTOM Production Readiness Assessment & Roadmap",
         "status": "accepted",
+        "delivery_status": null,
         "projects": [
           "PHANTOM"
+        ]
+      },
+      {
+        "id": "ADR-0032",
+        "type": "adr",
+        "label": "Private Blockchain Layer for Cryptographic Decision Integrity",
+        "status": "accepted",
+        "delivery_status": null,
+        "projects": [
+          "GLOBAL",
+          "CEREBRO",
+          "SPECTRE",
+          "PHANTOM",
+          "NEUTRON"
         ]
       },
       {
@@ -918,6 +2893,7 @@
         "type": "adr",
         "label": "CEREBRO como Camada Central de Knowledge Management",
         "status": "accepted",
+        "delivery_status": null,
         "projects": [
           "CEREBRO",
           "GLOBAL"
@@ -928,9 +2904,75 @@
         "type": "adr",
         "label": "Local-First AI Strategy com Hybrid Cloud Fallback (PHANTOM)",
         "status": "accepted",
+        "delivery_status": null,
         "projects": [
           "PHANTOM",
           "CEREBRO"
+        ]
+      },
+      {
+        "id": "ADR-0031",
+        "type": "adr",
+        "label": "Cerebro Scope Boundary — Intelligence Tool vs Platform Infrastructure",
+        "status": "accepted",
+        "delivery_status": null,
+        "projects": [
+          "CEREBRO",
+          "CEREBRO-INFRA"
+        ]
+      },
+      {
+        "id": "ADR-0040",
+        "type": "adr",
+        "label": "Service Mesh Adoption — Linkerd for Inter-Service mTLS and Observability",
+        "status": "accepted",
+        "delivery_status": null,
+        "projects": [
+          "SPECTRE"
+        ]
+      },
+      {
+        "id": "ADR-0038",
+        "type": "adr",
+        "label": "OTLP HTTP/protobuf over gRPC/tonic for trace export",
+        "status": "accepted",
+        "delivery_status": null,
+        "projects": [
+          "SPECTRE"
+        ]
+      },
+      {
+        "id": "ADR-0023",
+        "type": "adr",
+        "label": "Arquitetura TUI com 6 Screens",
+        "status": "accepted",
+        "delivery_status": null,
+        "projects": [
+          "CEREBRO"
+        ]
+      },
+      {
+        "id": "ADR-0049",
+        "type": "adr",
+        "label": "Federação Descentralizada de Advisory de Segurança — visão arquitetural de missão",
+        "status": "accepted",
+        "delivery_status": null,
+        "projects": [
+          "GLOBAL",
+          "CEREBRO",
+          "SPECTRE",
+          "PHANTOM",
+          "NEUTRON"
+        ]
+      },
+      {
+        "id": "ADR-0027",
+        "type": "adr",
+        "label": "Phantom Phase 1: Backend API Implementation with Real Data Integration",
+        "status": "accepted",
+        "delivery_status": "completed",
+        "projects": [
+          "PHANTOM"
         ]
       },
       {
@@ -938,6 +2980,7 @@
         "type": "adr",
         "label": "PHANTOM como Framework de Classificação ML e Pipeline ETL",
         "status": "accepted",
+        "delivery_status": null,
         "projects": [
           "PHANTOM",
           "GLOBAL"
@@ -948,6 +2991,7 @@
         "type": "adr",
         "label": "Git como Sistema Operacional para Decisões Arquiteturais",
         "status": "accepted",
+        "delivery_status": null,
         "projects": [
           "GLOBAL",
           "SPECTRE",
@@ -961,9 +3005,42 @@
         "type": "adr",
         "label": "NEUTRON como Camada de Infraestrutura Core",
         "status": "accepted",
+        "delivery_status": null,
         "projects": [
           "NEUTRON",
           "GLOBAL"
+        ]
+      },
+      {
+        "id": "ADR-0044",
+        "type": "adr",
+        "label": "TimescaleDB + asyncpg como storage de time-series para métricas de protocolo (CHAINSCOPE)",
+        "status": "accepted",
+        "delivery_status": null,
+        "projects": [
+          "GLOBAL"
+        ]
+      },
+      {
+        "id": "ADR-0033",
+        "type": "adr",
+        "label": "Supply Chain SBOM & Dependency Inventory",
+        "status": "accepted",
+        "delivery_status": null,
+        "projects": [
+          "GLOBAL"
+        ]
+      },
+      {
+        "id": "ADR-0050",
+        "type": "adr",
+        "label": "Umbrella Delivery Roadmap — Security Intelligence Platform & ML Pipeline Hardening",
+        "status": "accepted",
+        "delivery_status": null,
+        "projects": [
+          "GLOBAL",
+          "SPECTRE",
+          "PHANTOM"
         ]
       },
       {
@@ -971,9 +3048,20 @@
         "type": "adr",
         "label": "SPECTRE como Motor de Extração de Padrões e Sentimentos",
         "status": "accepted",
+        "delivery_status": null,
         "projects": [
           "SPECTRE",
           "GLOBAL"
+        ]
+      },
+      {
+        "id": "ADR-0021",
+        "type": "adr",
+        "label": "Stack Dupla Poetry + Nix",
+        "status": "accepted",
+        "delivery_status": null,
+        "projects": [
+          "CEREBRO"
         ]
       },
       {
@@ -981,9 +3069,63 @@
         "type": "adr",
         "label": "GCP Credit Management & Programmatic Validation Strategy (CEREBRO)",
         "status": "accepted",
+        "delivery_status": null,
         "projects": [
           "CEREBRO",
           "NEUTRON"
+        ]
+      },
+      {
+        "id": "ADR-0013",
+        "type": "adr",
+        "label": "Technical Milestone: Integrated Dev Deployment & CEREBRO Full Implementation",
+        "status": "accepted",
+        "delivery_status": null,
+        "projects": [
+          "PHANTOM",
+          "NEUTRON",
+          "SECURELLM-BRIDGE",
+          "AI-ASSISTANT-HUB",
+          "CEREBRO"
+        ]
+      },
+      {
+        "id": "ADR-0020",
+        "type": "adr",
+        "label": "Lazy Loading de Dependências Pesadas",
+        "status": "accepted",
+        "delivery_status": null,
+        "projects": [
+          "CEREBRO"
+        ]
+      },
+      {
+        "id": "ADR-0041",
+        "type": "adr",
+        "label": "Canvnx como Espaço Orbital de Observabilidade Multipolar",
+        "status": "accepted",
+        "delivery_status": null,
+        "projects": [
+          "SPECTRE",
+          "OWASAKA",
+          "SPIDER‑NIX",
+          "MATRIX_AI_ASSISTANT",
+          "ADR_LEDGER",
+          "IP_GUARD",
+          "ASTRIX",
+          "CHAOS_NUANCE"
+        ]
+      },
+      {
+        "id": "ADR-0054",
+        "type": "adr",
+        "label": "IntelAgent — Dois projetos com o mesmo nome: separar identidades e definir destino de cada um",
+        "status": "accepted",
+        "delivery_status": "in_progress",
+        "projects": [
+          "PHANTOM",
+          "PHANTOM-RAY",
+          "INTELAGENT"
         ]
       },
       {
@@ -992,9 +3134,39 @@
         "label": "GLOBAL"
       },
       {
+        "id": "PROJECT:CEREBRO-INFRA",
+        "type": "project",
+        "label": "CEREBRO-INFRA"
+      },
+      {
+        "id": "PROJECT:OWASAKA",
+        "type": "project",
+        "label": "OWASAKA"
+      },
+      {
+        "id": "PROJECT:INTELAGENT",
+        "type": "project",
+        "label": "INTELAGENT"
+      },
+      {
+        "id": "PROJECT:ASTRIX",
+        "type": "project",
+        "label": "ASTRIX"
+      },
+      {
+        "id": "PROJECT:SECURELLM-BRIDGE",
+        "type": "project",
+        "label": "SECURELLM-BRIDGE"
+      },
+      {
         "id": "PROJECT:NEUTRON",
         "type": "project",
         "label": "NEUTRON"
+      },
+      {
+        "id": "PROJECT:SPIDER‑NIX",
+        "type": "project",
+        "label": "SPIDER‑NIX"
       },
       {
         "id": "PROJECT:CEREBRO",
@@ -1007,12 +3179,87 @@
         "label": "PHANTOM"
       },
       {
+        "id": "PROJECT:AI-ASSISTANT-HUB",
+        "type": "project",
+        "label": "AI-ASSISTANT-HUB"
+      },
+      {
+        "id": "PROJECT:IP_GUARD",
+        "type": "project",
+        "label": "IP_GUARD"
+      },
+      {
+        "id": "PROJECT:MATRIX_AI_ASSISTANT",
+        "type": "project",
+        "label": "MATRIX_AI_ASSISTANT"
+      },
+      {
+        "id": "PROJECT:CHAOS_NUANCE",
+        "type": "project",
+        "label": "CHAOS_NUANCE"
+      },
+      {
         "id": "PROJECT:SPECTRE",
         "type": "project",
         "label": "SPECTRE"
+      },
+      {
+        "id": "PROJECT:PHANTOM-RAY",
+        "type": "project",
+        "label": "PHANTOM-RAY"
+      },
+      {
+        "id": "PROJECT:ADR_LEDGER",
+        "type": "project",
+        "label": "ADR_LEDGER"
       }
     ],
     "edges": [
+      {
+        "source": "ADR-0016",
+        "target": "PROJECT:GLOBAL",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0022",
+        "target": "PROJECT:CEREBRO",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0025",
+        "target": "ADR-0024",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0025",
+        "target": "Phase 3 auto-remediation (judge pipeline now fully testable)",
+        "type": "enables"
+      },
+      {
+        "source": "ADR-0025",
+        "target": "PROJECT:GLOBAL",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0048",
+        "target": "ADR-0033",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0048",
+        "target": "ADR-0032",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0048",
+        "target": "Branch og como release open source auditada",
+        "type": "enables"
+      },
+      {
+        "source": "ADR-0048",
+        "target": "PROJECT:GLOBAL",
+        "type": "belongs_to"
+      },
       {
         "source": "ADR-0009",
         "target": "ADR-0005",
@@ -1086,6 +3333,81 @@
       {
         "source": "ADR-0006",
         "target": "PROJECT:GLOBAL",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0019",
+        "target": "PROJECT:CEREBRO",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0030",
+        "target": "ADR-0017",
+        "type": "supersedes"
+      },
+      {
+        "source": "ADR-0030",
+        "target": "ADR-0024",
+        "type": "supersedes"
+      },
+      {
+        "source": "ADR-0030",
+        "target": "ADR-0027",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0030",
+        "target": "PROJECT:CEREBRO",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0046",
+        "target": "ADR-0044",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0046",
+        "target": "CoinGecko mapper (FASE 2)",
+        "type": "enables"
+      },
+      {
+        "source": "ADR-0046",
+        "target": "L2Beat mapper (FASE 3)",
+        "type": "enables"
+      },
+      {
+        "source": "ADR-0046",
+        "target": "On-chain normalizers (FASE 4)",
+        "type": "enables"
+      },
+      {
+        "source": "ADR-0046",
+        "target": "PROJECT:GLOBAL",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0045",
+        "target": "ADR-0044",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0045",
+        "target": "ADR-0001",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0045",
+        "target": "Todos os adapters Tier 1-4 do CHAINSCOPE",
+        "type": "enables"
+      },
+      {
+        "source": "ADR-0045",
+        "target": "PROJECT:GLOBAL",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0037",
+        "target": "PROJECT:SPECTRE",
         "type": "belongs_to"
       },
       {
@@ -1119,6 +3441,31 @@
         "type": "belongs_to"
       },
       {
+        "source": "ADR-0032",
+        "target": "PROJECT:GLOBAL",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0032",
+        "target": "PROJECT:CEREBRO",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0032",
+        "target": "PROJECT:SPECTRE",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0032",
+        "target": "PROJECT:PHANTOM",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0032",
+        "target": "PROJECT:NEUTRON",
+        "type": "belongs_to"
+      },
+      {
         "source": "ADR-0002",
         "target": "ADR-0001",
         "type": "related_to"
@@ -1174,6 +3521,171 @@
         "type": "belongs_to"
       },
       {
+        "source": "ADR-0031",
+        "target": "ADR-0030",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0031",
+        "target": "ADR-0027",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0031",
+        "target": "ADR-0005",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0031",
+        "target": "Vertex AI Vector Search migration",
+        "type": "enables"
+      },
+      {
+        "source": "ADR-0031",
+        "target": "Production GKE deployment",
+        "type": "enables"
+      },
+      {
+        "source": "ADR-0031",
+        "target": "Nix-native container builds",
+        "type": "enables"
+      },
+      {
+        "source": "ADR-0031",
+        "target": "PROJECT:CEREBRO",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0031",
+        "target": "PROJECT:CEREBRO-INFRA",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0040",
+        "target": "ADR-0038: OTLP HTTP transport",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0040",
+        "target": "Canary deployments",
+        "type": "enables"
+      },
+      {
+        "source": "ADR-0040",
+        "target": "Zero-trust networking",
+        "type": "enables"
+      },
+      {
+        "source": "ADR-0040",
+        "target": "PROJECT:SPECTRE",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0038",
+        "target": "ADR-0037: NATS over Kafka",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0038",
+        "target": "Production load testing with trace correlation",
+        "type": "enables"
+      },
+      {
+        "source": "ADR-0038",
+        "target": "Future Tempo/Grafana integration",
+        "type": "enables"
+      },
+      {
+        "source": "ADR-0038",
+        "target": "PROJECT:SPECTRE",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0023",
+        "target": "PROJECT:CEREBRO",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0049",
+        "target": "ADR-0032",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0049",
+        "target": "ADR-0033",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0049",
+        "target": "ADR-0044",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0049",
+        "target": "ADR-0045",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0049",
+        "target": "ADR-0046",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0049",
+        "target": "ADR-0048",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0049",
+        "target": "Protocolo de federação entre instâncias ADR Ledger",
+        "type": "enables"
+      },
+      {
+        "source": "ADR-0049",
+        "target": "Advisory descentralizado de segurança",
+        "type": "enables"
+      },
+      {
+        "source": "ADR-0049",
+        "target": "Inteligência preditiva baseada em decisões arquiteturais",
+        "type": "enables"
+      },
+      {
+        "source": "ADR-0049",
+        "target": "Divulgação responsável como protocolo criptográfico",
+        "type": "enables"
+      },
+      {
+        "source": "ADR-0049",
+        "target": "PROJECT:GLOBAL",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0049",
+        "target": "PROJECT:CEREBRO",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0049",
+        "target": "PROJECT:SPECTRE",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0049",
+        "target": "PROJECT:PHANTOM",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0049",
+        "target": "PROJECT:NEUTRON",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0027",
+        "target": "PROJECT:PHANTOM",
+        "type": "belongs_to"
+      },
+      {
         "source": "ADR-0004",
         "target": "ADR-0001",
         "type": "related_to"
@@ -1279,6 +3791,91 @@
         "type": "belongs_to"
       },
       {
+        "source": "ADR-0044",
+        "target": "ADR-0001",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0044",
+        "target": "Pipeline DefiLlama → TimescaleDB (FASE 1)",
+        "type": "enables"
+      },
+      {
+        "source": "ADR-0044",
+        "target": "CoinGecko → TimescaleDB (FASE 2)",
+        "type": "enables"
+      },
+      {
+        "source": "ADR-0044",
+        "target": "Analytics via ClickHouse (FASE 3)",
+        "type": "enables"
+      },
+      {
+        "source": "ADR-0044",
+        "target": "PROJECT:GLOBAL",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0033",
+        "target": "ADR-0032",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0033",
+        "target": "ADR-0006",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0033",
+        "target": "ADR-0005",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0033",
+        "target": "PROJECT:GLOBAL",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0050",
+        "target": "ADR-0006",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0050",
+        "target": "ADR-0027",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0050",
+        "target": "ADR-0034",
+        "type": "related_to"
+      },
+      {
+        "source": "ADR-0050",
+        "target": "Cortex Desktop funcional end-to-end",
+        "type": "enables"
+      },
+      {
+        "source": "ADR-0050",
+        "target": "phantom-soc dashboard com dados reais de rede",
+        "type": "enables"
+      },
+      {
+        "source": "ADR-0050",
+        "target": "PROJECT:GLOBAL",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0050",
+        "target": "PROJECT:SPECTRE",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0050",
+        "target": "PROJECT:PHANTOM",
+        "type": "belongs_to"
+      },
+      {
         "source": "ADR-0003",
         "target": "ADR-0001",
         "type": "related_to"
@@ -1296,6 +3893,11 @@
       {
         "source": "ADR-0003",
         "target": "PROJECT:GLOBAL",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0021",
+        "target": "PROJECT:CEREBRO",
         "type": "belongs_to"
       },
       {
@@ -1317,10 +3919,116 @@
         "source": "ADR-0008",
         "target": "PROJECT:NEUTRON",
         "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0013",
+        "target": "PROJECT:PHANTOM",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0013",
+        "target": "PROJECT:NEUTRON",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0013",
+        "target": "PROJECT:SECURELLM-BRIDGE",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0013",
+        "target": "PROJECT:AI-ASSISTANT-HUB",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0013",
+        "target": "PROJECT:CEREBRO",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0020",
+        "target": "PROJECT:CEREBRO",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0041",
+        "target": "PROJECT:SPECTRE",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0041",
+        "target": "PROJECT:OWASAKA",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0041",
+        "target": "PROJECT:SPIDER‑NIX",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0041",
+        "target": "PROJECT:MATRIX_AI_ASSISTANT",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0041",
+        "target": "PROJECT:ADR_LEDGER",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0041",
+        "target": "PROJECT:IP_GUARD",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0041",
+        "target": "PROJECT:ASTRIX",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0041",
+        "target": "PROJECT:CHAOS_NUANCE",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0054",
+        "target": "PROJECT:PHANTOM",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0054",
+        "target": "PROJECT:PHANTOM-RAY",
+        "type": "belongs_to"
+      },
+      {
+        "source": "ADR-0054",
+        "target": "PROJECT:INTELAGENT",
+        "type": "belongs_to"
       }
     ]
   },
   "concepts_index": {
+    "flake.nix ↔ pyproject.toml parity is a hard invariant; any Phase that touches deps must update both": [
+      "ADR-0025"
+    ],
+    "dead-code archival grep must search tests/ not only src/": [
+      "ADR-0025"
+    ],
+    "NumpyVectorStore is the fallback; FAISSVectorStore is the production path — both must be exercisable in CI": [
+      "ADR-0025"
+    ],
+    "Secret Scanning": [
+      "ADR-0048"
+    ],
+    "Supply Chain Trust": [
+      "ADR-0048"
+    ],
+    "Tool Vetting": [
+      "ADR-0048"
+    ],
+    "CI Security Posture": [
+      "ADR-0048"
+    ],
     "Durable Execution": [
       "ADR-0009"
     ],
@@ -1354,6 +4062,42 @@
     "Event Sourcing": [
       "ADR-0006"
     ],
+    "Product identity vs internal module naming": [
+      "ADR-0030"
+    ],
+    "Feature vs identity framing": [
+      "ADR-0030"
+    ],
+    "Separação coleta/normalização": [
+      "ADR-0046"
+    ],
+    "Funções puras para mapeamento de schema": [
+      "ADR-0046"
+    ],
+    "Dispatch por source_id + endpoint": [
+      "ADR-0046"
+    ],
+    "Rate limiting adaptativo baseado em latência e status codes": [
+      "ADR-0045"
+    ],
+    "Circuit breaker 3 estados para isolamento de falhas": [
+      "ADR-0045"
+    ],
+    "Mixin para injeção de proteção sem herança profunda": [
+      "ADR-0045"
+    ],
+    "Nix-first Kubernetes orchestration": [
+      "ADR-0037"
+    ],
+    "Content-addressable infrastructure": [
+      "ADR-0037"
+    ],
+    "Hermetic container builds": [
+      "ADR-0037"
+    ],
+    "Build-time manifest validation": [
+      "ADR-0037"
+    ],
     "Production Readiness Assessment": [
       "ADR-0010"
     ],
@@ -1365,6 +4109,27 @@
     ],
     "Security-First Architecture": [
       "ADR-0010"
+    ],
+    "Cryptographic Decision Integrity": [
+      "ADR-0032"
+    ],
+    "Tamper-Evident Decision Chain": [
+      "ADR-0032"
+    ],
+    "Merkle Inclusion Proofs": [
+      "ADR-0032"
+    ],
+    "Multi-Signature Governance": [
+      "ADR-0032"
+    ],
+    "Decision Provenance Tracking": [
+      "ADR-0032"
+    ],
+    "Federated Knowledge Sharing": [
+      "ADR-0032"
+    ],
+    "Smart Governance Contracts": [
+      "ADR-0032"
     ],
     "Retrieval Augmented Generation": [
       "ADR-0002"
@@ -1395,6 +4160,63 @@
     ],
     "Data Sovereignty": [
       "ADR-0007"
+    ],
+    "Separation of concerns between tool and platform": [
+      "ADR-0031"
+    ],
+    "Independent deploy cycles as project boundary signal": [
+      "ADR-0031"
+    ],
+    "The Google Way — right tool for right scale": [
+      "ADR-0031"
+    ],
+    "Service mesh architecture": [
+      "ADR-0040"
+    ],
+    "Transparent mTLS": [
+      "ADR-0040"
+    ],
+    "Protocol detection": [
+      "ADR-0040"
+    ],
+    "tonic gRPC exporter can fail silently in batch mode — no error surfaces to application": [
+      "ADR-0038"
+    ],
+    "opentelemetry-otlp 0.14 default features include grpc-tonic, but HTTP requires explicit opt-in": [
+      "ADR-0038"
+    ],
+    "OTEL_EXPORTER_OTLP_PROTOCOL env var selects transport at runtime (grpc vs http/protobuf)": [
+      "ADR-0038"
+    ],
+    "Jaeger all-in-one exposes OTLP gRPC on 4317 and OTLP HTTP on 4318": [
+      "ADR-0038"
+    ],
+    "tower-http TraceLayer creates tracing spans but does not extract W3C traceparent from incoming headers": [
+      "ADR-0038"
+    ],
+    "Decentralized Advisory System": [
+      "ADR-0049"
+    ],
+    "Federated Data Breach Intelligence": [
+      "ADR-0049"
+    ],
+    "Governance-as-Law": [
+      "ADR-0049"
+    ],
+    "Cryptographic Chain of Custody": [
+      "ADR-0049"
+    ],
+    "Epistemological Sovereignty": [
+      "ADR-0049"
+    ],
+    "Responsible Disclosure as Protocol": [
+      "ADR-0049"
+    ],
+    "Community-Driven Threat Intelligence": [
+      "ADR-0049"
+    ],
+    "Architectural Decision Intelligence": [
+      "ADR-0049"
     ],
     "Machine Learning Pipeline": [
       "ADR-0004"
@@ -1432,6 +4254,39 @@
     "Compliance as Code": [
       "ADR-0005"
     ],
+    "Chunk pruning para queries temporais": [
+      "ADR-0044"
+    ],
+    "Upsert via ON CONFLICT para deduplicação de re-coletas": [
+      "ADR-0044"
+    ],
+    "Pool de conexões com retry em backpressure": [
+      "ADR-0044"
+    ],
+    "Decision-Aware SBOM": [
+      "ADR-0033"
+    ],
+    "Supply Chain Governance": [
+      "ADR-0033"
+    ],
+    "Dependency Provenance": [
+      "ADR-0033"
+    ],
+    "CycloneDX ADR Properties": [
+      "ADR-0033"
+    ],
+    "Security Intelligence Platform": [
+      "ADR-0050"
+    ],
+    "Event-driven architecture": [
+      "ADR-0050"
+    ],
+    "Sensor layer (network)": [
+      "ADR-0050"
+    ],
+    "Persistent vector store": [
+      "ADR-0050"
+    ],
     "Sentiment Analysis": [
       "ADR-0003"
     ],
@@ -1458,6 +4313,13 @@
     ]
   },
   "questions_index": {
+    "Why was FAISS skipped? python313Packages.faiss was missing from pythonEnv": "ADR-0025",
+    "Why did test_components fail? cortex_chunker/cortex_embeddings were archived but tests still imported them": "ADR-0025",
+    "What does LatencyOptimizer expose? QueryCache + ConnectionPool + BatchProcessor + LatencyMetrics facade": "ADR-0025",
+    "Por que Gitleaks e não Trivy para secret scanning?": "ADR-0048",
+    "Qual incidente motivou a exclusão explícita do Trivy?": "ADR-0048",
+    "Como o repo garante ausência de secrets antes de publicação pública?": "ADR-0048",
+    "Qual é o pipeline de secret scan para o branch og?": "ADR-0048",
     "Por que Temporal em vez de Airflow?": "ADR-0009",
     "Como funciona adaptive hyperparameter optimization?": "ADR-0009",
     "Como Ray gerencia GPU resources?": "ADR-0009",
@@ -1466,10 +4328,28 @@
     "Como os serviços se comunicam na stack?": "ADR-0006",
     "Como garantir fault tolerance com NATS?": "ADR-0006",
     "Como fazer observability de eventos?": "ADR-0006",
+    "What is Cerebro's identity? Enterprise Knowledge Extraction Platform": "ADR-0030",
+    "What is phantom? Internal Python module, not the product name": "ADR-0030",
+    "What language for user-facing strings? English only": "ADR-0030",
+    "Como um RawDataPoint se torna linhas no TimescaleDB?": "ADR-0046",
+    "Como adicionar suporte a uma nova fonte de dados?": "ADR-0046",
+    "Por que os mappers não têm IO?": "ADR-0046",
+    "Como adapters do CHAINSCOPE protegem contra rate limiting?": "ADR-0045",
+    "O que acontece quando uma fonte fica indisponível?": "ADR-0045",
+    "Como usar RateLimitedMixin em um novo adapter?": "ADR-0045",
+    "Why use Nix instead of Helm for Kubernetes?": "ADR-0037",
+    "How to build containers without Docker daemon?": "ADR-0037",
+    "How to ensure reproducible K8s deployments?": "ADR-0037",
     "O PHANTOM está pronto para produção?": "ADR-0010",
     "Quais são os gaps críticos para deploy?": "ADR-0010",
     "Qual o roadmap para production readiness?": "ADR-0010",
     "Quais SLOs devemos atingir?": "ADR-0010",
+    "How do we guarantee architectural decisions haven't been tampered with?": "ADR-0032",
+    "How can we cryptographically prove a decision existed at a specific time?": "ADR-0032",
+    "How do we enforce governance rules programmatically, not just as documentation?": "ADR-0032",
+    "How can we track the full lifecycle of a decision from research to outcome?": "ADR-0032",
+    "How do we measure decision quality over time?": "ADR-0032",
+    "How can separate organizations share decisions without exposing all internal knowledge?": "ADR-0032",
     "Como os agentes acessam knowledge contextual?": "ADR-0002",
     "Qual a arquitetura do sistema de RAG?": "ADR-0002",
     "Como garantimos accuracy no retrieval?": "ADR-0002",
@@ -1479,6 +4359,22 @@
     "Como gerenciar VRAM para inference?": "ADR-0007",
     "Quando usar cloud vs local?": "ADR-0007",
     "Como garantir data privacy em AI?": "ADR-0007",
+    "Should GKE/eBPF infrastructure live inside Cerebro?": "ADR-0031",
+    "Where does the boundary between intelligence tool and platform lie?": "ADR-0031",
+    "Which enterprise components belong to which project?": "ADR-0031",
+    "Which service mesh should SPECTRE use?": "ADR-0040",
+    "How does Linkerd handle non-HTTP protocols like NATS?": "ADR-0040",
+    "What is the performance overhead of a service mesh?": "ADR-0040",
+    "Why do traces not appear in Jaeger with gRPC/tonic exporter?": "ADR-0038",
+    "How to switch between gRPC and HTTP OTLP in spectre-observability?": "ADR-0038",
+    "What is the overhead of HTTP/protobuf vs gRPC for OTLP?": "ADR-0038",
+    "Qual é a visão de longo prazo do ADR Ledger como sistema federado?": "ADR-0049",
+    "Como decisões arquiteturais se tornam inteligência de segurança?": "ADR-0049",
+    "Por que este projeto existe e o que ele desafia no status quo?": "ADR-0049",
+    "Como o ChainScope se integra para produzir advisory descentralizado?": "ADR-0049",
+    "O que substitui o modelo centralizado de bug bounties e CVE databases?": "ADR-0049",
+    "Como garantir credibilidade sem autoridade central?": "ADR-0049",
+    "Qual é a relação entre open source e soberania epistemológica?": "ADR-0049",
     "Como processamos dados em escala?": "ADR-0004",
     "Como classificamos documentos automaticamente?": "ADR-0004",
     "Como orquestramos workflows de ML?": "ADR-0004",
@@ -1491,6 +4387,16 @@
     "Como garantimos reprodutibilidade?": "ADR-0005",
     "Como enforçamos compliance automaticamente?": "ADR-0005",
     "Como integramos observabilidade?": "ADR-0005",
+    "Qual engine persiste métricas numéricas de protocolo?": "ADR-0044",
+    "Como é feita deduplicação de inserções repetidas?": "ADR-0044",
+    "Qual client Python conecta ao TimescaleDB no CHAINSCOPE?": "ADR-0044",
+    "How do we track which ADR justified each dependency?": "ADR-0033",
+    "How do we detect dependency drift from the declared SBOM?": "ADR-0033",
+    "How do we export our dependency inventory in a standard format?": "ADR-0033",
+    "How do we enforce that every dependency has governance justification?": "ADR-0033",
+    "Quais são os próximos entregáveis do umbrella workspace?": "ADR-0050",
+    "Por que o phantom-soc não processa tasks?": "ADR-0050",
+    "Como owasaka se integra ao Spectre?": "ADR-0050",
     "Como analisamos sentimento em textos?": "ADR-0003",
     "Como extraímos padrões de dados massivos?": "ADR-0003",
     "Como auditamos qualidade de agents?": "ADR-0003",

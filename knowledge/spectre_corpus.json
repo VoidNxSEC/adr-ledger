@@ -1,10 +1,55 @@
 [
   {
+    "id": "ADR-0016",
+    "text": "[Describe the context and problem that led to this decision]\n\n[Describe the decision being made]",
+    "metadata": {
+      "type": "architecture_decision",
+      "status": "accepted",
+      "delivery_status": null,
+      "date": "2026-01-28",
+      "classification": "minor"
+    }
+  },
+  {
+    "id": "ADR-0022",
+    "text": "Cerebro started with a basic Typer CLI (`cerebro`) with 9 commands in 3 groups (knowledge, rag, ops). Over time, 15 additional Python scripts accumulated in `scripts/`:\n\n**GCP Management (3):**\n- `batch_burn.py` - Burn GCP credits via batch queries\n- `monitor_credits.py` - Track credit consumption\n- `create_search_engine.py` - Configure Google Search Engine\n\n**Strategy/Intelligence (4):**\n- `strategy_optimizer.py` - Optimize strategic planning\n- `salary_intel.py` - Salary intelligence gathering\n- `personal_moat_builder.py` - Personal competitive advantage\n- `trend_predictor.py` - Trend prediction\n\n**Content (1):**\n- `content_gold_miner.py` - Content mining\n\n**Knowledge (4):**\n- `generate_queries.py` - Query generation\n- `index_repository.py` - Repository indexing\n- `etl_docs.py` - Document ETL\n- `generate_docs.py` - Documentation generation\n\n**Testing (3):**\n- `grounded_search.py` - Google Search API testing\n- `grounded_generation_test.py` - Grounded generation testing\n- `verify_grounded_api.py` - API verification\n\n**Problems with scattered scripts:**\n\n1. **Discoverability:** Users must know scripts exist, no `--help` listing\n2. **Inconsistent UX:** Each script has different arg parsing (argparse vs typer vs custom)\n3. **No Integration:** Scripts can't easily call each other or share state\n4. **Duplication:** Common code (config loading, logging) duplicated\n5. **Testing:** Harder to test standalone scripts vs CLI commands\n6. **Documentation:** 15 separate README sections vs unified help system\n7. **Maintenance:** Changes require updating multiple files\n\n**Consolidate all 15 scripts into Typer command groups, creating unified `cerebro` CLI with 24 total commands.**\n\n**New structure:**\n```\ncerebro (24 commands in 7 groups)\n├── knowledge (9 cmds) - 5 existing + 4 migrated\n├── rag (3 cmds) - existing\n├── ops (1 cmd) - existing\n├── gcp (3 cmds) - NEW: burn, monitor, create-engine\n├── strategy (4 cmds) - NEW: optimize, salary, moat, trends\n├── content (1 cmd) - NEW: mine\n└── test (3 cmds) - NEW: grounded-search, grounded-gen, verify-api\n```\n\n**Keep original scripts with deprecation warning** for backward compatibility during transition.",
+    "metadata": {
+      "type": "architecture_decision",
+      "status": "accepted",
+      "delivery_status": null,
+      "date": "2026-02-03",
+      "classification": "major"
+    }
+  },
+  {
+    "id": "ADR-0025",
+    "text": "The 10-phase Phantom production readiness audit (ADR-0024) completed on 2026-02-04.\nPhase 2 archived `cortex_chunker.py` and `cortex_embeddings.py` as dead code because a\ngrep over `src/` showed no imports — it missed `tests/unit/` which actively imports both.\nPhases 3 and 10 added/removed deps in `pyproject.toml` without mirroring the changes in\n`flake.nix` `pythonEnv`, so `prometheus-client`, `structlog`, `httpx`, `typer`, and `faiss`\nwere all absent from the Nix dev shell. Several interfaces declared in `__init__.py`\n(`LatencyOptimizer`, `SpectreAnalyzer.analyze`, `SanitizationEngine.scan_sensitive_patterns`)\nhad no implementation. The `/rag/query` endpoint was registered as POST but every consumer\nused GET.\n\nRunning `pytest` after the audit produced 5 collection errors and, once those were fixed,\n12 runtime failures. Zero tests passed cleanly end-to-end.\n\nRestore the archived modules, implement the missing interfaces directly in the existing\nsource files (no new abstractions), sync `flake.nix` with `pyproject.toml`, and fix the\nhandful of test/route mismatches. Do not delete tests to make them pass — the modules are\nreal and required by the RAG pipeline.",
+    "metadata": {
+      "type": "architecture_decision",
+      "status": "accepted",
+      "delivery_status": null,
+      "date": "2026-02-04",
+      "classification": "major"
+    }
+  },
+  {
+    "id": "ADR-0048",
+    "text": "\n\n",
+    "metadata": {
+      "type": "architecture_decision",
+      "status": "accepted",
+      "delivery_status": null,
+      "date": "2026-03-24",
+      "classification": "major"
+    }
+  },
+  {
     "id": "ADR-0009",
     "text": "NEUTRON orchestrates ML workflows for hyperparameter optimization, model training, and experimentation.\n\n### Problem: Manual Hyperparameter Tuning\n\n**Traditional Approach**:\n```python\n# Engineer manually tries hyperparameters\nfor lr in [0.001, 0.01, 0.1]:\n    for batch_size in [32, 64, 128]:\n        model = train_model(lr=lr, batch_size=batch_size)\n        accuracy = evaluate(model)\n        print(f\"lr={lr}, batch_size={batch_size}, accuracy={accuracy}\")\n        # Manually log to CSV\n```\n\n**Problems**:\n- **Time-consuming**: Engineer babysits training runs\n- **No fault tolerance**: Crash loses all progress\n- **Suboptimal**: No intelligent search strategy\n- **Poor tracking**: CSV files, manual notes\n- **Wasted GPU**: Redundant model loads per trial\n\nAdopt **Temporal + Ray + MLflow** stack for adaptive ML orchestration.\n\n### Architecture\n\n```\n┌────────────────────────────────────────────────────────────────┐\n│                    NEUTRON ML STACK                            │\n├────────────────────────────────────────────────────────────────┤\n│                                                                │\n│  ┌──────────────────────────────────────────────────────────┐ │\n│  │              TEMPORAL (Workflow Orchestration)            │ │\n│  │                                                           │ │\n│  │  Workflow: AdaptiveMLPipelineWorkflow                     │ │\n│  │    1. Validate GCP credits (CEREBRO)                     │ │\n│  │    2. Setup MLflow experiment                            │ │\n│  │    3. FOR each phase (adaptive):                         │ │\n│  │         - Select strategy (GRID/RANDOM/BAYESIAN/EVOL)    │ │\n│  │         - Execute trials (Ray actors)                    │ │\n│  │         - Analyze results → decide next strategy         │ │\n│  │    4. Return best hyperparameters                        │ │\n│  │                                                           │ │\n│  │  Features:                                                │ │\n│  │    • Durable execution (survives crashes)                │ │\n│  │    • Deterministic replay (same inputs → same outputs)   │ │\n│  │    • Query support (runtime introspection)               │ │\n│  │    • Versioning (workflow code changes don't break runs) │ │\n│  └────────────────────┬─────────────────────────────────────┘ │\n│                       │                                        │\n│                       ▼                                        │\n│  ┌──────────────────────────────────────────────────────────┐ │\n│  │              RAY (Distributed Compute)                    │ │\n│  │                                                           │ │\n│  │  Actor: TrainerPool                                       │ │\n│  │    - Stateful: Keeps model in GPU VRAM                   │ │\n│  │    - Parallel: 4-8 actors (GPU-dependent)                │ │\n│  │    - Resilient: Auto-restart on failure                  │ │\n│  │                                                           │ │\n│  │  Benefits:                                                │ │\n│  │    • Model caching (1 load → N trials)                   │ │\n│  │    • GPU scheduling (optimal utilization)                │ │\n│  │    • Distributed (multi-node clusters)                   │ │\n│  │    • Fault tolerance (actor supervision)                 │ │\n│  └────────────────────┬─────────────────────────────────────┘ │\n│                       │                                        │\n│                       ▼                                        │\n│  ┌──────────────────────────────────────────────────────────┐ │\n│  │              MLFLOW (Experiment Tracking)                 │ │\n│  │                                                           │ │\n│  │  Tracks:                                                  │ │\n│  │    • Hyperparameters (lr, batch_size, epochs, ...)      │ │\n│  │    • Metrics (loss, accuracy, f1, ...)                   │ │\n│  │    • Artifacts (model checkpoints, plots, logs)          │ │\n│  │    • Code version (git commit hash)                      │ │\n│  │                                                           │ │\n│  │  UI: http://localhost:5000                               │ │\n│  │    - Compare experiments                                  │ │\n│  │    - Hyperparameter importance plots                     │ │\n│  │    - Download best model                                 │ │\n│  └──────────────────────────────────────────────────────────┘ │\n│                                                                │\n└────────────────────────────────────────────────────────────────┘\n```\n\n### Adaptive Hyperparameter Optimization\n\n**4 Strategies** (src/neutron/optimizer.py):\n\n1. **GRID**: Exhaustive systematic search (small discrete spaces)\n2. **RANDOM**: Fast exploration, good baseline (always solid)\n3. **BAYESIAN**: Sample-efficient, models uncertainty (expensive evals)\n4. **EVOLUTIONARY**: Creative discovery, finds unexpected regions\n\n**Adaptive Logic**:\n```python\n# Phase 1: Exploration (GRID)\ntrials_phase1 = run_trials(strategy=GRID, n=20)\nconvergence = analyze_convergence(trials_phase1)\n\nif convergence < 0.8:  # Not converged, explore more\n    # Phase 2: Random exploration\n    trials_phase2 = run_trials(strategy=RANDOM, n=20)\nelse:\n    # Phase 2: Exploitation (BAYESIAN)\n    trials_phase2 = run_trials(strategy=BAYESIAN, n=10)\n\n# Phase 3: Final refinement (EVOLUTIONARY or BAYESIAN)\nbest_region = identify_promising_region(trials_phase1 + trials_phase2)\ntrials_phase3 = run_trials(strategy=BAYESIAN, n=10, focus=best_region)\n```\n\n**Why Adaptive?**\n- Fixed GRID: Wastes trials on unimportant dimensions\n- Fixed RANDOM: May miss optima in complex spaces\n- **Adaptive**: Starts broad (GRID/RANDOM), narrows to promising regions (BAYESIAN)\n\n### Temporal Durable Execution\n\n**Problem** (Airflow):\n```python\n# Airflow DAG\ndef train_workflow():\n    for i in range(50):\n        train_model(trial=i)  # Trial 25: Server crashes\n    # On restart: Start from trial 0 again (lost 25 trials)\n```\n\n**Solution** (Temporal):\n```python\n# Temporal workflow\n@workflow.defn\nclass AdaptiveMLPipelineWorkflow:\n    @workflow.run\n    async def run(self, config: PipelineConfig):\n        for i in range(50):\n            result = await workflow.execute_activity(\n                train_model_activity,\n                args=(i,),\n                start_to_close_timeout=timedelta(minutes=10)\n            )\n            # Trial 25: Server crashes\n            # On restart: Temporal replays from event log\n            # Resumes at trial 26 (deterministic replay)\n```\n\n**Benefits**:\n- Crash recovery: Resume from last completed activity\n- Deterministic: Same inputs → same outputs (reproducibility)\n- Long-running: Workflows can run for days/weeks\n\n### Ray Stateful Actors\n\n**Problem** (Celery):\n```python\n# Celery task (stateless)\n@task\ndef train_trial(hyperparams):\n    model = load_model()  # Loads from disk every trial (slow)\n    result = train(model, hyperparams)\n    return result\n```\n\n**Solution** (Ray):\n```python\n# Ray actor (stateful)\n@ray.remote(num_gpus=1)\nclass TrainerPool:\n    def __init__(self):\n        self.model = load_model()  # Load once, cache in GPU VRAM\n\n    def train_trial(self, hyperparams):\n        # Model already in VRAM, instant access\n        result = train(self.model, hyperparams)\n        return result\n\n# Spawn 4 actors (reuse across trials)\nactors = [TrainerPool.remote() for _ in range(4)]\nresults = ray.get([actor.train_trial.remote(hp) for actor in actors])\n```\n\n**Benefits**:\n- **Speed**: 1 model load → 50 trials (vs 50 loads)\n- **GPU efficiency**: Model stays resident in VRAM\n- **Parallelism**: 4 actors = 4× throughput",
     "metadata": {
       "type": "architecture_decision",
       "status": "accepted",
+      "delivery_status": null,
       "date": "2026-01-11",
       "classification": "major"
     }
@@ -15,7 +60,63 @@
     "metadata": {
       "type": "architecture_decision",
       "status": "accepted",
+      "delivery_status": null,
       "date": "2026-01-11",
+      "classification": "critical"
+    }
+  },
+  {
+    "id": "ADR-0019",
+    "text": "Cerebro needed to evolve from a basic CLI tool with 15 scattered scripts into a unified platform with three interfaces: TUI (interactive), CLI (scriptable), and GUI (visual). The primary challenge was choosing a framework for building a modern, performant Terminal User Interface that could:\n\n- Handle large datasets efficiently (1000+ projects)\n- Provide rich interactive visualizations\n- Integrate seamlessly with existing async FastAPI backend\n- Support keyboard shortcuts and mouse interaction\n- Work reliably over SSH\n- Maintain fast startup times (<2s)\n\nThe TUI would serve as the default interface for interactive terminal sessions, complementing the CLI for scripting and GUI dashboard for web-based visualization.\n\n**Adopt Textual 0.47+ as the TUI framework for Cerebro's interactive terminal interface.**\n\nTextual will power 6 specialized screens (Dashboard, Projects, Intelligence, Scripts, GCP Credits, Logs) with rich widgets, async event handling, and CSS-like styling.",
+    "metadata": {
+      "type": "architecture_decision",
+      "status": "accepted",
+      "delivery_status": null,
+      "date": "2026-02-03",
+      "classification": "major"
+    }
+  },
+  {
+    "id": "ADR-0030",
+    "text": "Cerebro suffers from an **identity crisis** with 3 conflicting framings:\n1. **README.md** — \"Enterprise knowledge extraction platform\" (correct)\n2. **docs/EXECUTIVE_SUMMARY.md** — \"Phoenix Credit Burn ROI Strategy\" (personal/career)\n3. **README_PORTFOLIO.md** — \"Production-grade code intelligence\" (portfolio)\n\nAdditional issues: inconsistent naming (Phantom vs Cerebro), Portuguese strings in CLI/TUI,\n\"burn\" language dominating product identity, 12 proposed ADRs pending triage, and 16 loose\nmarkdown files in the project root.\n\nReposition Cerebro as an **enterprise catalyst**:\n\n1. **Naming**: Cerebro = product name, phantom = internal Python module (kept for backward compat)\n2. **Language**: All user-facing strings in English; Portuguese removed from CLI/TUI\n3. **Framing**: GCP credit consumption reframed as \"batch execution\" — a feature, not the identity\n4. **Documentation**: 16 root markdowns moved to `docs/` subdirectories (nothing deleted)\n5. **Hardcoded values**: GCP project IDs replaced with env vars / placeholders\n6. **ADR triage**: ADR-0027 accepted; this ADR (0030) supersedes ADR-0017 and ADR-0024\n\nThis ADR does NOT:\n- Rename `src/phantom/` directory (high risk, zero user value)\n- Delete any files (only moves)\n- Rewrite command logic (only reframes labels/docstrings)\n- Remove the `gcp burn` subcommand (stays as a feature)",
+    "metadata": {
+      "type": "architecture_decision",
+      "status": "accepted",
+      "delivery_status": null,
+      "date": "2026-02-14",
+      "classification": "critical"
+    }
+  },
+  {
+    "id": "ADR-0046",
+    "text": "O CHAINSCOPE coleta dados de fontes heterogêneas (DefiLlama, CoinGecko, The Graph,\nDiscourse forums, etc.), cada uma com estrutura de resposta diferente. Era necessário\ndefinir como converter `RawDataPoint` (dado bruto, com `raw_payload` opaco) em\nlinhas estruturadas para `protocol_metrics` no TimescaleDB.\n\nA decisão impacta testabilidade, extensibilidade e separação de responsabilidades\nno pipeline de coleta.\n\n**Padrão mapper/engine com duas camadas distintas:**\n\n1. **Mappers** (`services/normalizer/mappers/{source}_mapper.py`): funções puras,\n   sem IO, que recebem um dict/list de response e retornam `list[dict]` de rows.\n\n2. **NormalizerEngine** (`services/normalizer/engine.py`): dispatch por `source_id`\n   + `metadata[\"endpoint\"]`, chama o mapper correto, captura exceções, loga erros.\n\n```python\n# Uso:\nengine = NormalizerEngine()\nrows = engine.normalize(dp)              # nunca levanta exceção\nawait client.upsert_metrics_batch(rows)  # rows prontos para TimescaleDB\n```\n\n```python\n# Adicionar nova fonte:\n# 1. Criar services/normalizer/mappers/coingecko_mapper.py\n# 2. Adicionar ao dispatch em engine.py:\n#    \"coingecko\": self._normalize_coingecko\n```",
+    "metadata": {
+      "type": "architecture_decision",
+      "status": "accepted",
+      "delivery_status": null,
+      "date": "2026-03-08",
+      "classification": "major"
+    }
+  },
+  {
+    "id": "ADR-0045",
+    "text": "O CHAINSCOPE coleta dados de ~30+ fontes externas simultaneamente. Fontes públicas\ncomo DefiLlama e CoinGecko têm rate limits não documentados, e falhas em uma fonte\nnão devem propagar para o restante do pipeline.\n\nEra necessário definir um mecanismo uniforme de proteção antes de implementar\nqualquer adapter de produção.\n\n**Usar `RateLimitedMixin` (sobre `spider_nix.AdaptiveRateLimiter` +\n`spider_nix.CircuitBreaker`) como camada de proteção universal para adapters REST.**\n\n```python\n# Padrão de herança:\nclass DefiLlamaAdapter(RateLimitedMixin, BaseAdapter):\n    def __init__(self):\n        self.__init_rate_limiter__(initial_delay_ms=300.0)\n\n    async def collect(self, params):\n        await self._acquire()                              # aguarda delay adaptativo\n        result = await self._call_protected(self._do_get, path)  # circuit breaker\n        await self._report(result.status_code, elapsed_ms)       # ajusta rate limiter\n        yield RawDataPoint(...)\n```\n\nImplementado em: `services/collector/adapters/rate_limited_mixin.py`",
+    "metadata": {
+      "type": "architecture_decision",
+      "status": "accepted",
+      "delivery_status": null,
+      "date": "2026-03-08",
+      "classification": "major"
+    }
+  },
+  {
+    "id": "ADR-0037",
+    "text": "SPECTRE requires Kubernetes deployment for production with multiple environments (dev, prod). Initial exploration led to creating a full Helm chart (17 files, 813 lines) with comprehensive features. However, during implementation, we identified that Nix provides superior guarantees for reproducible deployments and eliminates external dependencies like Docker daemon.\n\nThe project already uses Nix flakes for development environment, making a Nix-first approach for infrastructure a natural fit. The key question became: should we maintain Helm charts or migrate to pure Nix orchestration?\n\n**We adopt Nix as the primary Kubernetes orchestration mechanism**, replacing Helm charts with declarative Nix modules that generate Kubernetes manifests. This includes:\n\n- `nix/lib/k8s.nix`: Helper functions for manifest generation\n- `nix/kubernetes/*.nix`: Resource definitions (Deployment, Service, ConfigMap, Ingress)\n- `nix/images/spectre-proxy.nix`: Container image builder using dockerTools\n- Flake integration with packages (manifests) and apps (deploy scripts)\n- Isolated operations via `nix develop .#kubernetes`\n\nHelm chart remains available for teams preferring traditional tooling, but Nix is the recommended and maintained approach.",
+    "metadata": {
+      "type": "architecture_decision",
+      "status": "accepted",
+      "delivery_status": null,
+      "date": "2026-02-15",
       "classification": "critical"
     }
   },
@@ -25,7 +126,19 @@
     "metadata": {
       "type": "architecture_decision",
       "status": "accepted",
+      "delivery_status": null,
       "date": "2026-01-14",
+      "classification": "critical"
+    }
+  },
+  {
+    "id": "ADR-0032",
+    "text": "O ADR-Ledger evoluiu de um simples registro de decisoes para um sistema de governanca-as-code que alimenta 4 agentes inteligentes (CEREBRO, SPECTRE, PHANTOM, NEUTRON). Porem, a integridade das decisoes depende exclusivamente do Git, que pode ter historico reescrito via force-push. O content hash atual (SHA256[:12]) so cobre context+decision, nao o ADR completo. Nao existe assinatura digital por decisao, e as regras de governanca sao documentacao, nao codigo executavel.\n\nImplementar uma camada de **blockchain privado** em 3 tiers incrementais que eleva o ADR-Ledger de \"livro razao contabil\" para um sistema de integridade criptografica real:\n\n### Tier 1: Cryptographic Foundation\n- **Decision Chain**: Cada ADR aceito vira um bloco com hash SHA256 do arquivo completo, encadeado ao bloco anterior. Qualquer alteracao retroativa quebra a cadeia.\n- **Multi-Signature Governance**: Assinaturas Ed25519 por decisao, mapeadas a approval matrix (critical=2, major=1, minor=1, patch=1).\n- **Chain Verification**: Comando `adr chain verify` valida integridade de toda a cadeia.\n\n### Tier 2: Trust & Proof\n- **Merkle Tree**: Arvore binaria sobre content hashes para provas de inclusao O(log n). Root hash = estado do conhecimento organizacional.\n- **Smart Governance Contracts**: Engine executavel que transforma governance.yaml em validadores automaticos com audit log.\n- **Cryptographic Snapshots**: Snapshots periodicos assinados encadeando chain tip + merkle root + estatisticas.\n\n### Tier 3: Intelligence & Federation\n- **Decision Provenance**: Rastreabilidade end-to-end (research -> analysis -> proposal -> review -> acceptance -> implementation -> outcome).\n- **Decision Economics**: Quality scoring com metricas compostas (implementation compliance, review depth, risk analysis).\n- **Federated Network**: Compartilhamento cross-org com selective disclosure baseado em topics.\n\n### Arquitetura\nTodos os modulos em Python 3.13 sob `.chain/`, usando PyNaCl (libsodium) para Ed25519. Chain state em `.chain/chain.json` (append-only). Chaves privadas gitignored. Integracao completa com CLI, schema JSON, governance YAML e Nix flake.",
+    "metadata": {
+      "type": "architecture_decision",
+      "status": "accepted",
+      "delivery_status": null,
+      "date": "2026-02-14",
       "classification": "critical"
     }
   },
@@ -35,6 +148,7 @@
     "metadata": {
       "type": "architecture_decision",
       "status": "accepted",
+      "delivery_status": null,
       "date": "2025-01-10",
       "classification": "critical"
     }
@@ -45,7 +159,74 @@
     "metadata": {
       "type": "architecture_decision",
       "status": "accepted",
+      "delivery_status": null,
       "date": "2026-01-11",
+      "classification": "major"
+    }
+  },
+  {
+    "id": "ADR-0031",
+    "text": "Cerebro v2.0.0 is an Enterprise Knowledge Extraction Platform — a Python CLI/TUI/Dashboard tool that analyzes codebases, runs RAG pipelines, and produces repository intelligence. It currently uses ChromaDB (SQLite) for vector storage, manual Dockerfiles for builds, and Python scripts for ingestion.\n\nThe enterprise migration requires replacing these components with production-grade equivalents:\n\n| Component | Current | Enterprise (Google Way) | Rationale |\n|-----------|---------|------------------------|-----------|\n| **Vector Store** | ChromaDB (SQLite) | Vertex AI Vector Search | Serverless, scales to billions of vectors, <10ms latency |\n| **Build System** | Dockerfile manual | Nix `dockerTools.buildImage` | Bit-for-bit reproducible distroless images without Dockerfile |\n| **Ingestion** | Python scripts | Cloud Run Jobs | Perfect for batch ETL <10TB. Dataflow is overkill at this scale |\n| **Compute/eBPF** | Local / Cloud Run | GKE Standard (Dataplane V2) | Only place to load custom BPF programs with native Cilium |\n\nThe critical question: **do all four components belong in the same project?**\n\n### The Boundary Test\n\nA project should be split when:\n\n1. **Deploy cycles are independent** — You update the CLI without touching the cluster. You scale GKE without redeploying the Python package.\n2. **Ownership domains differ** — Code intelligence (analysis, RAG, metrics) vs. platform engineering (Terraform, Kubernetes, networking).\n3. **Failure domains are isolated** — A bug in the analyzer doesn't bring down the cluster. A GKE node failure doesn't break the local CLI.\n\nAll three conditions are met here.\n\n**Split into two projects with a clear boundary:**\n\n### `cerebro/` — Intelligence Tool (this project)\n\nThe code intelligence platform. Analyzes codebases, runs RAG pipelines, produces metrics, serves dashboards. Ships as a Python package (`pip install cerebro-cli`) and a Nix flake.\n\n**Stays in Cerebro:**\n\n| Component | Implementation | Why it belongs |\n|-----------|---------------|----------------|\n| Vertex AI Vector Search | New provider replacing ChromaDB | Core RAG backend — this IS the product |\n| Nix `dockerTools.buildImage` | Build pipeline addition | Reproducible builds are Cerebro's identity (Nix-first) |\n| FastAPI REST API | Already exists (`dashboard_server.py`) | The public interface for integrations |\n| Provider abstractions | `interfaces/llm.py`, `interfaces/vector_store.py` | Pluggable backends — the architecture stays clean |\n\n**Does NOT change:**\n- CLI (Typer, 8 command groups, 30+ commands)\n- TUI (Textual, 6 screens)\n- Dashboard (React 18 + Vite)\n- Core analysis engine (Tree-Sitter, AST, security scanner)\n- Metrics collector (zero-token repository scanning)\n- Intelligence system (SIGINT/HUMINT/OSINT/TECHINT)\n\n### `cerebro-infra/` — Platform Engineering (new project)\n\nThe production infrastructure that runs Cerebro at enterprise scale. Provisions and manages cloud resources. Ships as Terraform modules and Kubernetes manifests.\n\n| Component | Implementation | Why it's separate |\n|-----------|---------------|-------------------|\n| GKE Standard (Dataplane V2) | Terraform + Cilium policies | Cluster lifecycle ≠ application lifecycle |\n| Cloud Run Jobs (ingestion) | Terraform + Job definitions | Orchestration layer, not business logic |\n| eBPF programs | Custom BPF, loaded via Cilium | Kernel-level networking, completely different domain |\n| VPC / IAM / monitoring | Terraform modules | Infrastructure provisioning |\n| Container registry | Artifact Registry + Nix builds | Image pipeline management |\n\n### The Interface Contract\n\nThe two projects communicate through:\n\n```\ncerebro (produces)                    cerebro-infra (consumes)\n─────────────────                     ────────────────────────\nContainer image (Nix-built)    →      GKE Deployment / Cloud Run Job\nOpenAPI spec (FastAPI)         →      Ingress / Load Balancer config\nVertex AI provider config      →      Vertex AI Vector Search index\nHealth endpoint (/health)      →      GKE liveness/readiness probes\n```\n\n**Rule: Cerebro never imports infrastructure code. cerebro-infra never imports analysis code.**",
+    "metadata": {
+      "type": "architecture_decision",
+      "status": "accepted",
+      "delivery_status": null,
+      "date": "2026-02-14",
+      "classification": "critical"
+    }
+  },
+  {
+    "id": "ADR-0040",
+    "text": "SPECTRE runs multiple services in Kubernetes: spectre-proxy (Rust/axum), neutron (Python/FastAPI), and NATS (message bus). As inter-service communication grows, we need:\n\n1. **Mutual TLS (mTLS)** between pods without modifying application code\n2. **Observability** at the network layer (latency, throughput, success rate per route)\n3. **Traffic management** for canary deployments and gradual rollouts\n\nThe proxy already implements circuit breaker and rate limiting in Rust code. The mesh complements these by providing network-layer security and observability.\n\n**Adopt Linkerd** as the service mesh for SPECTRE's Kubernetes deployments.\n\nKey configuration:\n- **iptables mode**: `nft` (required for kind clusters, compatible with modern kernels)\n- **NATS skip**: `config.linkerd.io/skip-outbound-ports: 4222` (NATS uses a custom TCP protocol, not HTTP)\n- **Injection**: Annotation-based (`linkerd.io/inject: enabled`) per deployment, not namespace-wide\n- **Coexistence**: Application-level circuit breaker (Rust) + mesh-level mTLS/retries",
+    "metadata": {
+      "type": "architecture_decision",
+      "status": "accepted",
+      "delivery_status": null,
+      "date": "2026-02-16",
+      "classification": "major"
+    }
+  },
+  {
+    "id": "ADR-0038",
+    "text": "During Phase 3 validation (Task #41: E2E Trace Propagation), we deployed Jaeger (all-in-one:1.53) and configured `spectre-proxy` to export traces via OpenTelemetry OTLP.\n\nThe default gRPC/tonic exporter (`opentelemetry_otlp::new_exporter().tonic()`) initialized without error and the batch processor ran normally, but **zero traces reached Jaeger**. No errors were logged — the batch exporter silently dropped all spans.\n\nRoot cause investigation:\n1. Confirmed Jaeger OTLP HTTP endpoint (port 4318) accepts traces correctly via manual `curl`\n2. Confirmed Jaeger OTLP gRPC endpoint (port 4317) is listening\n3. Confirmed `tracing-opentelemetry` layer creates spans (visible in `tower_http::trace` debug logs)\n4. The tonic 0.9.2 (pulled by opentelemetry-otlp) and workspace tonic 0.11 coexist but may cause subtle runtime issues\n5. The batch exporter's async error path drops errors without surfacing them\n\nSwitch the default OTLP transport from **gRPC/tonic** to **HTTP/protobuf** for trace export, while keeping gRPC available as a runtime option.\n\n**Configuration:**\n- Default: `OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf` (port 4318)\n- Optional: `OTEL_EXPORTER_OTLP_PROTOCOL=grpc` (port 4317)\n- Endpoint: `OTEL_EXPORTER_OTLP_ENDPOINT=http://<host>:<port>`",
+    "metadata": {
+      "type": "architecture_decision",
+      "status": "accepted",
+      "delivery_status": null,
+      "date": "2026-02-15",
+      "classification": "major"
+    }
+  },
+  {
+    "id": "ADR-0023",
+    "text": "Cerebro's TUI needed to provide comprehensive access to all system functionality in an intuitive, navigable interface. The system has multiple distinct operational domains:\n\n1. **System Overview:** Health metrics, alerts, recent activity\n2. **Project Management:** Browse, analyze, and summarize 1000+ projects\n3. **Intelligence Queries:** Interactive RAG/search with result visualization\n4. **Script Execution:** Launch 24 CLI commands with parameter forms\n5. **Resource Management:** GCP credit tracking and batch operations\n6. **Observability:** Real-time log streaming and filtering\n\n**Design Constraints:**\n- Terminal real estate is limited (80x24 minimum support)\n- Users need quick navigation between domains\n- Long-running operations need progress feedback\n- Some operations are related (e.g., scan projects → view in Projects screen)\n- Keyboard-first navigation for power users\n\n**Alternative Approaches Considered:**\n- **Single Screen:** Too cramped, context switching difficult\n- **Many Small Screens:** Too fragmented, hard to navigate\n- **Dynamic Screen Creation:** Complex, no stable navigation\n\n**Implement 6 specialized screens with sidebar navigation, optimized for distinct workflows.**\n\n**Screen Architecture:**\n\n```\nTUI Application\n├── MainMenu (Sidebar) - Always visible navigation\n├── DashboardScreen - System overview, quick actions\n├── ProjectsScreen - Project DataTable, analysis\n├── IntelligenceScreen - Query input, results display\n├── ScriptsScreen - Command launcher with forms\n├── GCPCreditsScreen - Credit tracking, batch burn\n└── LogsScreen - Live log tail with filtering\n```\n\n**Navigation Model:**\n- Persistent sidebar (1-6 number keys + q to quit)\n- Each screen full-featured for its domain\n- Command Router bridges TUI actions to CLI functions\n- WebSocket for real-time updates (alerts, progress)",
+    "metadata": {
+      "type": "architecture_decision",
+      "status": "accepted",
+      "delivery_status": null,
+      "date": "2026-02-03",
+      "classification": "major"
+    }
+  },
+  {
+    "id": "ADR-0049",
+    "text": "\n\n",
+    "metadata": {
+      "type": "architecture_decision",
+      "status": "accepted",
+      "delivery_status": null,
+      "date": "2026-03-24",
+      "classification": "critical"
+    }
+  },
+  {
+    "id": "ADR-0027",
+    "text": "Phantom v2.0.0 is a local-first AI document intelligence framework with three interfaces:\n- CLI (Typer)\n- REST API (FastAPI)\n- Desktop UI (Tauri + SvelteKit)\n\nPrior to this work, the desktop UI (`cortex-desktop/`) was fully implemented but non-functional because the backend API endpoints returned empty/stub data. All backend infrastructure existed (CORTEX processor, FAISS vector store, embedding generator, LLM provider) but was not exposed via REST API.\n\n### Problem Statement\n\n**Frontend called 7 endpoints that either didn't exist or returned stub data:**\n1. `POST /process` - Document processing (returned TODO comment)\n2. `POST /vectors/search` - Vector search (didn't exist)\n3. `POST /vectors/index` - Document indexing (didn't exist)\n4. `POST /api/chat` - RAG chat (didn't exist)\n5. `GET /api/models` - Models listing (didn't exist)\n6. `POST /api/prompt/test` - Prompt testing (didn't exist)\n7. `GET /api/system/metrics` - System metrics (didn't exist)\n\n**Impact:**\n- Desktop UI appeared broken\n- No way to test real document processing\n- Vector search functionality inaccessible\n- RAG chat not functional\n- System resource monitoring unavailable\n\n{'choice': 'Implement all 7 Phase 1 endpoints with real data integration', 'reasoning': 'The frontend (Cortex Desktop) was fully built but unusable due to missing backend endpoints.\\nAll infrastructure existed (CortexProcessor, FAISSVectorStore, EmbeddingGenerator, LlamaCppProvider)\\nbut was not exposed via REST API. This ADR documents the implementation of the integration layer\\nthat connects the frontend to existing backend services, enabling real document processing,\\nsemantic search, RAG chat, and system monitoring.\\n'}",
+    "metadata": {
+      "type": "architecture_decision",
+      "status": "accepted",
+      "delivery_status": "completed",
+      "date": "2026-02-05",
       "classification": "major"
     }
   },
@@ -55,6 +236,7 @@
     "metadata": {
       "type": "architecture_decision",
       "status": "accepted",
+      "delivery_status": null,
       "date": "2025-01-10",
       "classification": "major"
     }
@@ -65,6 +247,7 @@
     "metadata": {
       "type": "architecture_decision",
       "status": "accepted",
+      "delivery_status": null,
       "date": "2025-01-10",
       "classification": "critical"
     }
@@ -75,8 +258,42 @@
     "metadata": {
       "type": "architecture_decision",
       "status": "accepted",
+      "delivery_status": null,
       "date": "2025-01-10",
       "classification": "critical"
+    }
+  },
+  {
+    "id": "ADR-0044",
+    "text": "O CHAINSCOPE coleta métricas contínuas de ~3000 protocolos DeFi — TVL, preços,\nfees, volumes — com frequência horária. Cada ponto é um tuple\n`(timestamp, protocol_id, metric_name, value_numeric)`. O padrão de acesso\ndominante é por janela temporal.\n\nEra necessário escolher o engine de storage primário antes de implementar\nqualquer collector.\n\n**Usar TimescaleDB (extensão PostgreSQL) com hypertable `protocol_metrics`,\nacessado via pool asyncpg.**\n\nSchema central:\n\n```sql\nCREATE TABLE protocol_metrics (\n    timestamp       TIMESTAMPTZ NOT NULL,\n    protocol_id     TEXT NOT NULL,\n    chain_id        TEXT,\n    metric_name     TEXT NOT NULL,\n    value_numeric   DOUBLE PRECISION,\n    value_json      JSONB,\n    source_id       TEXT NOT NULL,\n    confidence      REAL DEFAULT 1.0,\n    PRIMARY KEY (timestamp, protocol_id, metric_name)\n);\nSELECT create_hypertable('protocol_metrics', 'timestamp',\n    chunk_time_interval => INTERVAL '1 day',\n    if_not_exists => TRUE);\n```\n\nClient: `services/storage/timescale.py` — `TimescaleClient` com pool 2-10 conexões,\n`upsert_metrics_batch()` via `executemany`, retry exponencial.",
+    "metadata": {
+      "type": "architecture_decision",
+      "status": "accepted",
+      "delivery_status": null,
+      "date": "2026-03-08",
+      "classification": "major"
+    }
+  },
+  {
+    "id": "ADR-0033",
+    "text": "O adr-ledger tem 8 modulos `.chain/` implementando blockchain privado, mas nao rastreia suas proprias dependencias de forma estruturada. O Nix ja pina tudo via `flake.lock`, mas falta a camada de **governanca**: qual ADR justificou cada dependencia, quem aprovou, quando mudou.\n\nIndustry standards (CycloneDX, SPDX) exigem SBOMs para supply chain security, mas nenhuma ferramenta existente mapeia dependencias para decisoes arquiteturais.\n\nImplementar um SBOM decision-aware que enriquece (nao duplica) o que o Nix ja oferece:\n\n1. **`sbom_manager.py`** — Modulo Python que escaneia `flake.lock`, `flake.nix` e `.chain/*.py` para gerar inventario completo\n2. **Bootstrap ADR Map** — Dict mapeando dependencias existentes para ADRs que as justificam\n3. **CycloneDX 1.6 Export** — Usando `properties[]` para ADR references (mecanismo padrao de extensao)\n4. **Drift Detection** — Re-scan + comparacao com SBOM atual para detectar mudancas nao declaradas\n5. **Snapshot Integration** — `sbom_hash` incluido nos snapshots criptograficos\n6. **Governance Contract** — `check_supply_chain_compliance()` verifica que todas deps tem ADR reference\n\nEscopo: CycloneDX + formato interno, nivel governance-aware, Nix como fonte de verdade.",
+    "metadata": {
+      "type": "architecture_decision",
+      "status": "accepted",
+      "delivery_status": null,
+      "date": "2026-02-14",
+      "classification": "major"
+    }
+  },
+  {
+    "id": "ADR-0050",
+    "text": "O workspace `/home/kernelcore/master` é um monorepo Nix-first com múltiplos projetos interdependentes. Após exploração completa do ecossistema, 4 streams de entrega foram identificados com gaps concretos a fechar — não reescritas.\n\n**Spectre** é o backbone de eventos NATS, já production-ready (Phase 4 completa). Os demais projetos dependem dele para comunicação assíncrona, mas faltam os event types da camada de rede e do domínio phantom-stack.\n\n**phantom-soc** (control-plane Rust + GTK4) tem um bug crítico no scheduler que impede qualquer task de ser processada — loop infinito de sleep sem dequeue.\n\n**owasaka** (sensor Go de rede) faz descoberta ARP e queries DNS mas não publica nada no NATS.\n\n**phantom** (ML platform Python/FastAPI) tem 7 endpoints stub que bloqueiam o Cortex Desktop (Tauri + Svelte).\n\n**neoland** (Rust TUI) perde todos os vetores a cada restart por usar store in-memory.\n\nExecutar o roadmap em ordem de dependência, um projeto por vez, com mudanças cirúrgicas e verificação de build/testes após cada task:\n\n```\nA1 (spectre events) → A2 (scheduler fix) → A3 (owasaka NATS)\n→ A4 (data-plane subscribe) → A5 (GTK4 wire)\n→ B1 (phantom endpoints) → B2 (cortex wire) → B3 (manifest)\n→ C1 (neoland vectors) → C2+C3 (tests + deps)\n```",
+    "metadata": {
+      "type": "architecture_decision",
+      "status": "accepted",
+      "delivery_status": null,
+      "date": "2026-03-25",
+      "classification": "major"
     }
   },
   {
@@ -85,8 +302,20 @@
     "metadata": {
       "type": "architecture_decision",
       "status": "accepted",
+      "delivery_status": null,
       "date": "2025-01-10",
       "classification": "major"
+    }
+  },
+  {
+    "id": "ADR-0021",
+    "text": "Cerebro is a complex Python application with multiple concerns:\n\n**Python Dependency Management:**\n- 30+ Python packages (FastAPI, Textual, sentence-transformers, typer, etc.)\n- Version constraints and lock files\n- Development vs production dependencies\n- Poetry provides excellent Python-specific tooling\n\n**System-Level Reproducibility:**\n- System dependencies (git, nodejs, npm for dashboard)\n- Python interpreter version (3.11+)\n- Native libraries (SSL, database drivers)\n- Development tools (ruff, pytest)\n- Need for identical environments across machines\n\n**The Problem:** Poetry alone doesn't guarantee reproducible system-level environments. `poetry.lock` ensures Python package versions, but not:\n- Python interpreter version\n- System libraries (OpenSSL versions differ)\n- Native dependencies\n- Development tools\n- Environment variables\n\nTraditional approaches (pip+requirements.txt, conda, docker) have limitations:\n- **pip/venv:** No system dependencies, no reproducibility\n- **Conda:** Slower, larger, Python-ecosystem focused\n- **Docker:** Heavy, not suitable for development workflows\n- **pyenv + Poetry:** Still doesn't pin system deps\n\n**Adopt dual-stack approach: Poetry for Python dependencies + Nix for system-level reproducibility.**\n\n**Division of responsibilities:**\n- **Poetry:** Python package management, lock file, virtual environments\n- **Nix:** System dependencies, Python interpreter, dev tools, reproducible shell\n\n**Implementation:**\n```nix\n# flake.nix\n{\n  inputs = {\n    nixpkgs.url = \"github:NixOS/nixpkgs/nixos-unstable\";\n    poetry2nix.url = \"github:nix-community/poetry2nix\";\n  };\n\n  outputs = { self, nixpkgs, poetry2nix }: {\n    devShells.x86_64-linux.default = pkgs.mkShell {\n      buildInputs = [\n        python311      # Pinned interpreter\n        poetry         # Python deps\n        nodejs         # For dashboard\n        git            # Version control\n        ruff           # Linting\n      ];\n\n      shellHook = ''\n        export POETRY_VIRTUALENVS_IN_PROJECT=true\n        poetry install\n      '';\n    };\n  };\n}\n```\n\nWorkflow:\n```bash\nnix develop          # Enter reproducible env\npoetry install       # Install Python deps\ncerebro              # Run application\n```",
+    "metadata": {
+      "type": "architecture_decision",
+      "status": "accepted",
+      "delivery_status": null,
+      "date": "2026-02-03",
+      "classification": "critical"
     }
   },
   {
@@ -95,7 +324,52 @@
     "metadata": {
       "type": "architecture_decision",
       "status": "accepted",
+      "delivery_status": null,
       "date": "2026-01-11",
+      "classification": "major"
+    }
+  },
+  {
+    "id": "ADR-0013",
+    "text": "Hoje, 26 de Janeiro de 2026, atingimos um marco de vitória técnica com o deploy bem-sucedido de múltiplos componentes críticos do ecossistema e a **implementação completa do CEREBRO Intelligence System**. Este projeto transicionou oficialmente de um hobby para um objetivo de carreira em tempo real.\n\nRegistrar a conclusão da implementação do CEREBRO e o estado integrado do ecossistema como o novo baseline técnico para futuras expansões.",
+    "metadata": {
+      "type": "architecture_decision",
+      "status": "accepted",
+      "delivery_status": null,
+      "date": "2026-01-26",
+      "classification": null
+    }
+  },
+  {
+    "id": "ADR-0020",
+    "text": "Cerebro is evolving into a multi-interface platform with TUI, CLI, and GUI modes. The problem: heavyweight dependencies like Textual (TUI framework) and ML models add significant startup overhead:\n\n- Textual: ~200ms import time + 500KB package\n- Sentence transformers: ~2-3s import + 500MB models\n- FastAPI/Uvicorn: ~100ms for GUI mode\n\nWhen users invoke simple CLI commands like `cerebro knowledge analyze .`, they shouldn't pay the penalty of loading TUI widgets or ML models. The CLI should remain fast and lightweight for scripting use cases.\n\n**Baseline measurements:**\n- Pure CLI startup: ~50ms\n- With eager TUI import: ~250ms (+400%)\n- With eager ML models: ~3.2s (+6300%)\n\n**Implement lazy import strategy for heavyweight dependencies: defer imports until actual use.**\n\nPattern:\n```python\n# BEFORE (eager)\nfrom phantom.tui.app import CerebroApp  # Always loaded\n\n# AFTER (lazy)\ndef launch_tui():\n    from phantom.tui.app import CerebroApp  # Only on TUI invocation\n    app = CerebroApp()\n    app.run()\n```\n\nApply to:\n1. Textual framework (TUI mode only)\n2. ML models (RAG/intelligence commands only)\n3. FastAPI/Uvicorn (GUI mode only)\n4. Heavy data processing libraries (pandas, when used)",
+    "metadata": {
+      "type": "architecture_decision",
+      "status": "accepted",
+      "delivery_status": null,
+      "date": "2026-02-03",
+      "classification": "major"
+    }
+  },
+  {
+    "id": "ADR-0041",
+    "text": "\n\n{'chosen_option': 'Espaço orbital 3D construído com Three.js/React, usando metáfora de sistema solar', 'summary': 'Transformar o canvnx em um meta‑dashboard orbital onde cada projeto é uma estrela, cada serviço um planeta, e as interações são partículas em movimento orbital. A visualização será layer‑based, com toggle de camadas (segurança, compliance, IA, governança) e integração em tempo real via WebSocket/NATS.', 'implementation_phases': ['Fase 1: Orbital SPECTRE – visualização da frota com métricas (CPU, memória, latência) como atributos visuais (raio, anéis, distância orbital).', 'Fase 2: Integração Owasaka – streaming de eventos via WebSocket, partículas coloridas representando tráfego.', 'Fase 3: Camada de segurança – Spider‑Nix (cometas vermelhos) e Chaos‑Nuance (ataques sutis como ondulações).', 'Fase 4: Governança – constelações de ADRs orbitando projetos relevantes.', 'Fase 5: Integração multipolar – Astrix (orquestração de agentes), IP‑Guard (escudos de compliance).']}",
+    "metadata": {
+      "type": "architecture_decision",
+      "status": "accepted",
+      "delivery_status": null,
+      "date": "2026-02-18",
+      "classification": null
+    }
+  },
+  {
+    "id": "ADR-0054",
+    "text": "\n\n",
+    "metadata": {
+      "type": "architecture_decision",
+      "status": "accepted",
+      "delivery_status": "in_progress",
+      "date": "2026-03-29",
       "classification": "major"
     }
   }

@@ -1,0 +1,58 @@
+[Unit]
+Description=ADR Ledger Autonomous MCP Daemon
+Documentation=https://github.com/marcosfpina/adr-ledger
+After=network.target
+
+[Service]
+Type=simple
+# Isolar a execução em um usuário sem privilégios gerado especificamente para o ledger
+User=adr-agent
+Group=adr-agent
+
+WorkingDirectory=/var/lib/adr-ledger
+Environment="PATH=/run/current-system/sw/bin:/usr/local/bin:/usr/bin:/bin"
+# Executa o entrypoint do MCP protocol (ou worker de sync) 
+ExecStart=/usr/bin/env adr-mcp-server
+
+# ==========================================
+# HARDENING & ISOLATION (Security Posture)
+# ==========================================
+
+# Filesystem Isolation:
+# Bloqueio total de escrita no sistema, liberando apenas seu diretório de estado
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/var/lib/adr-ledger /tmp/adr-sessions
+
+# Network & Privileges:
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectClock=true
+
+# Kernel Proc/Sys Protections:
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+
+# Namespaces & Capabilities:
+RestrictNamespaces=true
+# Trava o daemon para não usar features de root
+CapabilityBoundingSet=
+AmbientCapabilities=
+LockPersonality=true
+RestrictSUIDSGID=true
+RemoveIPC=true
+
+# Memória (Impede ataques de injeção de shellcode no processo do parser/agent)
+MemoryDenyWriteExecute=true
+RestrictRealtime=true
+
+# ==========================================
+
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
