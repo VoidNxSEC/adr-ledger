@@ -125,6 +125,8 @@ jobs:
   sync-knowledge-base:
     name: Synchronize Knowledge Base
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     needs: validate-adrs
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
