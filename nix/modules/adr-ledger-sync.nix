@@ -24,6 +24,7 @@ in
       type = types.bool;
       default = true;
       description = "Auto-sync knowledge on system rebuild";
+      example = true; # TODO: complete all examples fields related to the agent options, you must provide an example for each option.
     };
 
     knowledgeBasePath = mkOption {

@@ -1,10 +1,10 @@
 # ADR Ledger — Architectural Decision Record Ledger
 
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/status-beta-brightgreen.svg)]()
-[![Release](https://img.shields.io/badge/release-v0.1.0-brightgreen.svg)](https://github.com/marcosfpina/adr-ledger/releases/tag/v0.1.0)
-[![Python](https://img.shields.io/badge/python-3.13-blue.svg)](https://www.python.org/)
-[![Nix](https://img.shields.io/badge/nix-flakes-5277C3.svg)](https://nixos.org/)
+[!\[License\](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[!\[Status\](https://img.shields.io/badge/status-beta-brightgreen.svg)]()
+[!\[Release\](https://img.shields.io/badge/release-v0.1.0-brightgreen.svg)](https://github.com/marcosfpina/adr-ledger/releases/tag/v0.1.0)
+[!\[Python\](https://img.shields.io/badge/python-3.13-blue.svg)](https://www.python.org/)
+[!\[Nix\](https://img.shields.io/badge/nix-flakes-5277C3.svg)](https://nixos.org/)
 
 Computable registry of architectural decisions. Each ADR is versioned in Git, cryptographically signed, validated against a strict schema, evaluated by OPA policy, and exported as JSON for AI agent consumption and programmatic governance enforcement.
 
@@ -14,15 +14,21 @@ Computable registry of architectural decisions. Each ADR is versioned in Git, cr
 
 Architectural decisions tend to scatter — Notion, Slack, the memory of whoever was in the room. When someone asks "why NixOS?", the answer is reconstructed from fragments, if at all.
 
+
+
+This project can enhance the quality from the model languages training and promisse a better experience for organizations and individual developers.
+
+
+
 ADR Ledger treats decisions as structured data: YAML frontmatter for machines, Markdown for humans, Git as an audit trail, and cryptographic chains for immutability. Five autonomous agents consume this knowledge:
 
-| Agent | Function | Consumes |
-|--------|--------|---------|
-| **CEREBRO** | RAG Retrieval & Knowledge Vault | `knowledge_base.json` |
-| **SPECTRE** | Pattern & Sentiment Analysis (NLP) | `spectre_corpus.json` |
-| **PHANTOM** | ML Classification & Sanitization | `phantom_training.json` |
-| **NEUTRON** | Declarative Infra & Compliance | ADR compliance tags |
-| **IntelSense** | Security Ops & Intelligence (OSINT) | Security tagged ADRs |
+| Agent          | Function                            | Consumes                |
+| -------------- | ----------------------------------- | ----------------------- |
+| **CEREBRO**    | RAG Retrieval & Knowledge Vault     | `knowledge_base.json`   |
+| **SPECTRE**    | Pattern & Sentiment Analysis (NLP)  | `spectre_corpus.json`   |
+| **PHANTOM**    | ML Classification & Sanitization    | `phantom_training.json` |
+| **NEUTRON**    | Declarative Infra & Compliance      | ADR compliance tags     |
+| **IntelSense** | Security Ops & Intelligence (OSINT) | Security tagged ADRs    |
 
 The result: decisions that are traceable, versioned, cryptographically verifiable, and queryable by both humans and machines.
 
@@ -30,7 +36,7 @@ The result: decisions that are traceable, versioned, cryptographically verifiabl
 
 ## Architecture
 
-```
+```bash
 adr-ledger/
 ├── .schema/                    # JSON Schema for strict validation
 │   ├── adr.schema.json
@@ -58,6 +64,8 @@ adr-ledger/
 │   └── graph.json             # Entity-Relationship Knowledge Graph
 └── scripts/
     └── adr                    # Advanced Operational CLI
+    
+    # TODO: add new tree improvements, new directories need to be here.
 ```
 
 ## SecureLLM-MCP Integration
@@ -231,6 +239,7 @@ Governance is automated, not a manual process. Defined in `.governance/governanc
 ### Compliance Automation
 
 The system uses Git hooks (Pre-commit/Post-commit) to enforce:
+
 - **Approval Matrix**: `critical` requires 2 signatures (Architect + Security Lead).
 - **Compliance Triggers**: ADRs modifying `data` layers automatically require the `LGPD` tag.
 - **Supply Chain Drift**: `post-commit` verifies if new Nix flake inputs map to an accepted ADR.
@@ -303,33 +312,37 @@ knowledge_extraction:
 ## Roadmap
 
 ### v0.1.0 — Beta Release (Current)
-- [x] JSON Schema, AST Parser, Advanced CLI
-- [x] Pre-commit & Post-commit Git hooks integration
-- [x] JSON/JSONL streaming export with deep filtering
-- [x] Cryptographic private blockchain layer (Provenance + Immutability)
-- [x] Ed25519 Cryptographic signing & Multi-sig (`pre-sign`)
-- [x] Temporal Anchoring via OpenTimestamps
-- [x] Supply Chain drift detection (SBOM Governance)
-- [x] 80+ MCP tools for SecureLLM-MCP Integration
-- [x] CI/CD (GitHub Actions + Phantom secret scan wrapper)
+
+- JSON Schema, AST Parser, Advanced CLI
+- Pre-commit & Post-commit Git hooks integration
+- JSON/JSONL streaming export with deep filtering
+- Cryptographic private blockchain layer (Provenance + Immutability)
+- Ed25519 Cryptographic signing & Multi-sig (`pre-sign`)
+- Temporal Anchoring via OpenTimestamps
+- Supply Chain drift detection (SBOM Governance)
+- 80+ MCP tools for SecureLLM-MCP Integration
+- CI/CD (GitHub Actions + Phantom secret scan wrapper)
 
 ### Phase 3: Security & Ecosystem Integration
-- [ ] `NixOS module` — `services.adr-ledger.enable = true`
-- [ ] Integration with GitHub Teams as the source of truth for IAM roles
-- [ ] Standalone Binary Packaging (Linux x86_64, `.deb`, `.rpm`)
-- [ ] Package submission to official `nixpkgs` (`unstable` channel)
-- [ ] `nix-darwin` + Home Manager for declarative macOS
+
+- `NixOS module` — `services.adr-ledger.enable = true`
+- Integration with GitHub Teams as the source of truth for IAM roles
+- Standalone Binary Packaging (Linux x86\_64, `.deb`, `.rpm`)
+- Package submission to official `nixpkgs` (`unstable` channel)
+- `nix-darwin` + Home Manager for declarative macOS
 
 ### Phase 4: Full Automation
-- [ ] Automatic ADR generation from Git commits (Detection Engine)
-- [ ] Predictive impact analysis using `SPECTRE`
-- [ ] Decentralized multi-repo federation (ADR-0049)
+
+- Automatic ADR generation from Git commits (Detection Engine)
+- Predictive impact analysis using `SPECTRE`
+- Decentralized multi-repo federation (ADR-0049)
 
 ---
 
 ## Contributing
 
 Areas of interest:
+
 - **Parsers**: Support for other formats (MADR, Y-statements)
 - **Validators**: New compliance frameworks (HIPAA, PCI-DSS)
 - **Visualizations**: Advanced interactive graph layouts
@@ -341,6 +354,7 @@ Apache 2.0 — see [LICENSE](LICENSE).
 ---
 
 Additional documentation:
+
 - [Architecture](ARCHITECTURE.md) — Design principles and detailed vision
 - [Daemon Integration](docs/DAEMON.md) — NixOS modules, agent users, and SecureLLM-MCP backend model
 - [Export Guide](docs/EXPORT_GUIDE.md) — Complete export documentation

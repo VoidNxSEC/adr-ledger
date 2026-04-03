@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # The SIEM and Logging Aggregator
+  owasaka:
+    image: voidnxsec/owasaka:latest # Placeholder image
+    ports:
+      - "8081:8081"
+    environment:
+      - NODE_ENV=test
+    networks:
+      - adr-net
+
+  # The Local ML Ops Inference Backend
+  ml-ops-api:
+    image: voidnxsec/ml-ops-api:latest # Placeholder image
+    ports:
+      - "8080:8080"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu, compute, utility]
+    networks:
+      - adr-net
+
+  # The local test agent container running the smoke tests over the GPU API
+  test-agent:
+    build: 
+      context: .
+      dockerfile: Dockerfile.agent
+    environment:
+      - ML_OPS_API_URL=http://ml-ops-api:8080
+      - OWASAKA_URL=http://owasaka:8081
+      - ADR_ROOT=/tmp/ledger
+    depends_on:
+      - ml-ops-api
+      - owasaka
+    volumes:
+      # Inject the ADR ledger repo mapping if testing natively
+      - ./adr:/tmp/ledger/adr
+      - ./.chain:/tmp/ledger/.chain
+    deploy:
+      resources:
+        reservations:
+          devices:
+            # NVIDIA CDI GPU Annotation for local agents
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    networks:
+      - adr-net
+
+networks:
+  adr-net:
+    driver: bridge

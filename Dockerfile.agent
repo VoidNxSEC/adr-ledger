@@ -1,0 +1,42 @@
+# 1. Build Stage
+FROM rust:1.80 as builder
+
+# Setup build directory
+WORKDIR /usr/src/adr-ledger-agent
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy the intelagent workspace
+COPY intelagent /usr/src/adr-ledger-agent/intelagent
+
+# Build the core testing binaries or specific agent instances
+WORKDIR /usr/src/adr-ledger-agent/intelagent
+RUN cargo build --release -p adr-ledger.intelagent-core
+
+# 2. Runtime Stage — using NVIDIA CUDA base image for CDI
+FROM nvidia/cuda:12.2.0-base-ubuntu22.04
+
+WORKDIR /opt/intelagent
+
+# Install runtime dependencies (OpenSSL, jq for scripting, bash)
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    libssl3 \
+    jq \
+    bash \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy binaries from the builder stage
+COPY --from=builder /usr/src/adr-ledger-agent/intelagent/target/release/adr-ledger.intelagent-core /usr/local/bin/intelagent-core-bin
+# (If you have an entrypoint binary inside integalent-cli or examples, copy that here instead)
+
+# Copy the smoke test scripts
+COPY tests/smoke /opt/intelagent/tests/smoke
+
+# Execute the smoke test orchestrator as the default entrypoint
+CMD ["bash", "/opt/intelagent/tests/smoke/run_all.sh"]

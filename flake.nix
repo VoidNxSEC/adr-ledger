@@ -1,5 +1,5 @@
 {
-  description = "ADR Ledger - Architecture Decision Records as Knowledge Law";
+  description = "ADR Ledger - Agents Governance Ecosystem for granular decisions based on cryptographic ADRs";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -17,10 +17,52 @@
     };
 
     phantom = {
-      url = "git+ssh://git@github.com/marcosfpina/phantom";
+      url = "git+ssh://git@github.com/VoidNxSEC/phantom";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    cerebro = {
+      url = "git+ssh://git@github.com/VoidNxSEC/cerebro";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
+
+    ml-ops-api = {
+      url = "git+ssh://git@github.com/VoidNxSEC/ml-ops-api";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
+
+    neotron = {
+      url = "git+ssh://git@github.com/VoidNxSEC/neotron";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
+
+    ai-agent-os = {
+      url = "git+ssh://git@github.com/VoidNxSEC/ai-agent-os";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
+
+    spectre = {
+      url = "git+ssh://git@github.com/VoidNxSEC/spectre";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
+
+    # This is the SIEM tool for collect and monitoring all logs from the framework.
+    owasaka = {
+      url = "git+ssh://git@github.com/VoidNxSEC/O.W.A.S.A.K.A.";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
+
+    sentinel = {
+      url = "git+ssh://git@github.com/VoidNxSEC/sentinel";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
 
   };
 
@@ -62,7 +104,12 @@
             # Dependências Python
             propagatedBuildInputs = with pythonPackages; [
               pyyaml
-              pynacl # Ed25519 signatures for decision chain
+              pynacl
+              pytest
+              pytest-asyncio
+              httpx
+              pyyaml-include
+              # Ed25519 signatures for decision chain
             ];
 
             # Script de entrada
@@ -741,38 +788,50 @@
       }
     )
     // (
-    let
-      # ===================================================================
-      # OUTPUTS CROSS-SYSTEM (lib, NixOS modules)
-      # ===================================================================
-      syncModule = import ./nix/modules/adr-ledger-sync.nix { inherit self; };
-      agentsModule = import ./nix/modules/adr-ledger-iam.nix {
-        inherit self securellmMcp;
-      };
-      fullModule = import ./nix/modules/adr-ledger-full.nix {
-        inherit self securellmMcp;
-      };
-    in {
+      let
+        # ===================================================================
+        # OUTPUTS CROSS-SYSTEM (lib, NixOS modules)
+        # ===================================================================
+        syncModule = import ./nix/modules/adr-ledger-sync.nix { inherit self; };
+        agentsModule = import ./nix/modules/adr-ledger-iam.nix {
+          inherit self securellmMcp;
+          phantom = inputs.phantom;
+          cerebro = inputs.cerebro;
+          spectre = inputs.spectre;
+          owasaka = inputs.owasaka;
+          mlOpsApi = inputs.ml-ops-api;
+        };
+        fullModule = import ./nix/modules/adr-ledger-full.nix {
+          inherit self securellmMcp;
+          phantom = inputs.phantom;
+          cerebro = inputs.cerebro;
+          spectre = inputs.spectre;
+          owasaka = inputs.owasaka;
+          mlOpsApi = inputs.ml-ops-api;
+        };
+      in
+      {
 
-      lib = {
-        # Carregar knowledge base em Nix
-        loadKnowledgeBase = path: builtins.fromJSON (builtins.readFile path);
+        lib = {
+          # Carregar knowledge base em Nix
+          loadKnowledgeBase = path: builtins.fromJSON (builtins.readFile path);
 
-        # Filtrar ADRs por projeto
-        filterByProject =
-          kb: project: builtins.filter (adr: builtins.elem project adr.scope.projects) kb.decisions;
+          # Filtrar ADRs por projeto
+          filterByProject =
+            kb: project: builtins.filter (adr: builtins.elem project adr.scope.projects) kb.decisions;
 
-        # Extrair ADRs de compliance
-        getComplianceADRs = kb: builtins.filter (adr: adr.governance.compliance_tags != [ ]) kb.decisions;
+          # Extrair ADRs de compliance
+          getComplianceADRs = kb: builtins.filter (adr: adr.governance.compliance_tags != [ ]) kb.decisions;
 
-        # Extrair ADRs por status
-        filterByStatus = kb: status: builtins.filter (adr: adr.status == status) kb.decisions;
-      };
+          # Extrair ADRs por status
+          filterByStatus = kb: status: builtins.filter (adr: adr.status == status) kb.decisions;
+        };
 
-      nixosModules = {
-        adr-ledger = fullModule;
-        adr-ledger-sync = syncModule;
-        adr-ledger-agents = agentsModule;
-      };
-    });
+        nixosModules = {
+          adr-ledger = fullModule;
+          adr-ledger-sync = syncModule;
+          adr-ledger-agents = agentsModule;
+        };
+      }
+    );
 }

@@ -1,6 +1,11 @@
 {
   self,
   securellmMcp ? null,
+  phantom ? null,
+  cerebro ? null,
+  spectre ? null,
+  owasaka ? null,
+  mlOpsApi ? null,
 }:
 {
   config,
@@ -15,7 +20,8 @@ let
   cfg = config.services.adr-ledger-agents;
 
   packageDefault =
-    if securellmMcp != null
+    if
+      securellmMcp != null
       && builtins.hasAttr "packages" securellmMcp
       && builtins.hasAttr pkgs.system securellmMcp.packages
       && builtins.hasAttr "default" securellmMcp.packages.${pkgs.system}
@@ -88,7 +94,11 @@ let
       ];
 
   effectiveAllowedActions =
-    agent: if agent.allowedActions != [ ] then agent.allowedActions else roleDefaults.${agent.role}.allowedActions;
+    agent:
+    if agent.allowedActions != [ ] then
+      agent.allowedActions
+    else
+      roleDefaults.${agent.role}.allowedActions;
 
   policyDocument = name: agent: {
     inherit name;
@@ -168,6 +178,7 @@ in
                 type = types.bool;
                 default = true;
                 description = "Enable the ${name} agent daemon.";
+                example = true; # TODO: complete all examples fields related to the agent options
               };
 
               role = mkOption {
@@ -237,24 +248,37 @@ in
                 type = types.listOf types.str;
                 default = [ ];
                 description = "Extra system groups granted to the agent user and service.";
+                example = [
+                  "docker"
+                  "wheel"
+                ];
               };
 
               extraReadWritePaths = mkOption {
                 type = types.listOf types.str;
                 default = [ ];
                 description = "Additional writable paths exposed to the daemon sandbox.";
+                example = [ "~/dev/my-project" ];
               };
 
               extraReadOnlyPaths = mkOption {
                 type = types.listOf types.str;
                 default = [ ];
                 description = "Additional read-only paths exposed to the daemon sandbox.";
+                example = [
+                  "/etc/ssl/certs"
+                  "/run/secrets"
+                ]; # for SOPS secrets and other read-only data.
               };
 
               environment = mkOption {
                 type = types.attrsOf types.str;
                 default = { };
                 description = "Extra environment variables merged into the daemon environment.";
+                example = {
+                  "OAUTH_TOKEN" = "<OAUTH_TOKEN>";
+                  "OAUTH_TOKEN_TYPE" = "github";
+                }; # for GitHub OAuth token and other login credentials.
               };
 
               restartOnFailure = mkOption {
@@ -284,27 +308,24 @@ in
   };
 
   config = mkIf cfg.enable {
-    assertions =
-      [
-        {
-          assertion = cfg.package != null;
-          message = "services.adr-ledger-agents.package must be set or the securellm-mcp flake input must be available.";
-        }
-        {
-          assertion = hasPrefix "/" cfg.ledgerRoot;
-          message = "services.adr-ledger-agents.ledgerRoot must be an absolute path.";
-        }
-      ]
-      ++ mapAttrsToList (
-        name: agent: {
-          assertion =
-            hasPrefix "/" agent.homeDir
-            && hasPrefix "/" agent.cacheDir
-            && hasPrefix "/" agent.logDir
-            && hasPrefix "/" agent.workspaceDir;
-          message = "Agent ${name}: homeDir/cacheDir/logDir/workspaceDir must be absolute paths.";
-        }
-      ) activeAgents;
+    assertions = [
+      {
+        assertion = cfg.package != null;
+        message = "services.adr-ledger-agents.package must be set or the securellm-mcp flake input must be available.";
+      }
+      {
+        assertion = hasPrefix "/" cfg.ledgerRoot;
+        message = "services.adr-ledger-agents.ledgerRoot must be an absolute path.";
+      }
+    ]
+    ++ mapAttrsToList (name: agent: {
+      assertion =
+        hasPrefix "/" agent.homeDir
+        && hasPrefix "/" agent.cacheDir
+        && hasPrefix "/" agent.logDir
+        && hasPrefix "/" agent.workspaceDir;
+      message = "Agent ${name}: homeDir/cacheDir/logDir/workspaceDir must be absolute paths.";
+    }) activeAgents;
 
     environment.systemPackages = optionals (cfg.installPackage && cfg.package != null) [ cfg.package ];
 
@@ -316,15 +337,14 @@ in
       }
     ) activeAgents;
 
-    users.groups =
-      {
-        ${cfg.sharedGroup} = { };
-        ${roleGroupName "agent"} = { };
-        ${roleGroupName "architect"} = { };
-        ${roleGroupName "engineer"} = { };
-        ${roleGroupName "security_lead"} = { };
-      }
-      // listToAttrs (mapAttrsToList (_: agent: nameValuePair agent.group { }) activeAgents);
+    users.groups = {
+      ${cfg.sharedGroup} = { };
+      ${roleGroupName "agent"} = { };
+      ${roleGroupName "architect"} = { };
+      ${roleGroupName "engineer"} = { };
+      ${roleGroupName "security_lead"} = { };
+    }
+    // listToAttrs (mapAttrsToList (_: agent: nameValuePair agent.group { }) activeAgents);
 
     users.users = mapAttrs' (
       name: agent:
@@ -337,20 +357,18 @@ in
         extraGroups = [
           cfg.sharedGroup
           (roleGroupName agent.role)
-        ] ++ agent.extraGroups;
+        ]
+        ++ agent.extraGroups;
       }
     ) activeAgents;
 
     systemd.tmpfiles.rules = flatten (
-      mapAttrsToList (
-        _: agent:
-        [
-          "d ${agent.homeDir} 0750 ${agent.user} ${agent.group} -"
-          "d ${agent.cacheDir} 0750 ${agent.user} ${agent.group} -"
-          "d ${agent.logDir} 0750 ${agent.user} ${agent.group} -"
-          "d ${agent.workspaceDir} 0750 ${agent.user} ${agent.group} -"
-        ]
-      ) activeAgents
+      mapAttrsToList (_: agent: [
+        "d ${agent.homeDir} 0750 ${agent.user} ${agent.group} -"
+        "d ${agent.cacheDir} 0750 ${agent.user} ${agent.group} -"
+        "d ${agent.logDir} 0750 ${agent.user} ${agent.group} -"
+        "d ${agent.workspaceDir} 0750 ${agent.user} ${agent.group} -"
+      ]) activeAgents
     );
 
     systemd.services = mapAttrs' (
@@ -361,22 +379,21 @@ in
         after = [ "network.target" ];
         path = commonServicePath;
 
-        environment =
-          {
-            ADR_AGENT_NAME = name;
-            ADR_AGENT_ROLE = agent.role;
-            ADR_ALLOWED_ACTIONS = concatStringsSep "," (effectiveAllowedActions agent);
-            ADR_REPO_PATH = cfg.ledgerRoot;
-            HOME = agent.homeDir;
-            LOG_DIR = agent.logDir;
-            MCP_ENV = cfg.environment;
-            MCP_WORKDIR = agent.workspaceDir;
-            NODE_ENV = cfg.environment;
-            PROJECT_ROOT = agent.workspaceDir;
-            XDG_CACHE_HOME = agent.cacheDir;
-            XDG_STATE_HOME = agent.logDir;
-          }
-          // agent.environment;
+        environment = {
+          ADR_AGENT_NAME = name;
+          ADR_AGENT_ROLE = agent.role;
+          ADR_ALLOWED_ACTIONS = concatStringsSep "," (effectiveAllowedActions agent);
+          ADR_REPO_PATH = cfg.ledgerRoot;
+          HOME = agent.homeDir;
+          LOG_DIR = agent.logDir;
+          MCP_ENV = cfg.environment;
+          MCP_WORKDIR = agent.workspaceDir;
+          NODE_ENV = cfg.environment;
+          PROJECT_ROOT = agent.workspaceDir;
+          XDG_CACHE_HOME = agent.cacheDir;
+          XDG_STATE_HOME = agent.logDir;
+        }
+        // agent.environment;
 
         serviceConfig = {
           Type = "simple";
@@ -387,7 +404,8 @@ in
           SupplementaryGroups = [
             cfg.sharedGroup
             (roleGroupName agent.role)
-          ] ++ agent.extraGroups;
+          ]
+          ++ agent.extraGroups;
 
           Restart = if agent.restartOnFailure then "on-failure" else "no";
           RestartSec = "5s";
@@ -415,15 +433,14 @@ in
           ];
 
           ReadOnlyPaths = agent.extraReadOnlyPaths;
-          ReadWritePaths =
-            [
-              agent.homeDir
-              agent.cacheDir
-              agent.logDir
-              agent.workspaceDir
-            ]
-            ++ repoWritePathsFor agent.repoAccess
-            ++ agent.extraReadWritePaths;
+          ReadWritePaths = [
+            agent.homeDir
+            agent.cacheDir
+            agent.logDir
+            agent.workspaceDir
+          ]
+          ++ repoWritePathsFor agent.repoAccess
+          ++ agent.extraReadWritePaths;
 
           CPUQuota = agent.cpuQuota;
           MemoryMax = agent.memoryMax;
