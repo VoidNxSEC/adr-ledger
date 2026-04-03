@@ -1,29 +1,44 @@
 {
   "nodes": [
     {
-      "id": "ADR-0016",
+      "id": "ADR-0032",
       "type": "adr",
-      "label": "Validação das Ferramentas de ADR",
+      "label": "Private Blockchain Layer for Cryptographic Decision Integrity",
       "status": "accepted",
       "delivery_status": null,
       "projects": [
+        "GLOBAL",
+        "CEREBRO",
+        "SPECTRE",
+        "PHANTOM",
+        "NEUTRON"
+      ]
+    },
+    {
+      "id": "ADR-0003",
+      "type": "adr",
+      "label": "SPECTRE como Motor de Extração de Padrões e Sentimentos",
+      "status": "accepted",
+      "delivery_status": null,
+      "projects": [
+        "SPECTRE",
         "GLOBAL"
       ]
     },
     {
-      "id": "ADR-0022",
+      "id": "ADR-0037",
       "type": "adr",
-      "label": "Consolidação de Scripts para CLI Typer",
+      "label": "Nix-First Kubernetes Orchestration over Helm",
       "status": "accepted",
       "delivery_status": null,
       "projects": [
-        "CEREBRO"
+        "SPECTRE"
       ]
     },
     {
-      "id": "ADR-0025",
+      "id": "ADR-0045",
       "type": "adr",
-      "label": "Phantom test suite fully green after production readiness audit",
+      "label": "RateLimitedMixin + spider-nix como camada de proteção para todos os adapters REST",
       "status": "accepted",
       "delivery_status": null,
       "projects": [
@@ -41,28 +56,13 @@
       ]
     },
     {
-      "id": "ADR-0009",
+      "id": "ADR-0040",
       "type": "adr",
-      "label": "Adaptive ML Pipeline Orchestration (Temporal + Ray + MLflow)",
+      "label": "Service Mesh Adoption — Linkerd for Inter-Service mTLS and Observability",
       "status": "accepted",
       "delivery_status": null,
       "projects": [
-        "NEUTRON",
-        "CEREBRO"
-      ]
-    },
-    {
-      "id": "ADR-0006",
-      "type": "adr",
-      "label": "Event-Driven Architecture via NATS JetStream (SPECTRE)",
-      "status": "accepted",
-      "delivery_status": null,
-      "projects": [
-        "SPECTRE",
-        "PHANTOM",
-        "CEREBRO",
-        "NEUTRON",
-        "GLOBAL"
+        "SPECTRE"
       ]
     },
     {
@@ -76,19 +76,9 @@
       ]
     },
     {
-      "id": "ADR-0030",
+      "id": "ADR-0033",
       "type": "adr",
-      "label": "Cerebro Enterprise Repositioning & Identity Resolution",
-      "status": "accepted",
-      "delivery_status": null,
-      "projects": [
-        "CEREBRO"
-      ]
-    },
-    {
-      "id": "ADR-0046",
-      "type": "adr",
-      "label": "Padrão mapper/engine para normalização de dados brutos (pure functions + dispatch)",
+      "label": "Supply Chain SBOM & Dependency Inventory",
       "status": "accepted",
       "delivery_status": null,
       "projects": [
@@ -96,47 +86,25 @@
       ]
     },
     {
-      "id": "ADR-0045",
+      "id": "ADR-0054",
       "type": "adr",
-      "label": "RateLimitedMixin + spider-nix como camada de proteção para todos os adapters REST",
+      "label": "IntelAgent — Dois projetos com o mesmo nome: separar identidades e definir destino de cada um",
       "status": "accepted",
-      "delivery_status": null,
+      "delivery_status": "in_progress",
       "projects": [
-        "GLOBAL"
+        "PHANTOM",
+        "PHANTOM-RAY",
+        "INTELAGENT"
       ]
     },
     {
-      "id": "ADR-0037",
+      "id": "ADR-0038",
       "type": "adr",
-      "label": "Nix-First Kubernetes Orchestration over Helm",
+      "label": "OTLP HTTP/protobuf over gRPC/tonic for trace export",
       "status": "accepted",
       "delivery_status": null,
       "projects": [
         "SPECTRE"
-      ]
-    },
-    {
-      "id": "ADR-0010",
-      "type": "adr",
-      "label": "PHANTOM Production Readiness Assessment & Roadmap",
-      "status": "accepted",
-      "delivery_status": null,
-      "projects": [
-        "PHANTOM"
-      ]
-    },
-    {
-      "id": "ADR-0032",
-      "type": "adr",
-      "label": "Private Blockchain Layer for Cryptographic Decision Integrity",
-      "status": "accepted",
-      "delivery_status": null,
-      "projects": [
-        "GLOBAL",
-        "CEREBRO",
-        "SPECTRE",
-        "PHANTOM",
-        "NEUTRON"
       ]
     },
     {
@@ -151,82 +119,6 @@
       ]
     },
     {
-      "id": "ADR-0007",
-      "type": "adr",
-      "label": "Local-First AI Strategy com Hybrid Cloud Fallback (PHANTOM)",
-      "status": "accepted",
-      "delivery_status": null,
-      "projects": [
-        "PHANTOM",
-        "CEREBRO"
-      ]
-    },
-    {
-      "id": "ADR-0031",
-      "type": "adr",
-      "label": "Cerebro Scope Boundary — Intelligence Tool vs Platform Infrastructure",
-      "status": "accepted",
-      "delivery_status": null,
-      "projects": [
-        "CEREBRO",
-        "CEREBRO-INFRA"
-      ]
-    },
-    {
-      "id": "ADR-0040",
-      "type": "adr",
-      "label": "Service Mesh Adoption — Linkerd for Inter-Service mTLS and Observability",
-      "status": "accepted",
-      "delivery_status": null,
-      "projects": [
-        "SPECTRE"
-      ]
-    },
-    {
-      "id": "ADR-0038",
-      "type": "adr",
-      "label": "OTLP HTTP/protobuf over gRPC/tonic for trace export",
-      "status": "accepted",
-      "delivery_status": null,
-      "projects": [
-        "SPECTRE"
-      ]
-    },
-    {
-      "id": "ADR-0023",
-      "type": "adr",
-      "label": "Arquitetura TUI com 6 Screens",
-      "status": "accepted",
-      "delivery_status": null,
-      "projects": [
-        "CEREBRO"
-      ]
-    },
-    {
-      "id": "ADR-0049",
-      "type": "adr",
-      "label": "Federação Descentralizada de Advisory de Segurança — visão arquitetural de missão",
-      "status": "accepted",
-      "delivery_status": null,
-      "projects": [
-        "GLOBAL",
-        "CEREBRO",
-        "SPECTRE",
-        "PHANTOM",
-        "NEUTRON"
-      ]
-    },
-    {
-      "id": "ADR-0027",
-      "type": "adr",
-      "label": "Phantom Phase 1: Backend API Implementation with Real Data Integration",
-      "status": "accepted",
-      "delivery_status": "completed",
-      "projects": [
-        "PHANTOM"
-      ]
-    },
-    {
       "id": "ADR-0004",
       "type": "adr",
       "label": "PHANTOM como Framework de Classificação ML e Pipeline ETL",
@@ -235,6 +127,17 @@
       "projects": [
         "PHANTOM",
         "GLOBAL"
+      ]
+    },
+    {
+      "id": "ADR-0008",
+      "type": "adr",
+      "label": "GCP Credit Management & Programmatic Validation Strategy (CEREBRO)",
+      "status": "accepted",
+      "delivery_status": null,
+      "projects": [
+        "CEREBRO",
+        "NEUTRON"
       ]
     },
     {
@@ -252,56 +155,33 @@
       ]
     },
     {
-      "id": "ADR-0005",
+      "id": "ADR-0007",
       "type": "adr",
-      "label": "NEUTRON como Camada de Infraestrutura Core",
+      "label": "Local-First AI Strategy com Hybrid Cloud Fallback (PHANTOM)",
       "status": "accepted",
       "delivery_status": null,
       "projects": [
-        "NEUTRON",
-        "GLOBAL"
+        "PHANTOM",
+        "CEREBRO"
       ]
     },
     {
-      "id": "ADR-0044",
+      "id": "ADR-0022",
       "type": "adr",
-      "label": "TimescaleDB + asyncpg como storage de time-series para métricas de protocolo (CHAINSCOPE)",
+      "label": "Consolidação de Scripts para CLI Typer",
       "status": "accepted",
       "delivery_status": null,
       "projects": [
-        "GLOBAL"
+        "CEREBRO"
       ]
     },
     {
-      "id": "ADR-0033",
+      "id": "ADR-0016",
       "type": "adr",
-      "label": "Supply Chain SBOM & Dependency Inventory",
+      "label": "Validação das Ferramentas de ADR",
       "status": "accepted",
       "delivery_status": null,
       "projects": [
-        "GLOBAL"
-      ]
-    },
-    {
-      "id": "ADR-0050",
-      "type": "adr",
-      "label": "Umbrella Delivery Roadmap — Security Intelligence Platform & ML Pipeline Hardening",
-      "status": "accepted",
-      "delivery_status": null,
-      "projects": [
-        "GLOBAL",
-        "SPECTRE",
-        "PHANTOM"
-      ]
-    },
-    {
-      "id": "ADR-0003",
-      "type": "adr",
-      "label": "SPECTRE como Motor de Extração de Padrões e Sentimentos",
-      "status": "accepted",
-      "delivery_status": null,
-      "projects": [
-        "SPECTRE",
         "GLOBAL"
       ]
     },
@@ -316,14 +196,13 @@
       ]
     },
     {
-      "id": "ADR-0008",
+      "id": "ADR-0030",
       "type": "adr",
-      "label": "GCP Credit Management & Programmatic Validation Strategy (CEREBRO)",
+      "label": "Cerebro Enterprise Repositioning & Identity Resolution",
       "status": "accepted",
       "delivery_status": null,
       "projects": [
-        "CEREBRO",
-        "NEUTRON"
+        "CEREBRO"
       ]
     },
     {
@@ -337,16 +216,6 @@
         "NEUTRON",
         "SECURELLM-BRIDGE",
         "AI-ASSISTANT-HUB",
-        "CEREBRO"
-      ]
-    },
-    {
-      "id": "ADR-0020",
-      "type": "adr",
-      "label": "Lazy Loading de Dependências Pesadas",
-      "status": "accepted",
-      "delivery_status": null,
-      "projects": [
         "CEREBRO"
       ]
     },
@@ -368,31 +237,152 @@
       ]
     },
     {
-      "id": "ADR-0054",
+      "id": "ADR-0044",
       "type": "adr",
-      "label": "IntelAgent — Dois projetos com o mesmo nome: separar identidades e definir destino de cada um",
+      "label": "TimescaleDB + asyncpg como storage de time-series para métricas de protocolo (CHAINSCOPE)",
       "status": "accepted",
-      "delivery_status": "in_progress",
+      "delivery_status": null,
       "projects": [
-        "PHANTOM",
-        "PHANTOM-RAY",
-        "INTELAGENT"
+        "GLOBAL"
       ]
     },
     {
-      "id": "PROJECT:GLOBAL",
-      "type": "project",
-      "label": "GLOBAL"
+      "id": "ADR-0009",
+      "type": "adr",
+      "label": "Adaptive ML Pipeline Orchestration (Temporal + Ray + MLflow)",
+      "status": "accepted",
+      "delivery_status": null,
+      "projects": [
+        "NEUTRON",
+        "CEREBRO"
+      ]
     },
     {
-      "id": "PROJECT:CEREBRO-INFRA",
-      "type": "project",
-      "label": "CEREBRO-INFRA"
+      "id": "ADR-0027",
+      "type": "adr",
+      "label": "Phantom Phase 1: Backend API Implementation with Real Data Integration",
+      "status": "accepted",
+      "delivery_status": "completed",
+      "projects": [
+        "PHANTOM"
+      ]
     },
     {
-      "id": "PROJECT:OWASAKA",
+      "id": "ADR-0023",
+      "type": "adr",
+      "label": "Arquitetura TUI com 6 Screens",
+      "status": "accepted",
+      "delivery_status": null,
+      "projects": [
+        "CEREBRO"
+      ]
+    },
+    {
+      "id": "ADR-0020",
+      "type": "adr",
+      "label": "Lazy Loading de Dependências Pesadas",
+      "status": "accepted",
+      "delivery_status": null,
+      "projects": [
+        "CEREBRO"
+      ]
+    },
+    {
+      "id": "ADR-0031",
+      "type": "adr",
+      "label": "Cerebro Scope Boundary — Intelligence Tool vs Platform Infrastructure",
+      "status": "accepted",
+      "delivery_status": null,
+      "projects": [
+        "CEREBRO",
+        "CEREBRO-INFRA"
+      ]
+    },
+    {
+      "id": "ADR-0005",
+      "type": "adr",
+      "label": "NEUTRON como Camada de Infraestrutura Core",
+      "status": "accepted",
+      "delivery_status": null,
+      "projects": [
+        "NEUTRON",
+        "GLOBAL"
+      ]
+    },
+    {
+      "id": "ADR-0046",
+      "type": "adr",
+      "label": "Padrão mapper/engine para normalização de dados brutos (pure functions + dispatch)",
+      "status": "accepted",
+      "delivery_status": null,
+      "projects": [
+        "GLOBAL"
+      ]
+    },
+    {
+      "id": "ADR-0050",
+      "type": "adr",
+      "label": "Umbrella Delivery Roadmap — Security Intelligence Platform & ML Pipeline Hardening",
+      "status": "accepted",
+      "delivery_status": null,
+      "projects": [
+        "GLOBAL",
+        "SPECTRE",
+        "PHANTOM"
+      ]
+    },
+    {
+      "id": "ADR-0049",
+      "type": "adr",
+      "label": "Federação Descentralizada de Advisory de Segurança — visão arquitetural de missão",
+      "status": "accepted",
+      "delivery_status": null,
+      "projects": [
+        "GLOBAL",
+        "CEREBRO",
+        "SPECTRE",
+        "PHANTOM",
+        "NEUTRON"
+      ]
+    },
+    {
+      "id": "ADR-0025",
+      "type": "adr",
+      "label": "Phantom test suite fully green after production readiness audit",
+      "status": "accepted",
+      "delivery_status": null,
+      "projects": [
+        "GLOBAL"
+      ]
+    },
+    {
+      "id": "ADR-0006",
+      "type": "adr",
+      "label": "Event-Driven Architecture via NATS JetStream (SPECTRE)",
+      "status": "accepted",
+      "delivery_status": null,
+      "projects": [
+        "SPECTRE",
+        "PHANTOM",
+        "CEREBRO",
+        "NEUTRON",
+        "GLOBAL"
+      ]
+    },
+    {
+      "id": "ADR-0010",
+      "type": "adr",
+      "label": "PHANTOM Production Readiness Assessment & Roadmap",
+      "status": "accepted",
+      "delivery_status": null,
+      "projects": [
+        "PHANTOM"
+      ]
+    },
+    {
+      "id": "PROJECT:PHANTOM-RAY",
       "type": "project",
-      "label": "OWASAKA"
+      "label": "PHANTOM-RAY"
     },
     {
       "id": "PROJECT:INTELAGENT",
@@ -400,9 +390,9 @@
       "label": "INTELAGENT"
     },
     {
-      "id": "PROJECT:ASTRIX",
+      "id": "PROJECT:AI-ASSISTANT-HUB",
       "type": "project",
-      "label": "ASTRIX"
+      "label": "AI-ASSISTANT-HUB"
     },
     {
       "id": "PROJECT:SECURELLM-BRIDGE",
@@ -410,29 +400,14 @@
       "label": "SECURELLM-BRIDGE"
     },
     {
-      "id": "PROJECT:NEUTRON",
-      "type": "project",
-      "label": "NEUTRON"
-    },
-    {
       "id": "PROJECT:SPIDER‑NIX",
       "type": "project",
       "label": "SPIDER‑NIX"
     },
     {
-      "id": "PROJECT:CEREBRO",
+      "id": "PROJECT:ASTRIX",
       "type": "project",
-      "label": "CEREBRO"
-    },
-    {
-      "id": "PROJECT:PHANTOM",
-      "type": "project",
-      "label": "PHANTOM"
-    },
-    {
-      "id": "PROJECT:AI-ASSISTANT-HUB",
-      "type": "project",
-      "label": "AI-ASSISTANT-HUB"
+      "label": "ASTRIX"
     },
     {
       "id": "PROJECT:IP_GUARD",
@@ -440,9 +415,24 @@
       "label": "IP_GUARD"
     },
     {
-      "id": "PROJECT:MATRIX_AI_ASSISTANT",
+      "id": "PROJECT:PHANTOM",
       "type": "project",
-      "label": "MATRIX_AI_ASSISTANT"
+      "label": "PHANTOM"
+    },
+    {
+      "id": "PROJECT:CEREBRO-INFRA",
+      "type": "project",
+      "label": "CEREBRO-INFRA"
+    },
+    {
+      "id": "PROJECT:NEUTRON",
+      "type": "project",
+      "label": "NEUTRON"
+    },
+    {
+      "id": "PROJECT:GLOBAL",
+      "type": "project",
+      "label": "GLOBAL"
     },
     {
       "id": "PROJECT:CHAOS_NUANCE",
@@ -450,14 +440,24 @@
       "label": "CHAOS_NUANCE"
     },
     {
+      "id": "PROJECT:CEREBRO",
+      "type": "project",
+      "label": "CEREBRO"
+    },
+    {
       "id": "PROJECT:SPECTRE",
       "type": "project",
       "label": "SPECTRE"
     },
     {
-      "id": "PROJECT:PHANTOM-RAY",
+      "id": "PROJECT:OWASAKA",
       "type": "project",
-      "label": "PHANTOM-RAY"
+      "label": "OWASAKA"
+    },
+    {
+      "id": "PROJECT:MATRIX_AI_ASSISTANT",
+      "type": "project",
+      "label": "MATRIX_AI_ASSISTANT"
     },
     {
       "id": "PROJECT:ADR_LEDGER",
@@ -467,27 +467,72 @@
   ],
   "edges": [
     {
-      "source": "ADR-0016",
+      "source": "ADR-0032",
       "target": "PROJECT:GLOBAL",
       "type": "belongs_to"
     },
     {
-      "source": "ADR-0022",
+      "source": "ADR-0032",
       "target": "PROJECT:CEREBRO",
       "type": "belongs_to"
     },
     {
-      "source": "ADR-0025",
-      "target": "ADR-0024",
+      "source": "ADR-0032",
+      "target": "PROJECT:SPECTRE",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0032",
+      "target": "PROJECT:PHANTOM",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0032",
+      "target": "PROJECT:NEUTRON",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0003",
+      "target": "ADR-0001",
       "type": "related_to"
     },
     {
-      "source": "ADR-0025",
-      "target": "Phase 3 auto-remediation (judge pipeline now fully testable)",
+      "source": "ADR-0003",
+      "target": "ADR-0002",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0003",
+      "target": "PROJECT:SPECTRE",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0003",
+      "target": "PROJECT:GLOBAL",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0037",
+      "target": "PROJECT:SPECTRE",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0045",
+      "target": "ADR-0044",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0045",
+      "target": "ADR-0001",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0045",
+      "target": "Todos os adapters Tier 1-4 do CHAINSCOPE",
       "type": "enables"
     },
     {
-      "source": "ADR-0025",
+      "source": "ADR-0045",
       "target": "PROJECT:GLOBAL",
       "type": "belongs_to"
     },
@@ -512,78 +557,23 @@
       "type": "belongs_to"
     },
     {
-      "source": "ADR-0009",
-      "target": "ADR-0005",
+      "source": "ADR-0040",
+      "target": "ADR-0038: OTLP HTTP transport",
       "type": "related_to"
     },
     {
-      "source": "ADR-0009",
-      "target": "ADR-0006",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0009",
-      "target": "ADR-0008",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0009",
-      "target": "PROJECT:NEUTRON",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0009",
-      "target": "PROJECT:CEREBRO",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0006",
-      "target": "ADR-0001",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0006",
-      "target": "ADR-0005",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0006",
-      "target": "ADR-0007",
+      "source": "ADR-0040",
+      "target": "Canary deployments",
       "type": "enables"
     },
     {
-      "source": "ADR-0006",
-      "target": "ADR-0008",
+      "source": "ADR-0040",
+      "target": "Zero-trust networking",
       "type": "enables"
     },
     {
-      "source": "ADR-0006",
-      "target": "ADR-0009",
-      "type": "enables"
-    },
-    {
-      "source": "ADR-0006",
+      "source": "ADR-0040",
       "target": "PROJECT:SPECTRE",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0006",
-      "target": "PROJECT:PHANTOM",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0006",
-      "target": "PROJECT:CEREBRO",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0006",
-      "target": "PROJECT:NEUTRON",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0006",
-      "target": "PROJECT:GLOBAL",
       "type": "belongs_to"
     },
     {
@@ -592,128 +582,58 @@
       "type": "belongs_to"
     },
     {
-      "source": "ADR-0030",
-      "target": "ADR-0017",
-      "type": "supersedes"
-    },
-    {
-      "source": "ADR-0030",
-      "target": "ADR-0024",
-      "type": "supersedes"
-    },
-    {
-      "source": "ADR-0030",
-      "target": "ADR-0027",
+      "source": "ADR-0033",
+      "target": "ADR-0032",
       "type": "related_to"
     },
     {
-      "source": "ADR-0030",
-      "target": "PROJECT:CEREBRO",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0046",
-      "target": "ADR-0044",
+      "source": "ADR-0033",
+      "target": "ADR-0006",
       "type": "related_to"
     },
     {
-      "source": "ADR-0046",
-      "target": "CoinGecko mapper (FASE 2)",
-      "type": "enables"
-    },
-    {
-      "source": "ADR-0046",
-      "target": "L2Beat mapper (FASE 3)",
-      "type": "enables"
-    },
-    {
-      "source": "ADR-0046",
-      "target": "On-chain normalizers (FASE 4)",
-      "type": "enables"
-    },
-    {
-      "source": "ADR-0046",
-      "target": "PROJECT:GLOBAL",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0045",
-      "target": "ADR-0044",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0045",
-      "target": "ADR-0001",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0045",
-      "target": "Todos os adapters Tier 1-4 do CHAINSCOPE",
-      "type": "enables"
-    },
-    {
-      "source": "ADR-0045",
-      "target": "PROJECT:GLOBAL",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0037",
-      "target": "PROJECT:SPECTRE",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0010",
+      "source": "ADR-0033",
       "target": "ADR-0005",
       "type": "related_to"
     },
     {
-      "source": "ADR-0010",
-      "target": "ADR-0009",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0010",
-      "target": "PHANTOM v2.0 Production Deployment",
-      "type": "enables"
-    },
-    {
-      "source": "ADR-0010",
-      "target": "Multi-tenant PHANTOM instances",
-      "type": "enables"
-    },
-    {
-      "source": "ADR-0010",
-      "target": "Enterprise PHANTOM adoption",
-      "type": "enables"
-    },
-    {
-      "source": "ADR-0010",
-      "target": "PROJECT:PHANTOM",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0032",
+      "source": "ADR-0033",
       "target": "PROJECT:GLOBAL",
       "type": "belongs_to"
     },
     {
-      "source": "ADR-0032",
-      "target": "PROJECT:CEREBRO",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0032",
-      "target": "PROJECT:SPECTRE",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0032",
+      "source": "ADR-0054",
       "target": "PROJECT:PHANTOM",
       "type": "belongs_to"
     },
     {
-      "source": "ADR-0032",
-      "target": "PROJECT:NEUTRON",
+      "source": "ADR-0054",
+      "target": "PROJECT:PHANTOM-RAY",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0054",
+      "target": "PROJECT:INTELAGENT",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0038",
+      "target": "ADR-0037: NATS over Kafka",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0038",
+      "target": "Production load testing with trace correlation",
+      "type": "enables"
+    },
+    {
+      "source": "ADR-0038",
+      "target": "Future Tempo/Grafana integration",
+      "type": "enables"
+    },
+    {
+      "source": "ADR-0038",
+      "target": "PROJECT:SPECTRE",
       "type": "belongs_to"
     },
     {
@@ -747,6 +667,101 @@
       "type": "belongs_to"
     },
     {
+      "source": "ADR-0004",
+      "target": "ADR-0001",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0004",
+      "target": "ADR-0002",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0004",
+      "target": "ADR-0003",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0004",
+      "target": "ADR-0005",
+      "type": "enables"
+    },
+    {
+      "source": "ADR-0004",
+      "target": "PROJECT:PHANTOM",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0004",
+      "target": "PROJECT:GLOBAL",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0008",
+      "target": "ADR-0007",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0008",
+      "target": "ADR-0009",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0008",
+      "target": "PROJECT:CEREBRO",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0008",
+      "target": "PROJECT:NEUTRON",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0001",
+      "target": "ADR-0002",
+      "type": "enables"
+    },
+    {
+      "source": "ADR-0001",
+      "target": "ADR-0003",
+      "type": "enables"
+    },
+    {
+      "source": "ADR-0001",
+      "target": "ADR-0004",
+      "type": "enables"
+    },
+    {
+      "source": "ADR-0001",
+      "target": "ADR-0005",
+      "type": "enables"
+    },
+    {
+      "source": "ADR-0001",
+      "target": "PROJECT:GLOBAL",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0001",
+      "target": "PROJECT:SPECTRE",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0001",
+      "target": "PROJECT:PHANTOM",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0001",
+      "target": "PROJECT:CEREBRO",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0001",
+      "target": "PROJECT:NEUTRON",
+      "type": "belongs_to"
+    },
+    {
       "source": "ADR-0007",
       "target": "ADR-0001",
       "type": "related_to"
@@ -768,6 +783,171 @@
     },
     {
       "source": "ADR-0007",
+      "target": "PROJECT:CEREBRO",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0022",
+      "target": "PROJECT:CEREBRO",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0016",
+      "target": "PROJECT:GLOBAL",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0021",
+      "target": "PROJECT:CEREBRO",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0030",
+      "target": "ADR-0017",
+      "type": "supersedes"
+    },
+    {
+      "source": "ADR-0030",
+      "target": "ADR-0024",
+      "type": "supersedes"
+    },
+    {
+      "source": "ADR-0030",
+      "target": "ADR-0027",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0030",
+      "target": "PROJECT:CEREBRO",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0013",
+      "target": "PROJECT:PHANTOM",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0013",
+      "target": "PROJECT:NEUTRON",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0013",
+      "target": "PROJECT:SECURELLM-BRIDGE",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0013",
+      "target": "PROJECT:AI-ASSISTANT-HUB",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0013",
+      "target": "PROJECT:CEREBRO",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0041",
+      "target": "PROJECT:SPECTRE",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0041",
+      "target": "PROJECT:OWASAKA",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0041",
+      "target": "PROJECT:SPIDER‑NIX",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0041",
+      "target": "PROJECT:MATRIX_AI_ASSISTANT",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0041",
+      "target": "PROJECT:ADR_LEDGER",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0041",
+      "target": "PROJECT:IP_GUARD",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0041",
+      "target": "PROJECT:ASTRIX",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0041",
+      "target": "PROJECT:CHAOS_NUANCE",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0044",
+      "target": "ADR-0001",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0044",
+      "target": "Pipeline DefiLlama → TimescaleDB (FASE 1)",
+      "type": "enables"
+    },
+    {
+      "source": "ADR-0044",
+      "target": "CoinGecko → TimescaleDB (FASE 2)",
+      "type": "enables"
+    },
+    {
+      "source": "ADR-0044",
+      "target": "Analytics via ClickHouse (FASE 3)",
+      "type": "enables"
+    },
+    {
+      "source": "ADR-0044",
+      "target": "PROJECT:GLOBAL",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0009",
+      "target": "ADR-0005",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0009",
+      "target": "ADR-0006",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0009",
+      "target": "ADR-0008",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0009",
+      "target": "PROJECT:NEUTRON",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0009",
+      "target": "PROJECT:CEREBRO",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0027",
+      "target": "PROJECT:PHANTOM",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0023",
+      "target": "PROJECT:CEREBRO",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0020",
       "target": "PROJECT:CEREBRO",
       "type": "belongs_to"
     },
@@ -812,48 +992,98 @@
       "type": "belongs_to"
     },
     {
-      "source": "ADR-0040",
-      "target": "ADR-0038: OTLP HTTP transport",
+      "source": "ADR-0005",
+      "target": "ADR-0001",
       "type": "related_to"
     },
     {
-      "source": "ADR-0040",
-      "target": "Canary deployments",
+      "source": "ADR-0005",
+      "target": "ADR-0002",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0005",
+      "target": "ADR-0003",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0005",
+      "target": "ADR-0004",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0005",
+      "target": "PROJECT:NEUTRON",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0005",
+      "target": "PROJECT:GLOBAL",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0046",
+      "target": "ADR-0044",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0046",
+      "target": "CoinGecko mapper (FASE 2)",
       "type": "enables"
     },
     {
-      "source": "ADR-0040",
-      "target": "Zero-trust networking",
+      "source": "ADR-0046",
+      "target": "L2Beat mapper (FASE 3)",
       "type": "enables"
     },
     {
-      "source": "ADR-0040",
+      "source": "ADR-0046",
+      "target": "On-chain normalizers (FASE 4)",
+      "type": "enables"
+    },
+    {
+      "source": "ADR-0046",
+      "target": "PROJECT:GLOBAL",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0050",
+      "target": "ADR-0006",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0050",
+      "target": "ADR-0027",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0050",
+      "target": "ADR-0034",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0050",
+      "target": "Cortex Desktop funcional end-to-end",
+      "type": "enables"
+    },
+    {
+      "source": "ADR-0050",
+      "target": "phantom-soc dashboard com dados reais de rede",
+      "type": "enables"
+    },
+    {
+      "source": "ADR-0050",
+      "target": "PROJECT:GLOBAL",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0050",
       "target": "PROJECT:SPECTRE",
       "type": "belongs_to"
     },
     {
-      "source": "ADR-0038",
-      "target": "ADR-0037: NATS over Kafka",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0038",
-      "target": "Production load testing with trace correlation",
-      "type": "enables"
-    },
-    {
-      "source": "ADR-0038",
-      "target": "Future Tempo/Grafana integration",
-      "type": "enables"
-    },
-    {
-      "source": "ADR-0038",
-      "target": "PROJECT:SPECTRE",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0023",
-      "target": "PROJECT:CEREBRO",
+      "source": "ADR-0050",
+      "target": "PROJECT:PHANTOM",
       "type": "belongs_to"
     },
     {
@@ -932,328 +1162,98 @@
       "type": "belongs_to"
     },
     {
-      "source": "ADR-0027",
-      "target": "PROJECT:PHANTOM",
+      "source": "ADR-0025",
+      "target": "ADR-0024",
+      "type": "related_to"
+    },
+    {
+      "source": "ADR-0025",
+      "target": "Phase 3 auto-remediation (judge pipeline now fully testable)",
+      "type": "enables"
+    },
+    {
+      "source": "ADR-0025",
+      "target": "PROJECT:GLOBAL",
       "type": "belongs_to"
     },
     {
-      "source": "ADR-0004",
+      "source": "ADR-0006",
       "target": "ADR-0001",
       "type": "related_to"
     },
     {
-      "source": "ADR-0004",
-      "target": "ADR-0002",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0004",
-      "target": "ADR-0003",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0004",
-      "target": "ADR-0005",
-      "type": "enables"
-    },
-    {
-      "source": "ADR-0004",
-      "target": "PROJECT:PHANTOM",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0004",
-      "target": "PROJECT:GLOBAL",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0001",
-      "target": "ADR-0002",
-      "type": "enables"
-    },
-    {
-      "source": "ADR-0001",
-      "target": "ADR-0003",
-      "type": "enables"
-    },
-    {
-      "source": "ADR-0001",
-      "target": "ADR-0004",
-      "type": "enables"
-    },
-    {
-      "source": "ADR-0001",
-      "target": "ADR-0005",
-      "type": "enables"
-    },
-    {
-      "source": "ADR-0001",
-      "target": "PROJECT:GLOBAL",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0001",
-      "target": "PROJECT:SPECTRE",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0001",
-      "target": "PROJECT:PHANTOM",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0001",
-      "target": "PROJECT:CEREBRO",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0001",
-      "target": "PROJECT:NEUTRON",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0005",
-      "target": "ADR-0001",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0005",
-      "target": "ADR-0002",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0005",
-      "target": "ADR-0003",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0005",
-      "target": "ADR-0004",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0005",
-      "target": "PROJECT:NEUTRON",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0005",
-      "target": "PROJECT:GLOBAL",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0044",
-      "target": "ADR-0001",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0044",
-      "target": "Pipeline DefiLlama → TimescaleDB (FASE 1)",
-      "type": "enables"
-    },
-    {
-      "source": "ADR-0044",
-      "target": "CoinGecko → TimescaleDB (FASE 2)",
-      "type": "enables"
-    },
-    {
-      "source": "ADR-0044",
-      "target": "Analytics via ClickHouse (FASE 3)",
-      "type": "enables"
-    },
-    {
-      "source": "ADR-0044",
-      "target": "PROJECT:GLOBAL",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0033",
-      "target": "ADR-0032",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0033",
-      "target": "ADR-0006",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0033",
+      "source": "ADR-0006",
       "target": "ADR-0005",
       "type": "related_to"
     },
     {
-      "source": "ADR-0033",
-      "target": "PROJECT:GLOBAL",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0050",
-      "target": "ADR-0006",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0050",
-      "target": "ADR-0027",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0050",
-      "target": "ADR-0034",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0050",
-      "target": "Cortex Desktop funcional end-to-end",
-      "type": "enables"
-    },
-    {
-      "source": "ADR-0050",
-      "target": "phantom-soc dashboard com dados reais de rede",
-      "type": "enables"
-    },
-    {
-      "source": "ADR-0050",
-      "target": "PROJECT:GLOBAL",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0050",
-      "target": "PROJECT:SPECTRE",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0050",
-      "target": "PROJECT:PHANTOM",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0003",
-      "target": "ADR-0001",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0003",
-      "target": "ADR-0002",
-      "type": "related_to"
-    },
-    {
-      "source": "ADR-0003",
-      "target": "PROJECT:SPECTRE",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0003",
-      "target": "PROJECT:GLOBAL",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0021",
-      "target": "PROJECT:CEREBRO",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0008",
+      "source": "ADR-0006",
       "target": "ADR-0007",
+      "type": "enables"
+    },
+    {
+      "source": "ADR-0006",
+      "target": "ADR-0008",
+      "type": "enables"
+    },
+    {
+      "source": "ADR-0006",
+      "target": "ADR-0009",
+      "type": "enables"
+    },
+    {
+      "source": "ADR-0006",
+      "target": "PROJECT:SPECTRE",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0006",
+      "target": "PROJECT:PHANTOM",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0006",
+      "target": "PROJECT:CEREBRO",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0006",
+      "target": "PROJECT:NEUTRON",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0006",
+      "target": "PROJECT:GLOBAL",
+      "type": "belongs_to"
+    },
+    {
+      "source": "ADR-0010",
+      "target": "ADR-0005",
       "type": "related_to"
     },
     {
-      "source": "ADR-0008",
+      "source": "ADR-0010",
       "target": "ADR-0009",
       "type": "related_to"
     },
     {
-      "source": "ADR-0008",
-      "target": "PROJECT:CEREBRO",
-      "type": "belongs_to"
+      "source": "ADR-0010",
+      "target": "PHANTOM v2.0 Production Deployment",
+      "type": "enables"
     },
     {
-      "source": "ADR-0008",
-      "target": "PROJECT:NEUTRON",
-      "type": "belongs_to"
+      "source": "ADR-0010",
+      "target": "Multi-tenant PHANTOM instances",
+      "type": "enables"
     },
     {
-      "source": "ADR-0013",
+      "source": "ADR-0010",
+      "target": "Enterprise PHANTOM adoption",
+      "type": "enables"
+    },
+    {
+      "source": "ADR-0010",
       "target": "PROJECT:PHANTOM",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0013",
-      "target": "PROJECT:NEUTRON",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0013",
-      "target": "PROJECT:SECURELLM-BRIDGE",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0013",
-      "target": "PROJECT:AI-ASSISTANT-HUB",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0013",
-      "target": "PROJECT:CEREBRO",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0020",
-      "target": "PROJECT:CEREBRO",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0041",
-      "target": "PROJECT:SPECTRE",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0041",
-      "target": "PROJECT:OWASAKA",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0041",
-      "target": "PROJECT:SPIDER‑NIX",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0041",
-      "target": "PROJECT:MATRIX_AI_ASSISTANT",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0041",
-      "target": "PROJECT:ADR_LEDGER",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0041",
-      "target": "PROJECT:IP_GUARD",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0041",
-      "target": "PROJECT:ASTRIX",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0041",
-      "target": "PROJECT:CHAOS_NUANCE",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0054",
-      "target": "PROJECT:PHANTOM",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0054",
-      "target": "PROJECT:PHANTOM-RAY",
-      "type": "belongs_to"
-    },
-    {
-      "source": "ADR-0054",
-      "target": "PROJECT:INTELAGENT",
       "type": "belongs_to"
     }
   ]
