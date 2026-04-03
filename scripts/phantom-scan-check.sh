@@ -6,7 +6,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 ALLOWLIST_FILE="${PHANTOM_SCAN_ALLOWLIST:-${REPO_ROOT}/.phantom-scan.allowlist}"
 PHANTOM_ROOT="${PHANTOM_ROOT:-${REPO_ROOT}/../phantom}"
-PHANTOM_REF="${PHANTOM_REF:-github:kernelcore/phantom}"
+PHANTOM_REF="${PHANTOM_REF:-github:VoidNxSEC/phantom}"
 
 TMP_OUTPUT="$(mktemp)"
 TMP_CLEAN="$(mktemp)"
@@ -37,7 +37,7 @@ run_scan() {
 
 run_scan | tee "$TMP_OUTPUT"
 
-sed -E 's/\x1B\[[0-9;]*[[:alpha:]]//g' "$TMP_OUTPUT" > "$TMP_CLEAN"
+sed -E 's/\x1B\[[0-9;]*[[:alpha:]]//g' "$TMP_OUTPUT" >"$TMP_CLEAN"
 
 extract_between() {
   local start_pattern="$1"
@@ -68,7 +68,7 @@ filter_allowlist() {
     return
   fi
 
-  grep -vE '^[[:space:]]*(#|$)' "$ALLOWLIST_FILE" > "$TMP_ALLOWLIST"
+  grep -vE '^[[:space:]]*(#|$)' "$ALLOWLIST_FILE" >"$TMP_ALLOWLIST"
   if [ ! -s "$TMP_ALLOWLIST" ]; then
     cat
     return
@@ -79,18 +79,18 @@ filter_allowlist() {
 
 CREDENTIAL_FINDINGS="$(
   {
-    extract_between '^Potential credentials:$' '^Private keys:$' \
-      | normalize_lines \
-      | grep -v '^None found$' || true
+    extract_between '^Potential credentials:$' '^Private keys:$' |
+      normalize_lines |
+      grep -v '^None found$' || true
   } | filter_allowlist
 )"
 
 PRIVATE_KEY_FINDINGS="$(
   {
-    extract_between '^Private keys:$' \
-      | normalize_lines \
-      | grep -v '^None found$' \
-      | grep -v '^✓ Scan complete$' || true
+    extract_between '^Private keys:$' |
+      normalize_lines |
+      grep -v '^None found$' |
+      grep -v '^✓ Scan complete$' || true
   } | filter_allowlist
 )"
 
