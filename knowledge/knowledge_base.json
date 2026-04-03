@@ -2,7 +2,7 @@
   "meta": {
     "type": "adr_knowledge_base",
     "version": "1.0",
-    "generated_at": "2026-04-01T19:37:14.669901",
+    "generated_at": "2026-04-03T04:29:00.030046",
     "total_decisions": 34,
     "by_status": {
       "accepted": 34

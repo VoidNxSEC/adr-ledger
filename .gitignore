@@ -3,6 +3,7 @@ result
 result-*
 .direnv/
 .envrc
+.chain
 
 # Python
 __pycache__/
